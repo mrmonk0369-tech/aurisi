@@ -2447,14 +2447,7 @@ function renderDash(){
   html+='<div class="ws-card"><div class="stat-num">'+(acc===null?"—":acc+"%")+'</div><div class="stat-lbl">🎯 Recent accuracy</div></div>';
   html+='<div class="ws-card"><div class="stat-num">'+ms.length+'</div><div class="stat-lbl">📕 Mistakes vault</div></div>';
   html+='</div>';
-  html+='<div class="ws-h">🕘 Recent chats</div><div class="ws-card" style="padding:6px">';
-  if(!sc.length)html+='<div class="empty">No chats yet — start one from Quick actions ☝</div>';
-  sc.forEach((c,i)=>{html+='<button class="rc-item" onclick="loadChat('+(state.savedChats.indexOf(c))+')"><span>'+modeEmoji(c.mode||"")+'</span><span class="rc-t">'+escH(c.title||"Untitled chat")+'</span></button>'});
   html+='</div>';
-  html+='<div class="ws-h">🗄️ Library</div><div class="ws-card">';
-  if(!L.pdfs.length)html+='<div class="empty">No books yet — attach a PDF in Study Room and tap “🗄️ Save to Locker”.</div>';
-  else{L.pdfs.slice(-3).reverse().forEach(p=>{html+='<button class="rc-item" onclick="useLockerPdf('+p.id+');switchView(\'chat\')"><span>📄</span><span class="rc-t">'+escH(p.name)+'</span></button>'})}
-  html+='</div></div>';
   el.innerHTML=html;
 }
 function renderLib(){
