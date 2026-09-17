@@ -299,6 +299,33 @@ button{font:inherit;cursor:pointer}
 .stab-btn.on{background:linear-gradient(135deg,rgba(217,119,87,.16),rgba(163,74,36,.06));border-color:rgba(163,74,36,.32);color:var(--accent)}
 .stab-grp{display:flex;flex-direction:column;gap:10px}
 .s-foot{padding:12px 14px calc(12px + env(safe-area-inset-bottom))}
+/* ===================== v18.5 EMBER DARK ===================== */
+:root[data-ai-theme="dark"]{
+  --bg:#1c1815; --surface:#262019; --surface2:#332b21; --text:#ece5db; --muted:#a3958a;
+  --line:#3b3328; --accent:#e08a5e; --accent2:#c96f3f; --danger:#e0685c;
+  --ai-bg:#1c1815; --ai-surface:#262019; --ai-text:#ece5db; --ai-muted:#a3958a;
+  --ai-border:#3b3328; --ai-card-bg:#332b21; --ai-accent:#e08a5e; --ai-accent2:#c96f3f;
+  --ai-user-bg:#a35c33; --ai-user-text:#ffffff;
+  --ai-code-bg:#151210; --ai-code-head:#0e0c0a; --ai-code-text:#e6e0d6; --ai-code-border:#2e2820;
+}
+[data-ai-theme="dark"] body,[data-ai-theme="dark"] #app{background:var(--bg);color:var(--text)}
+[data-ai-theme="dark"] .topbar{background:color-mix(in srgb,var(--surface) 88%,transparent);border-bottom-color:rgba(255,255,255,.07)}
+[data-ai-theme="dark"] .wsrail{border-right-color:rgba(255,255,255,.07);box-shadow:2px 0 14px rgba(0,0,0,.45)}
+[data-ai-theme="dark"] .wsbot{border-top-color:rgba(255,255,255,.08);box-shadow:0 -6px 20px rgba(0,0,0,.4)}
+[data-ai-theme="dark"] .ws-card{border-color:rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+[data-ai-theme="dark"] .qa-btn,[data-ai-theme="dark"] .ch-btn{border-color:rgba(255,255,255,.11)}
+[data-ai-theme="dark"] .qa-btn:hover{box-shadow:0 6px 14px rgba(0,0,0,.4)}
+[data-ai-theme="dark"] .ts-drop{box-shadow:0 14px 34px rgba(0,0,0,.55)}
+[data-ai-theme="dark"] .bar{background:rgba(255,255,255,.12)}
+[data-ai-theme="dark"] .modal{box-shadow:0 30px 80px rgba(0,0,0,.6)}
+[data-ai-theme="dark"] .exam-pal,[data-ai-theme="dark"] .exam-top{border-color:rgba(255,255,255,.08)!important}
+[data-ai-theme="dark"] .studio-head{border-bottom-color:rgba(255,255,255,.07)}
+[data-ai-theme="dark"] #studioPanel{border-right-color:rgba(255,255,255,.08);box-shadow:8px 0 30px rgba(0,0,0,.5)}
+[data-ai-theme="dark"] .msg.user{background:linear-gradient(135deg,#a35c33,#8d4c28)}
+[data-ai-theme="dark"] .toast{background:#efe8df;color:#1c1815}
+[data-ai-theme="dark"] .ws-hero{background:linear-gradient(135deg,rgba(224,138,94,.14),rgba(163,74,36,.07));border-color:rgba(224,138,94,.2)}
+[data-ai-theme="dark"] .file-btn{background:var(--surface2)}
+[data-ai-theme="dark"] .stab-btn.on{background:linear-gradient(135deg,rgba(224,138,94,.18),rgba(163,74,36,.08));border-color:rgba(224,138,94,.3);color:var(--accent)}
 /* talk */
 .screen{position:fixed;inset:0;background:var(--bg);z-index:70;display:none;flex-direction:column}
 .screen.open{display:flex}
@@ -534,7 +561,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
       </button>
     </div>
-  <div class="foot-note" data-i18n="footNote">AURISI can make mistakes. Add your Gemini key in Settings, or use it free via the Puter fallback.</div>
+  <div class="foot-note">AURISI can make mistakes.</div>
   </div>
 </div>
 
@@ -819,17 +846,17 @@ function modelOrder(cached,known){
 const STREAM={active:false,abort:null};
 
 /* ===================== THEME ===================== */
-const THEMES={tangerine:{label:"Tangerine Sky"},peach:{label:"Peach Horizon"}};
+const THEMES={tangerine:{label:"Tangerine Light"},dark:{label:"Ember Dark"}};
 function applyTheme(k){
   if(!THEMES[k])k="tangerine";
   document.documentElement.setAttribute("data-ai-theme",k);
   var tcm=document.querySelector('meta[name="theme-color"]');
-  if(tcm)tcm.setAttribute("content",k==="peach"?"#fdf1ea":"#fbfaf8");
+  if(tcm)tcm.setAttribute("content",k==="dark"?"#1c1815":(k==="peach"?"#fdf1ea":"#fbfaf8"));
   try{localStorage.setItem(STORAGE+"theme",k)}catch(e){}
 }
 function toggleTheme(){
   const cur=localStorage.getItem(STORAGE+"theme")||"tangerine";
-  const next=cur==="tangerine"?"peach":"tangerine";
+  const next=cur==="tangerine"?"dark":"tangerine";
   applyTheme(next);toast(THEMES[next].label);
 }
 
@@ -1435,7 +1462,6 @@ function msgRow(m,isLast){
     sp.onclick=()=>speakText(txt);
     if(isLast)acts.appendChild(rg);
     acts.appendChild(cp);acts.appendChild(dl);acts.appendChild(sp);
-    if(m._model){const tg=document.createElement("span");tg.className="model-tag";tg.textContent=m._model;acts.appendChild(tg)}
     b.appendChild(who);b.appendChild(md);b.appendChild(acts);
     row.appendChild(b);
   }
