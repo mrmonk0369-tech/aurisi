@@ -364,6 +364,11 @@ body.chat-focus .wsbot{display:none!important}
 .chat-back-btn{display:none;flex:none;margin-right:2px}
 body.chat-focus .chat-back-btn{display:flex}
 body.chat-focus .chat-back-btn:hover{background:var(--surface2)}
+/* ===================== v19.4 FEYNMAN MODE ===================== */
+.fy-chip{position:fixed;top:calc(60px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:70;display:none;align-items:center;gap:8px;background:linear-gradient(135deg,#a34a24,#cc6633);color:#fff;border-radius:99px;padding:7px 8px 7px 14px;font-size:12px;font-weight:800;box-shadow:0 6px 18px rgba(163,74,36,.35);white-space:nowrap}
+.fy-chip b{font-weight:800}
+.fy-x{width:22px;height:22px;border-radius:50%;border:none;background:rgba(255,255,255,.22);color:#fff;font-size:11px;cursor:pointer;font-family:inherit;line-height:1;display:flex;align-items:center;justify-content:center}
+.fy-x:hover{background:rgba(255,255,255,.4)}
 /* talk */
 .screen{position:fixed;inset:0;background:var(--bg);z-index:70;display:none;flex-direction:column}
 .screen.open{display:flex}
@@ -524,6 +529,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
   <div class="art-vers" id="artVers" style="display:none"></div>
   <div class="art-body md" id="artBody"></div>
 </div>
+<div class="fy-chip" id="fyChip"><b>🧑‍🏫 Feynman Mode</b><button class="fy-x" onclick="stopFeynman()" aria-label="Exit Feynman Mode" title="Exit Feynman Mode">✕</button></div>
 <div id="app">
   <div class="topbar">
     <button class="icon-btn chat-back-btn" onclick="goBackHome()" aria-label="Back to home" title="Back to home">
@@ -1028,7 +1034,7 @@ function SYS_PROMPT(){
   "TEST PAPER: when a teacher asks for a question paper or test paper, output a properly formatted exam — general instructions, sections, marks per question on the right, total marks and time — strictly from the attached PDF, followed by a clearly separated ANSWER KEY with mark-scheme hints. "+
   "GRADER: when a homework photo is attached for grading, check every question, mark right/partial/wrong, give a total score, one-line corrections, and a 2-line submission report; if the handwriting is unclear, say what you could not read instead of guessing. "+
   "VIDEO PROMPT: when the learner or teacher asks for an animation/video prompt for a concept, output a ready-to-paste 30-second prompt for AI video tools — scene-by-scene visuals, narration script, style notes — and mention free options like Manim (great for math/physics) or any text-to-video AI they have. "+
-  "PREDICTION: when predicting the learner's score, use the quiz data provided honestly — give a percentage range, the 2 biggest risk areas, and what to fix first; never flatter.";
+  "PREDICTION: when predicting the learner's score, use the quiz data provided honestly — give a percentage range, the 2 biggest risk areas, and what to fix first; never flatter."+(FEYNMAN_ON?("\n\n"+FEYNMAN_RULES):"");
 }
 
 /* ===================== GEMINI + PUTER ENGINES ===================== */
@@ -1271,7 +1277,7 @@ function renderChat(){
   $("welcome").style.display=state.chatHistory.length?"none":"block";
   if(state.pdfText)showPdfChip();else clearPdf();
   state.chatHistory.forEach((m,i)=>{log.appendChild(msgRow(m,i===state.chatHistory.length-1))});
-  scrollDown();
+  scrollDown();renderFeynmanChip();
 }
 function msgRow(m,isLast){
   const row=document.createElement("div");
@@ -1782,6 +1788,7 @@ function send(){
   if(STREAM.active)return;
   const el=$("prompt");
   const v=el.value.trim();
+  if(/^stop[! ]*feynman$/i.test(v)){el.value="";stopFeynman();return}
   if(!v&&!state.currentImageBase64){toast("Type something or attach an image");return}
   const parts=[];
   if(v)parts.push({text:v});
@@ -2040,6 +2047,38 @@ function requestContent(){
   quick(P[REQ_TYPE]||P.notes);
   if(inp)inp.value="";
 }
+/* ===================== v19.4 FEYNMAN MODE ===================== */
+var FEYNMAN_ON=false;
+try{FEYNMAN_ON=localStorage.getItem(STORAGE+"feynman")==="1"}catch(e){}
+const FEYNMAN_RULES=
+"===== FEYNMAN TEACHING MODE (ACTIVE FOR THIS WHOLE CONVERSATION) ===== "+
+"You are now teaching in the style of Richard Feynman, the legendary physicist teacher — warm, curious, playful, delighted by ideas ('the pleasure of finding things out'). Follow these rules in EVERY reply: "+
+"(1) SIMPLE FIRST: explain every idea in plain words a 12-year-old could follow. Use technical jargon only AFTER the plain version, in brackets. "+
+"(2) ANALOGIES: every new concept gets a real-life analogy (cricket, chai, bicycles, mirrors, bazaar...). "+
+"(3) SMALL STEPS: teach in short steps. After each step, ask ONE short question to check understanding before moving on. Never dump walls of text. "+
+"(4) EXPLAIN BACK (the heart of the Feynman technique): once a concept is taught, ask the student to explain it back in their own words as if teaching a 10-year-old. Whatever they miss or get wrong, teach again — even more simply, from a different angle. Only move ahead when they can say it themselves. "+
+"(5) FIRST PRINCIPLES: build ideas from the ground up. Always answer 'why?', never say 'just memorize it'. "+
+"(6) END OF TOPIC: finish with a tiny '\u{1F9EA} Explain-back test' — 1-2 quick questions or a one-line recap the student must say in their own words. "+
+"(7) If the student asks how to exit, tell them to tap the \u2715 on the Feynman badge at the top. "+
+"Keep every other AURISI rule (language matching, identity rules, safety). This mode does not change WHO you are — only HOW you teach.";
+function renderFeynmanChip(){var c=$("fyChip");if(c)c.style.display=FEYNMAN_ON?"flex":"none"}
+function startFeynman(){
+  if(STREAM.active){toast("AURISI is still answering — try again in a moment");return}
+  newChat();
+  FEYNMAN_ON=true;
+  try{localStorage.setItem(STORAGE+"feynman","1")}catch(e){}
+  state.chatHistory.push({role:"model",parts:[{text:"🧑‍🏫 **Feynman Mode ON!**\n\nFrom now on, I'll teach you the way Richard Feynman taught — no jargon, just simple ideas, everyday analogies, and real understanding from the ground up. You explain things back to me, and we'll build it until it clicks.\n\n**So — what do you want to truly understand today?**\nAny subject, any class: Physics, Chemistry, Maths, anything. Name the topic and let's enjoy finding things out! 🎯"}]});
+  persist();renderChat();switchView("chat");
+  toast("🧑‍🏫 Feynman Mode — teach like the legend");
+}
+function stopFeynman(){
+  FEYNMAN_ON=false;
+  try{localStorage.removeItem(STORAGE+"feynman")}catch(e){}
+  renderFeynmanChip();
+  state.chatHistory.push({role:"model",parts:[{text:"✅ **Feynman Mode off.** Back to normal teaching — you can ask me anything the regular way."}]});
+  persist();renderChat();
+  toast("Feynman Mode off");
+}
 function regenerate(){
   if(STREAM.active)return;
   for(let i=state.chatHistory.length-1;i>=0;i--){
@@ -2157,6 +2196,7 @@ function renderDash(){
   html+='<div class="ws-card"><div class="stat-num">'+ms.length+'</div><div class="stat-lbl">📕 Mistakes vault</div></div>';
   html+='</div>';
   html+='<div class="ws-h">⚡ Quick actions</div><div class="qa-row">';
+  html+='<button class="qa-btn" onclick="startFeynman()">🧑‍🏫 Feynman Mode<small>Learn like Richard Feynman</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');newChat()">💬 New chat<small>Start a fresh lesson</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');openExamHub()">🎯 Exam mode<small>HSSC / SSC / UPSC mock</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');testWeak()">📕 Fix weak points<small>Quiz me on my mistakes</small></button>';
@@ -2576,6 +2616,7 @@ function flushChat(){
 function saveChats(){try{localStorage.setItem(STORAGE+"savedChats",JSON.stringify(state.savedChats))}catch(e){}}
 function newChat(){
   flushChat();
+  FEYNMAN_ON=false;try{localStorage.removeItem(STORAGE+"feynman")}catch(e){}
   state.activeId=null;
   state.chatHistory=[];
   persist();renderChat();renderDrawer();closeDrawer();
