@@ -326,6 +326,42 @@ button{font:inherit;cursor:pointer}
 [data-ai-theme="dark"] .ws-hero{background:linear-gradient(135deg,rgba(224,138,94,.14),rgba(163,74,36,.07));border-color:rgba(224,138,94,.2)}
 [data-ai-theme="dark"] .file-btn{background:var(--surface2)}
 [data-ai-theme="dark"] .stab-btn.on{background:linear-gradient(135deg,rgba(224,138,94,.18),rgba(163,74,36,.08));border-color:rgba(224,138,94,.3);color:var(--accent)}
+/* ===================== v19 ARTIFACTS ===================== */
+.art-panel{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:520px;z-index:85;background:var(--surface);border-left:1px solid rgba(0,0,0,.09);transform:translateX(106%);transition:.28s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(60,35,10,.14)}
+.art-panel.open{transform:none}
+.art-back{position:fixed;inset:0;background:rgba(20,10,5,.35);z-index:84;display:none}
+.art-back.open{display:block}
+@media(min-width:900px){
+  body.art-open #app{padding-right:420px}
+  body.art-open .wsbot{right:420px}
+  .art-panel{width:420px}
+  .art-back{display:none!important}
+}
+.art-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.art-title{display:flex;align-items:center;gap:10px;min-width:0}
+.art-title .s-ico{width:36px;height:36px;font-size:17px;border-radius:12px}
+.art-title div{min-width:0}
+.art-title b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.art-title small{color:var(--muted);font-size:10px}
+.art-vers{display:flex;gap:5px;padding:8px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap;align-items:center}
+.ver-lbl{font-size:10px;color:var(--muted);font-weight:700;margin-right:3px}
+.ver-pill{border:1px solid var(--line);background:var(--surface2);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:800;color:var(--muted);cursor:pointer;font-family:inherit}
+.ver-pill.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.art-body{flex:1;overflow-y:auto;padding:16px 18px;font-size:14px}
+.sec-h{position:relative;padding-right:26px}
+.sec-edit{position:absolute;right:0;top:1px;opacity:0;transition:.15s}
+.sec-h:hover .sec-edit{opacity:1}
+.sec-form{margin:8px 0 14px;display:flex;flex-direction:column;gap:8px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:10px}
+.sec-form textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;font-size:13px;background:var(--surface);color:var(--text);resize:vertical;min-height:60px}
+.sec-form .btn{font-size:12px;padding:9px 14px}
+.art-banner{background:linear-gradient(135deg,rgba(217,119,87,.14),rgba(163,74,36,.06));border:1px solid rgba(163,74,36,.25);border-radius:14px;padding:12px;margin-bottom:4px;width:100%}
+.lib-subject{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:20px 2px 8px;font-size:13.5px;font-weight:800}
+.lib-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.lib-chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--text)}
+.lib-chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.lib-chip.new{border-style:dashed;color:var(--muted)}
+[data-ai-theme="dark"] .art-panel{border-left-color:rgba(255,255,255,.08);box-shadow:-8px 0 30px rgba(0,0,0,.5)}
+[data-ai-theme="dark"] .art-back{background:rgba(0,0,0,.55)}
 /* talk */
 .screen{position:fixed;inset:0;background:var(--bg);z-index:70;display:none;flex-direction:column}
 .screen.open{display:flex}
@@ -473,6 +509,19 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
 </style>
 </head>
 <body>
+<div class="art-back" id="artBack" onclick="closeArtifact()"></div>
+<div class="art-panel" id="artPanel">
+  <div class="art-head">
+    <div class="art-title"><div class="s-ico" id="artIcon">✨</div><div><b id="artTitle">Artifact</b><small id="artSub">math & code rendered</small></div></div>
+    <div class="msg-actions" style="margin-top:0">
+      <button class="act-btn" title="Copy content" aria-label="Copy content" onclick="copyArtifact()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      <button class="act-btn" title="Save notes" aria-label="Save notes" onclick="downloadArtifact()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></button>
+      <button class="act-btn" title="Close" aria-label="Close" onclick="closeArtifact()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+  </div>
+  <div class="art-vers" id="artVers" style="display:none"></div>
+  <div class="art-body md" id="artBody"></div>
+</div>
 <div id="app">
   <div class="topbar">
     <button class="icon-btn" onclick="toggleDrawer()" aria-label="Chats">
@@ -1449,7 +1498,9 @@ function msgRow(m,isLast){
     const SVG_OPEN='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
     const mkAct=function(title,inner){const b=document.createElement("button");b.className="act-btn";b.title=title;b.setAttribute("aria-label",title);b.innerHTML=SVG_OPEN+inner+"</svg>";return b};
     const rg=mkAct("Regenerate",'<path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>');
-    rg.onclick=regenerate;
+    rg.onclick=function(){if(m&&m._artKey){PENDING_ART={key:m._artKey,title:m._artTitle||"Artifact"}}regenerate()};
+    const ab=mkAct("Open in panel",'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/>');
+    ab.onclick=()=>{if(m&&m._artKey)openArtifactKey(m._artKey);else{var fl="";for(var li=0;li<txt.length&&!fl;li++){if(txt[li]!=="\n"&&txt[li]!==" ")fl=txt.slice(li)};var hm=fl.match(/^#{1,3}\s+(.+)/);openArtifactEphemeral((hm?hm[1]:fl).replace(/[*_`#>]/g,"").slice(0,46)||"Message",txt)}};
     const cp=mkAct("Copy",'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>');
     cp.onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{
       cp.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
@@ -1461,7 +1512,7 @@ function msgRow(m,isLast){
     const sp=mkAct("Listen",'<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>');
     sp.onclick=()=>speakText(txt);
     if(isLast)acts.appendChild(rg);
-    acts.appendChild(cp);acts.appendChild(dl);acts.appendChild(sp);
+    acts.appendChild(ab);acts.appendChild(cp);acts.appendChild(dl);acts.appendChild(sp);
     b.appendChild(who);b.appendChild(md);b.appendChild(acts);
     row.appendChild(b);
   }
@@ -1778,7 +1829,12 @@ async function generate(){
   setBusy(false);
   const txt=full+(stopped?" _(stopped)_":"");
   if(full.trim()){
-    state.chatHistory.push({role:"model",parts:[{text:txt}],_model:lastModel||undefined});
+    var _pa=PENDING_ART,_ps=PENDING_SECTION;PENDING_ART=null;PENDING_SECTION=null;
+    var _ok=full.trim().indexOf("\u26a0")!==0;
+    var mobj={role:"model",parts:[{text:txt}],_model:lastModel||undefined};
+    if(_pa&&_ok){mobj._artKey=_pa.key;mobj._artTitle=_pa.title;saveArtVersion(_pa.key,_pa.title,full);openArtifactKey(_pa.key)}
+    else if(_ps&&_ok){ART_EDIT={key:_ps.key,title:_ps.title,content:full};openArtifactKey(_ps.key)}
+    state.chatHistory.push(mobj);
     persist();flushChat();
     if(state.pdfText)clearPdf();
   }
@@ -1792,6 +1848,159 @@ function setBusy(b){
   s.title=b?"Stop":"Send";
   s.innerHTML=b?'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
   $("statusLine").textContent=b?tKey("statusThinking"):tKey("statusReady");
+}
+/* ===================== v19 ARTIFACTS ===================== */
+var PENDING_ART=null,PENDING_SECTION=null,ART_EDIT=null,ART_CUR=null;
+function artSafe(s){return String(s||"").replace(/['"\\<>]/g,"").slice(0,60)}
+function getArts(){try{return JSON.parse(localStorage.getItem(STORAGE+"artifacts")||"{}")}catch(e){return{}}}
+function setArts(a){try{localStorage.setItem(STORAGE+"artifacts",JSON.stringify(a))}catch(e){toast("Storage full — old artifacts may not be saved")}}
+function artPending(key,title){PENDING_ART={key:artSafe(key),title:artSafe(title)};PENDING_SECTION=null}
+function saveArtVersion(key,title,content){
+  if(!content||content.replace(/\s/g,"").length<80)return false;
+  var a=getArts();var o=a[key];if(!o)o=a[key]={title:title,versions:[],cur:0};
+  o.title=title;
+  o.versions.push({ts:Date.now(),content:content.slice(0,60000)});
+  if(o.versions.length>20)o.versions.shift();
+  o.cur=o.versions.length-1;
+  setArts(a);return true;
+}
+function openArtifactKey(key,verIdx){
+  var a=getArts();var o=a[key];if(!o)return;
+  if(verIdx!==undefined){o.cur=Math.max(0,Math.min(verIdx,o.versions.length-1));setArts(a)}
+  ART_CUR={key:key,ephemeral:false};renderArtifactPanel();showArtifact();
+}
+function openArtifactEphemeral(title,content){
+  ART_CUR={ephemeral:true,title:String(title||"Message").slice(0,48),content:content};
+  renderArtifactPanel();showArtifact();
+}
+function showArtifact(){var p=$("artPanel"),b=$("artBack");if(p)p.classList.add("open");if(b)b.classList.add("open");document.body.classList.add("art-open")}
+function closeArtifact(){var p=$("artPanel"),b=$("artBack");if(p)p.classList.remove("open");if(b)b.classList.remove("open");document.body.classList.remove("art-open");ART_EDIT=null}
+function curArtifactText(){var c=ART_CUR;if(!c)return"";if(c.ephemeral)return c.content;var o=getArts()[c.key];return o?o.versions[o.cur].content:""}
+function renderArtifactPanel(){
+  var c=ART_CUR;if(!c)return;
+  var o=c.ephemeral?{title:c.title,versions:[{ts:0,content:c.content}],cur:0}:getArts()[c.key];
+  if(!o)return;
+  $("artIcon").textContent=c.ephemeral?"💬":"✨";
+  $("artTitle").textContent=o.title;
+  $("artSub").textContent=c.ephemeral?"from chat · tap 📋 to copy":(o.versions.length+" version"+(o.versions.length===1?"":"s")+" · re-generate keeps history");
+  var v=$("artVers");var vh="";
+  if(!c.ephemeral){
+    vh='<span class="ver-lbl">History:</span>';
+    o.versions.forEach(function(x,i){vh+='<button class="ver-pill'+(i===o.cur?" on":"")+'" onclick="openArtifactKey(\''+escAttr(c.key)+'\','+i+')">v'+(i+1)+'</button>'});
+  }
+  if(ART_EDIT)vh='<div class="art-banner"><b style="font-size:12.5px">✏️ AURISI rewrote "'+escH(ART_EDIT.title)+'"</b><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" style="font-size:12px;padding:8px 12px" onclick="applyArtEdit()">✅ Apply as new version</button><button class="btn soft" style="font-size:12px;padding:8px 12px" onclick="ART_EDIT=null;renderArtifactPanel()">Discard</button></div></div>'+vh;
+  v.innerHTML=vh;
+  v.style.display=vh?"flex":"none";
+  mdRefresh($("artBody"),o.versions[o.cur].content);
+  decorateSections();
+}
+function copyArtifact(){
+  var t=curArtifactText();if(!t)return;
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast("Artifact copied")}).catch(function(){toast("Copy failed")});
+  else toast("Copy not supported here");
+}
+function downloadArtifact(){var t=curArtifactText();if(t)downloadNotes(t)}
+function decorateSections(){
+  var body=$("artBody");if(!body||!ART_CUR||ART_CUR.ephemeral)return;
+  Array.prototype.forEach.call(body.querySelectorAll("h1,h2,h3"),function(h){
+    if(h.querySelector(".sec-edit"))return;
+    h.classList.add("sec-h");
+    var btn=document.createElement("button");btn.className="act-btn sec-edit";btn.title="Edit this section";btn.setAttribute("aria-label","Edit section");
+    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
+    btn.onclick=function(ev){ev.stopPropagation();openSectionEditor(h)};
+    h.appendChild(btn);
+  });
+}
+function getSectionOf(h){
+  var title=h.textContent.replace("Edit this section","").trim();
+  var el=h.nextSibling,nodes=[];
+  while(el&&!(el.tagName&&/^(H1|H2|H3)$/.test(el.tagName))){nodes.push(el);el=el.nextSibling}
+  return {title:title,nodes:nodes};
+}
+function openSectionEditor(h){
+  var old=$("secForm");if(old&&old.parentNode)old.parentNode.removeChild(old);
+  var sec=getSectionOf(h);
+  var clean=sec.title.replace(/['"<>]/g,"");
+  var f=document.createElement("div");f.className="sec-form";f.id="secForm";
+  var fHTML='<textarea placeholder="What should change in “'+escH(clean)+'”? e.g. — make it simpler, add an example, translate to Hindi…"></textarea>';
+  fHTML+='<div style="display:flex;gap:8px"><button class="btn">✏️ Rewrite section</button><button class="btn soft">Cancel</button></div>';
+  f.innerHTML=fHTML;
+  var ta=f.querySelector("textarea");var sendB=f.querySelectorAll("button")[0];var cancelB=f.querySelectorAll("button")[1];
+  sendB.onclick=function(){
+    var q=(ta.value||"").trim();if(!q){toast("Tell AURISI what to change");return}
+    PENDING_SECTION={key:ART_CUR.key,title:sec.title};PENDING_ART=null;
+    var secText=sec.nodes.map(function(n){return n.textContent||""}).join("\n").trim().slice(0,4000);
+    quick("I am editing ONE section of my study notes. Section heading: \""+clean+"\"\n\nCurrent section content:\n\n"+secText+"\n\nRewrite ONLY this section following my instruction: "+q+"\nReply with ONLY the rewritten section (starting with the heading \""+clean+"\"), no preamble, no closing remarks.");
+    closeArtifact();
+  };
+  cancelB.onclick=function(){if(f.parentNode)f.parentNode.removeChild(f)};
+  if(h.nextSibling)h.parentNode.insertBefore(f,h.nextSibling);else h.parentNode.appendChild(f);
+  ta.focus();
+}
+function applyArtEdit(){
+  if(!ART_EDIT||!ART_CUR)return;
+  var a=getArts();var o=a[ART_EDIT.key];
+  if(!o){toast("Original artifact missing");ART_EDIT=null;renderArtifactPanel();return}
+  var content=o.versions[o.cur].content;
+  var lines=content.split("\n"),out=[],i=0,replaced=false;
+  var t=ART_EDIT.title.trim().replace(/^#+\s*/,"").toLowerCase();
+  while(i<lines.length){
+    var mH=lines[i].match(/^\s*(#{1,3})\s+(.+?)\s*$/);
+    if(mH&&!replaced){
+      var ht=mH[2].replace(/[*_`]/g,"").toLowerCase();
+      if(ht.indexOf(t)===0||t.indexOf(ht)===0){
+        out.push(ART_EDIT.content.trim());
+        replaced=true;i++;
+        while(i<lines.length&&!/^\s*#{1,3}\s+/.test(lines[i]))i++;
+        continue;
+      }
+    }
+    out.push(lines[i]);i++;
+  }
+  if(!replaced){saveArtVersion(ART_EDIT.key,o.title,ART_EDIT.content);ART_EDIT=null;toast("Section not matched — saved as new version");openArtifactKey(ART_CUR.key);return}
+  saveArtVersion(ART_EDIT.key,o.title,out.join("\n"));
+  ART_EDIT=null;toast("Section applied — new version saved");
+  openArtifactKey(ART_CUR.key);
+}
+function escAttr(s){return String(s).replace(/['"\<>]/g,"").replace(/'/g,"")}
+/* ===================== v19 LOCKER SUBJECTS ===================== */
+function toggleSubjectPicker(id){
+  var row=$("spk"+id);if(!row)return;
+  if(row.style.display!=="none"){row.style.display="none";return}
+  var L=getLocker();var p=null;L.pdfs.forEach(function(x){if(x.id===id)p=x});
+  if(!p)return;
+  var subs={};L.pdfs.forEach(function(x){if((x.subject||"").trim())subs[x.subject.trim()]=1});
+  var cur=(p.subject||"").trim();
+  var h="";
+  Object.keys(subs).sort().forEach(function(s){h+='<button class="lib-chip'+(s===cur?" on":"")+'" onclick="setLockerSubject('+id+',\''+escAttr(s)+'\')">'+escH(s)+'</button>'});
+  h+='<button class="lib-chip new" onclick="newLockerSubject('+id+')">＋ New subject</button>';
+  if(cur)h+='<button class="lib-chip new" onclick="setLockerSubject('+id+',\'\')">✕ Move to Unsorted</button>';
+  row.innerHTML=h;row.style.display="flex";
+}
+function setLockerSubject(id,subj){
+  var L=getLocker();var p=null;L.pdfs.forEach(function(x){if(x.id===id)p=x});
+  if(!p)return;
+  p.subject=subj;setLocker(L);renderLib();
+  toast(subj?"Moved to 📁 "+subj:"Moved to Unsorted");
+}
+function newLockerSubject(id){
+  var row=$("spk"+id);if(!row)return;
+  row.innerHTML='<input id="nsub'+id+'" placeholder="Subject name (e.g. HSSC GK, Reasoning, Science…)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:13px;background:var(--surface);color:var(--text)"><div style="margin-top:8px;display:flex;gap:8px"><button class="btn" style="font-size:12px;padding:9px 14px" onclick="confirmNewSubject('+id+')">Save</button><button class="btn soft" style="font-size:12px;padding:9px 14px" onclick="toggleSubjectPicker('+id+')">Cancel</button></div>';
+  var inp=$("nsub"+id);if(!inp)return;inp.focus();
+  inp.addEventListener("keydown",function(e){if(e.key==="Enter")confirmNewSubject(id)});
+}
+function confirmNewSubject(id){
+  var inp=$("nsub"+id);if(!inp)return;
+  var v=inp.value.replace(/['"<>\\]/g,"").trim().slice(0,40);
+  if(!v){toast("Give the subject a name");return}
+  setLockerSubject(id,v);
+}
+function lockerSubjectTest(subj){
+  var L=getLocker();var chs=[];
+  L.pdfs.forEach(function(p){if((p.subject||"").trim()===subj)(p.chapters||[]).forEach(function(c){chs.push(c.title)})});
+  if(!chs.length){toast("No chapters found in this subject");return}
+  switchView("chat");
+  quick("Create a challenging mixed test paper from my subject \""+subj+"\" covering ALL these chapters — cross-referencing is the key, mix questions ACROSS chapters instead of going chapter-by-chapter:\n"+chs.slice(0,40).map(function(c){return "- "+c}).join("\n")+"\n\nMake 20 questions: 10 one-mark facts, 6 two-mark conceptual, 2 tricky cross-chapter puzzles, 2 assertion-reason. Number them, keep marks on the right, and add a clearly separated ANSWER KEY at the end.");
 }
 function regenerate(){
   if(STREAM.active)return;
@@ -1854,6 +2063,7 @@ function showPdfChip(){$("pdfChip").style.display="flex";$("pdfName").textConten
 function clearPdf(){state.pdfText=null;$("pdfChip").style.display="none";STUDIO_PDF_ID=null;closeStudio()}
 function makePdfNotes(){
   if(!state.pdfText){toast("Attach a PDF first");return}
+  artPending("notes|"+state.pdfText.name,"\ud83d\udcdd Notes \u00b7 "+state.pdfText.name);
   quick("Turn the attached PDF into beautiful structured study notes: numbered sections with clear headings, key terms in bold, small tables where they help, '📌 Remember' callout boxes for must-know facts, and end with '✍️ In one line:' summary.");
 }
 function quizFromPdf(){
@@ -1917,27 +2127,40 @@ function renderLib(){
   const el=$("viewLib");if(!el)return;
   const L=getLocker();
   let html='<div class="ws-wrap">';
-  html+='<div class="ws-card ws-hero"><h3>📚 My Library</h3><p>'+L.pdfs.length+' book'+(L.pdfs.length===1?'':'s')+' · '+(L.saved||[]).length+' saved questions · chapter-wise progress tracked automatically</p>';
+  html+='<div class="ws-card ws-hero"><h3>📚 My Library</h3><p>'+L.pdfs.length+' book'+(L.pdfs.length===1?'':'s')+' · '+(L.saved||[]).length+' saved questions · grouped by subject, chapter-wise progress tracked automatically</p>';
   html+='<div style="margin-top:10px"><button class="lib-open" onclick="switchView(\'chat\');document.getElementById(\'imgInput\').click()">＋ Add a book (PDF)</button></div></div>';
   if(!L.pdfs.length){html+='<div class="ws-card"><div class="empty">Your library is empty.<br><br>Go to 💬 Study → attach your book PDF → tap “🗄️ Save to Locker”.<br>Next time it stays here forever, chapter by chapter.</div></div>'}
-  L.pdfs.slice().reverse().forEach(p=>{
-    const prog=L.progress[p.id]||{};
-    const chs=p.chapters||[];
-    let r=0,w=0;Object.values(prog).forEach(v=>{if(v){r+=v.r||0;w+=v.w||0}});
-    const pct=(r+w)?Math.round(r/(r+w)*100):null;
-    html+='<div class="ws-card lib-card"><div class="lib-name">📄 '+escH(p.name)+'</div>';
-    html+='<div class="lib-sub">'+chs.length+' chapters · '+(r+w)+' questions attempted'+(pct!==null?' · '+pct+'% accuracy':'')+'</div>';
-    if(chs.length){
-      html+='<div style="margin-bottom:10px">';
-      chs.slice(0,30).forEach((c,i)=>{
-        const s=prog[c.title];
-        const cls=s&&s.r+s.w>0?((s.r/(s.r+s.w))>=0.6?'style="border-color:#34b36b"':'style="border-color:#e5a13c"'):'';
-        html+='<button class="ch-btn" '+cls+' onclick="lockerQuiz('+p.id+','+i+',false)">'+escH(c.title.length>26?c.title.slice(0,26)+'…':c.title)+(s&&s.r+s.w>0?' · '+s.r+'/'+(s.r+s.w):'')+'</button>';
-      });
-      html+='</div>';
+  const groups={};
+  L.pdfs.forEach(p=>{const s=(p.subject||"").trim()||"Unsorted";(groups[s]=groups[s]||[]).push(p)});
+  Object.keys(groups).sort(function(a,b){return (a==="Unsorted")-(b==="Unsorted")||a.localeCompare(b)}).forEach(subj=>{
+    const ps=groups[subj];
+    if(subj!=="Unsorted"){
+      let sr=0,sw=0;ps.forEach(p=>{const prog=L.progress[p.id]||{};Object.values(prog).forEach(v=>{if(v){sr+=v.r||0;sw+=v.w||0}})});
+      html+='<div class="lib-subject"><span>📁 '+escH(subj)+' <small style="color:var(--muted);font-weight:600">· '+ps.length+' book'+(ps.length===1?'':'s')+(sr+sw?' · '+Math.round(sr/(sr+sw)*100)+'% accuracy':'')+'</small></span><button class="ch-btn" onclick="lockerSubjectTest(\''+escAttr(subj)+'\')">🎯 Subject test</button></div>';
+    }else{
+      html+='<div class="lib-subject"><span>🗂️ Unsorted <small style="color:var(--muted);font-weight:600">· '+ps.length+' book'+(ps.length===1?'':'s')+' — use 📁 to group</small></span></div>';
     }
-    html+='<button class="lib-open" onclick="useLockerPdf('+p.id+');switchView(\'chat\')">📖 Open in Study Room</button> ';
-    html+='<button class="ch-btn" style="color:#b2342c;margin-left:6px" onclick="delLockerPdf('+p.id+')">🗑 Remove</button></div>';
+    ps.slice().reverse().forEach(p=>{
+      const prog=L.progress[p.id]||{};
+      const chs=p.chapters||[];
+      let r=0,w=0;Object.values(prog).forEach(v=>{if(v){r+=v.r||0;w+=v.w||0}});
+      const pct=(r+w)?Math.round(r/(r+w)*100):null;
+      html+='<div class="ws-card lib-card"><div class="lib-name">📄 '+escH(p.name)+'</div>';
+      html+='<div class="lib-sub">'+chs.length+' chapters · '+(r+w)+' questions attempted'+(pct!==null?' · '+pct+'% accuracy':'')+'</div>';
+      if(chs.length){
+        html+='<div style="margin-bottom:10px">';
+        chs.slice(0,30).forEach((c,i)=>{
+          const s=prog[c.title];
+          const cls=s&&s.r+s.w>0?((s.r/(s.r+s.w))>=0.6?'style="border-color:#34b36b"':'style="border-color:#e5a13c"'):'';
+          html+='<button class="ch-btn" '+cls+' onclick="lockerQuiz('+p.id+','+i+',false)">'+escH(c.title.length>26?c.title.slice(0,26)+'…':c.title)+(s&&s.r+s.w>0?' · '+s.r+'/'+(s.r+s.w):'')+'</button>';
+        });
+        html+='</div>';
+      }
+      html+='<button class="lib-open" onclick="useLockerPdf('+p.id+');switchView(\'chat\')">📖 Open in Study Room</button> ';
+      html+='<button class="ch-btn" style="margin-left:6px" onclick="toggleSubjectPicker('+p.id+')">📁 Subject</button> ';
+      html+='<button class="ch-btn" style="color:#b2342c;margin-left:6px" onclick="delLockerPdf('+p.id+')">🗑 Remove</button>';
+      html+='<div class="lib-chips" id="spk'+p.id+'" style="display:none"></div></div>';
+    });
   });
   html+='</div>';
   el.innerHTML=html;
@@ -2057,6 +2280,7 @@ function endExam(){
 }
 function makeTestPaper(){
   if(!state.pdfText){toast("Attach a PDF first");return}
+  artPending("test|"+state.pdfText.name,"\ud83c\udfaf Test paper \u00b7 "+state.pdfText.name);
   const inst=(localStorage.getItem(STORAGE+"instName")||"").trim();
   quick("Create a 50-mark question paper from the attached PDF for a 1-hour test"+(inst?" for "+inst+" institute":"")+": General Instructions header, Section A: 10 MCQs × 1 mark, Section B: 6 short-answer × 5 marks, Section C: 1 long-answer × 10 marks — marks shown on the right of every question, total 50. Use ONLY the PDF's content. After the paper, add a clearly separated 'ANSWER KEY' section with mark-scheme hints. End with a note: 'Tap ⬇ Save notes to download & print this paper.'");
 }
@@ -2101,6 +2325,7 @@ function predictMyScore(){
 }
 function makeCheatSheet(){
   if(!state.pdfText){toast("Attach a PDF first");return}
+  artPending("cheat|"+state.pdfText.name,"\u26a1 Cheat sheet \u00b7 "+state.pdfText.name);
   quick("Extract a cheat sheet from the attached PDF: every important formula, article, date, definition and keyword in clean compact tables — one table per category — for one-day-before-exam revision. Ruthless and short.");
 }
 function makePodcast(){
