@@ -2441,12 +2441,6 @@ function renderDash(){
     html+='<button class="lang-tile" style="'+(n?"":"opacity:.45")+'" onclick="openContCat(\''+c.id+'\')"><span class="lt-flag">'+fl+'</span><b>'+nm+'</b><small>'+(n?n+" item"+(n===1?"":"s"):"empty")+'</small></button>';
   });
   html+='</div>';
-  html+='<div class="ws-h">📊 Your stats</div><div class="ws-grid">';
-  html+='<div class="ws-card"><div class="stat-num">'+L.pdfs.length+'</div><div class="stat-lbl">📚 Library books</div></div>';
-  html+='<div class="ws-card"><div class="stat-num">'+log.length+'</div><div class="stat-lbl">❓ Quiz answers</div></div>';
-  html+='<div class="ws-card"><div class="stat-num">'+(acc===null?"—":acc+"%")+'</div><div class="stat-lbl">🎯 Recent accuracy</div></div>';
-  html+='<div class="ws-card"><div class="stat-num">'+ms.length+'</div><div class="stat-lbl">📕 Mistakes vault</div></div>';
-  html+='</div>';
   html+='</div>';
   el.innerHTML=html;
 }
