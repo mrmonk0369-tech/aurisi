@@ -1558,7 +1558,7 @@ function dailyBrief(){
   quick("Today's daily study brief (today is "+new Date().toDateString()+"): exactly 5 one-line current affairs bullets — 3 national India, 2 Haryana state — then 1 active-recall flashcard as [[CARDS|question|answer]]. Keep it tight.");
 }
 function speakThenListen(t){
-  var clean=String(t).replace(/\[\[[A-Z]+\|[^\]]*\]\]/g,"").replace(/[*_#`>|]/g," ").replace(/\s+/g," ").slice(0,600);
+  var clean=cleanForSpeech(t);
   var afterVoice=()=>{setTimeout(()=>{if(!STREAM.active&&isHandsFree()&&!state.isListening)micInput()},700)};
   if(aiVoicesOn()){
     stopAiAudio();
@@ -2050,7 +2050,17 @@ function pcmToWavUrl(b64,rate){
   wr(36,"data");h.setUint32(40,n,true);
   return URL.createObjectURL(new Blob([hdr,buf],{type:"audio/wav"}));
 }
+function cleanForSpeech(t){
+  return String(t)
+    .replace(/\[\[[A-Z]+\|[^\]]*\]\]/g," ")
+    .replace(/\(([^)]{1,30})\)/g,function(m,inner){return /-/.test(inner)?" ":m})
+    .replace(/[*_#`>|]/g," ")
+    .replace(/\s+/g," ")
+    .trim()
+    .slice(0,600);
+}
 async function aiSpeak(text,voice,onend,quiet){
+  text=cleanForSpeech(text);
   var key=(localStorage.getItem(STORAGE+"geminiKey")||"").trim();
   if(!key){if(onend)onend(false);return false}
   try{
@@ -2094,7 +2104,7 @@ function browserSpeakFallback(clean,onend){
   }catch(e){if(onend)onend()}
 }
 function speakText(text){
-  var clean=String(text).replace(/\s+/g," ").slice(0,600);
+  var clean=cleanForSpeech(text);
   if(aiVoicesOn()){stopAiAudio();aiSpeak(clean,getAiVoice());return}
   if(!window.speechSynthesis){toast("Speech not supported");return}
   try{
