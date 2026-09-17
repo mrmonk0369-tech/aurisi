@@ -374,6 +374,13 @@ button{font:inherit;cursor:pointer}
 .lang-tile small{font-size:10.5px;color:var(--muted)}
 [data-ai-theme="dark"] .lang-tile:hover{box-shadow:0 6px 14px rgba(0,0,0,.4)}
 [data-ai-theme="dark"] .teacher-card:hover{border-color:rgba(224,138,94,.4)}
+/* ===================== v19.9 CONTENT COLLECTIONS ===================== */
+.studio-lbl{font-size:9.5px;font-weight:800;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;margin:10px 2px 2px}
+.cont-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-46%) scale(.97);width:min(92vw,480px);max-height:70vh;z-index:96;background:var(--surface);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(20,10,5,.25);opacity:0;pointer-events:none;transition:.22s;overflow:hidden}
+.cont-modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.cont-list{overflow-y:auto;padding:10px}
+.cont-item{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.cont-item .rc-item{flex:1}
 /* ===================== v19.2 FOCUS MODE ===================== */
 body.chat-focus .wsbot{display:none!important}
 @media(max-width:879px){
@@ -547,6 +554,14 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
   </div>
   <div class="art-vers" id="artVers" style="display:none"></div>
   <div class="art-body md" id="artBody"></div>
+</div>
+<div class="modal-back" id="contBack" onclick="closeContCat()"></div>
+<div class="cont-modal" id="contModal">
+  <div class="art-head">
+    <div class="art-title"><div class="s-ico" id="contCatIcon">📁</div><div><b id="contCatTitle">Collection</b><small id="contCatSub"></small></div></div>
+    <div class="msg-actions" style="margin-top:0"><button class="act-btn" title="Close" aria-label="Close" onclick="closeContCat()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  </div>
+  <div class="cont-list" id="contList"></div>
 </div>
 <div class="fy-chip" id="fyChip"><b>🧑‍🏫 Feynman Mode</b><button class="fy-x" onclick="stopFeynman()" aria-label="Exit Feynman Mode" title="Exit Feynman Mode">✕</button></div>
 <div class="fy-chip" id="sansChip" style="background:linear-gradient(135deg,#7a4a12,#b07a1e)"><b>🪔 Sanskrit Mode</b><button class="fy-x" onclick="stopSanskrit()" aria-label="Exit Sanskrit Mode" title="Exit Sanskrit Mode">✕</button></div>
@@ -1876,7 +1891,7 @@ async function generate(){
     var _pa=PENDING_ART,_ps=PENDING_SECTION;PENDING_ART=null;PENDING_SECTION=null;
     var _ok=full.trim().indexOf("\u26a0")!==0;
     var mobj={role:"model",parts:[{text:txt}],_model:lastModel||undefined};
-    if(_pa&&_ok){mobj._artKey=_pa.key;mobj._artTitle=_pa.title;saveArtVersion(_pa.key,_pa.title,full);openArtifactKey(_pa.key)}
+    if(_pa&&_ok){mobj._artKey=_pa.key;mobj._artTitle=_pa.title;saveArtVersion(_pa.key,_pa.title,full);if(_pa.cat)saveContItem(_pa.cat,_pa.type,_pa.title,_pa.key);openArtifactKey(_pa.key)}
     else if(_ps&&_ok){ART_EDIT={key:_ps.key,title:_ps.title,content:full};openArtifactKey(_ps.key)}
     state.chatHistory.push(mobj);
     persist();flushChat();
@@ -2067,6 +2082,10 @@ function requestContent(){
   };
   var T={notes:"📝 Notes · ",cheat:"⚡ Cheat sheet · ",test:"🎯 Test paper · ",cards:"📇 Flashcards · ",podcast:"🎧 Podcast · "};
   artPending("req_"+(P[REQ_TYPE]?REQ_TYPE:"notes")+"|"+topic,(T[REQ_TYPE]||T.notes)+topic);
+  PENDING_ART.cat=(REQ_CAT&&REQ_CAT!=="auto")?REQ_CAT:detectCat(topic);
+  PENDING_ART.type=(P[REQ_TYPE]?REQ_TYPE:"notes");
+  var _cl=catLabel(PENDING_ART.cat);
+  toast("Filed to "+_cl.split(" ").slice(1).join(" ")+" collection");
   quick(P[REQ_TYPE]||P.notes);
   if(inp)inp.value="";
 }
@@ -2202,6 +2221,79 @@ function stopLangMode(){
   persist();renderChat();
   toast("Language Mode off");
 }
+/* ===================== v19.9 CONTENT COLLECTIONS ===================== */
+const CONT_CATS=[
+ {id:"spanish",label:"\u{1F1EA}\u{1F1F8} Spanish"},
+ {id:"french",label:"\u{1F1EB}\u{1F1F7} French"},
+ {id:"german",label:"\u{1F1E9}\u{1F1EA} German"},
+ {id:"korean",label:"\u{1F1F0}\u{1F1F7} Korean"},
+ {id:"japanese",label:"\u{1F1EF}\u{1F1F5} Japanese"},
+ {id:"mandarin",label:"\u{1F1E8}\u{1F1F3} Mandarin"},
+ {id:"english",label:"\u{1F310} English"},
+ {id:"sanskrit",label:"\u{1FA94} Sanskrit"},
+ {id:"hssc",label:"\u{1F3AF} HSSC CET"},
+ {id:"class9",label:"\u{1F4DA} Class 9"},
+ {id:"class10",label:"\u{1F4DA} Class 10"},
+ {id:"class11",label:"\u{1F4DA} Class 11-12"},
+ {id:"other",label:"\u{2795} Other"}
+];
+function getContLib(){try{return JSON.parse(localStorage.getItem(STORAGE+"contentLib")||"[]")}catch(e){return[]}}
+function setContLib(a){try{localStorage.setItem(STORAGE+"contentLib",JSON.stringify(a))}catch(e){}}
+function contCount(cat){return getContLib().filter(x=>x.cat===cat).length}
+function saveContItem(cat,type,title,key){
+  var lib=getContLib();
+  var it=null;lib.forEach(function(x){if(x.key===key)it=x});
+  if(it){it.title=title;it.cat=cat;it.type=type||it.type;it.ts=Date.now()}
+  else lib.unshift({id:"ct"+Date.now()+Math.floor(Math.random()*999),title:title,cat:cat,type:type||"notes",key:key,ts:Date.now()});
+  if(lib.length>200)lib.length=200;
+  setContLib(lib);
+  try{if(typeof renderDash==="function"&&$("viewDash"))renderDash()}catch(e){}
+}
+function detectCat(t){
+  t=(t||"").toLowerCase();
+  if(/spanish|espa\u00f1ol/.test(t))return "spanish";
+  if(/french|fran\u00e7ais/.test(t))return "french";
+  if(/german|deutsch/.test(t))return "german";
+  if(/korean|hangul/.test(t))return "korean";
+  if(/japanese|hiragana|katakana|kanji/.test(t))return "japanese";
+  if(/mandarin|chinese|pinyin/.test(t))return "mandarin";
+  if(/sanskrit/.test(t))return "sanskrit";
+  if(/hssc|cet|haryana/.test(t))return "hssc";
+  if(/class\s*9|9th/.test(t))return "class9";
+  if(/class\s*10|10th/.test(t))return "class10";
+  if(/class\s*1[12]|11th|12th/.test(t))return "class11";
+  if(/english|grammar/.test(t))return "english";
+  return "other";
+}
+function catLabel(c){var x=CONT_CATS.find(function(k){return k.id===c});return x?x.label:"\u{1F4C1} Other"}
+function openContCat(cat){
+  var lib=getContLib().filter(function(x){return x.cat===cat});
+  var parts=catLabel(cat).split(" ");
+  var flag=parts[0],name=parts.slice(1).join(" ");
+  $("contCatIcon").textContent=flag;
+  $("contCatTitle").textContent=name+" Collection";
+  $("contCatSub").textContent=lib.length?(lib.length+" saved item"+(lib.length===1?"":"s")+" \u00b7 tap to open \u00b7 \u{1F4C2} version history kept"):"Nothing filed here yet";
+  var TYP={notes:"\u{1F4DD}",cheat:"\u26A1",test:"\u{1F4CB}",cards:"\u{1F4C7}",podcast:"\u{1F3A7}"};
+  var h="";
+  lib.forEach(function(it){
+    h+='<div class="cont-item"><button class="rc-item" onclick="closeContCat();openArtifactKey(\''+escAttr(it.key)+'\')"><span>'+(TYP[it.type]||"\u{1F4DD}")+'</span><span class="rc-t">'+escH(it.title)+'</span></button><button class="ch-btn" style="color:#b2342c" onclick="delContItem(\''+it.id+'\',\''+escAttr(cat)+'\')">\u{1F5D1}</button></div>';
+  });
+  if(!lib.length)h='<div class="empty" style="padding:18px">No content here yet.<br><br>Create some from Content Studio \u2014 it gets filed into this collection automatically.</div>';
+  $("contList").innerHTML=h;
+  $("contModal").classList.add("open");
+  $("contBack").classList.add("open");
+}
+function closeContCat(){$("contModal").classList.remove("open");$("contBack").classList.remove("open")}
+function delContItem(id,cat){
+  var lib=getContLib().filter(function(x){return x.id!==id});
+  setContLib(lib);openContCat(cat);renderDash();
+}
+var REQ_CAT="auto";
+function setContCat(c,btn){
+  REQ_CAT=c;
+  var chips=$("catChips");if(!chips)return;
+  Array.prototype.forEach.call(chips.children,function(ch){ch.classList.toggle("on",ch===btn)});
+}
 function regenerate(){
   if(STREAM.active)return;
   for(let i=state.chatHistory.length-1;i>=0;i--){
@@ -2325,16 +2417,30 @@ function renderDash(){
   html+='<button class="lang-tile" onclick="startLangMode(\'mandarin\')"><span class="lt-flag">🇨🇳</span><b>Mandarin</b><small>普通话</small></button>';
   html+='</div></div>';
   html+='<div class="ws-h">✨ Content Studio</div>';
-  html+='<div class="ws-card"><h3>🎯 Request Content</h3><p>Can'+String.fromCharCode(8217)+'t find material on something? Tell AURISI what you need — it gets built fresh, saved with version history.</p>';
-  html+='<input id="reqTopic" placeholder="e.g. Class 9 Maths — Number Systems · HSSC CET GK · English tenses" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:13px;background:var(--surface);color:var(--text);margin:8px 0 4px" onkeydown="if(event.key===\'Enter\')requestContent()">';
-  html+='<div class="lib-chips" id="reqChips" style="margin:6px 0 2px">';
+  html+='<div class="ws-card"><h3>🎯 Create Content</h3><p>Every piece gets filed into its own collection — Spanish stays with Spanish, HSSC stays with HSSC. Version history included, always.</p>';
+  html+='<div class="studio-lbl">Collection</div>';
+  html+='<div class="lib-chips" id="catChips" style="margin:4px 0 0">';
+  html+='<button class="lib-chip on" onclick="setContCat(\'auto\',this)">✨ Auto-detect</button>';
+  CONT_CATS.forEach(function(c){html+='<button class="lib-chip" onclick="setContCat(\''+c.id+'\',this)">'+c.label+'</button>'});
+  html+='</div>';
+  html+='<div class="studio-lbl">Topic</div>';
+  html+='<input id="reqTopic" placeholder="e.g. Spanish verbs · HSSC GK · Class 10 Electricity · French tenses" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:13px;background:var(--surface);color:var(--text)" onkeydown="if(event.key===\'Enter\')requestContent()">';
+  html+='<div class="studio-lbl">Format</div>';
+  html+='<div class="lib-chips" id="reqChips" style="margin:4px 0 0">';
   html+='<button class="lib-chip on" onclick="setReqType(\'notes\',this)">📝 Notes</button>';
   html+='<button class="lib-chip" onclick="setReqType(\'cheat\',this)">⚡ Cheat sheet</button>';
   html+='<button class="lib-chip" onclick="setReqType(\'test\',this)">📋 Test paper</button>';
   html+='<button class="lib-chip" onclick="setReqType(\'cards\',this)">📇 Flashcards</button>';
   html+='<button class="lib-chip" onclick="setReqType(\'podcast\',this)">🎧 Podcast</button>';
   html+='</div>';
-  html+='<div style="margin-top:8px"><button class="lib-open" onclick="requestContent()">✨ Create my content</button></div></div>';
+  html+='<div style="margin-top:12px"><button class="lib-open" onclick="requestContent()">✨ Create & file it</button></div></div>';
+  html+='<div class="studio-lbl" style="margin:16px 2px 0">📁 Your Collections</div>';
+  html+='<div class="lang-grid" style="margin-top:8px">';
+  CONT_CATS.forEach(function(c){
+    var n=contCount(c.id);var pl=c.label.split(" ");var fl=pl[0],nm=pl.slice(1).join(" ");
+    html+='<button class="lang-tile" style="'+(n?"":"opacity:.45")+'" onclick="openContCat(\''+c.id+'\')"><span class="lt-flag">'+fl+'</span><b>'+nm+'</b><small>'+(n?n+" item"+(n===1?"":"s"):"empty")+'</small></button>';
+  });
+  html+='</div>';
   html+='<div class="ws-h">📊 Your stats</div><div class="ws-grid">';
   html+='<div class="ws-card"><div class="stat-num">'+L.pdfs.length+'</div><div class="stat-lbl">📚 Library books</div></div>';
   html+='<div class="ws-card"><div class="stat-num">'+log.length+'</div><div class="stat-lbl">❓ Quiz answers</div></div>';
