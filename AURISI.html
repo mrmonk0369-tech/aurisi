@@ -19,24 +19,14 @@
 <script defer src="https://js.puter.com/v2/"></script>
 <style>
 :root{
-  --bg:#fbfaf8; --surface:#ffffff; --surface2:#f4f1ec; --text:#1f1c1a; --muted:#78716c;
-  --line:#e7e2dc; --accent:#d97757; --accent2:#e8916e; --danger:#c04a52;
-  --ai-bg:#fbfaf8; --ai-surface:#ffffff; --ai-text:#1f1c1a; --ai-muted:#78716c;
-  --ai-border:#e7e2dc; --ai-card-bg:#f4f1ec; --ai-accent:#d97757; --ai-accent2:#e8916e;
-  --ai-user-bg:#d97757; --ai-user-text:#ffffff;
+  --bg:#faf8f5; --surface:#ffffff; --surface2:#f4f1ea; --text:#2e2b29; --muted:#7d766e;
+  --line:#e5e0d7; --accent:#cc6633; --accent2:#d97757; --danger:#c04a52;
+  --ai-bg:#faf8f5; --ai-surface:#ffffff; --ai-text:#2e2b29; --ai-muted:#7d766e;
+  --ai-border:#e5e0d7; --ai-card-bg:#f4f1ea; --ai-accent:#cc6633; --ai-accent2:#d97757;
+  --ai-user-bg:#cc6633; --ai-user-text:#ffffff;
   --ai-code-bg:#211f26; --ai-code-head:#191820; --ai-code-text:#e6e3e8; --ai-code-border:#33313b;
   --tk-comment:#7d7489; --tk-keyword:#ff7b9c; --tk-string:#8fd6a8;
   --tk-number:#f2b880; --tk-func:#d2a8ff; --tk-attr:#7dd3fc; --tk-built:#9ad4ff;
-}
-:root[data-ai-theme="peach"]{
-  --bg:#fdf1ea; --surface:#fff8f3; --surface2:#fdeee2; --text:#4a2c24; --muted:#9a7265;
-  --line:#f0dccf; --accent:#e0876a; --accent2:#ecb490; --danger:#c04a52;
-  --ai-bg:#fdf1ea; --ai-surface:#fff8f3; --ai-text:#4a2c24; --ai-muted:#9a7265;
-  --ai-border:#f0dccf; --ai-card-bg:#fdeee2; --ai-accent:#e0876a; --ai-accent2:#ecb490;
-  --ai-user-bg:#e0876a; --ai-user-text:#ffffff;
-  --ai-code-bg:#fdf3ec; --ai-code-head:#f9e6d9; --ai-code-text:#4a2c24; --ai-code-border:#f0d9c8;
-  --tk-comment:#b08a78; --tk-keyword:#c2492f; --tk-string:#6f7d3c; --tk-number:#b06400;
-  --tk-func:#9b4fd9; --tk-attr:#0e7a5f; --tk-built:#1565a8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -206,7 +196,6 @@ button{font:inherit;cursor:pointer}
 #sendBtn{width:40px;height:40px;flex:0 0 40px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(232,98,45,.4)}
 #sendBtn:disabled{opacity:.4;cursor:default}
 #sendBtn.stop{background:var(--danger)}
-.foot-note{text-align:center;font-size:10.5px;color:var(--muted);margin-top:12px;opacity:.75}
 .pdf-chip{max-width:780px;margin:0 auto 10px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px dashed var(--accent2);border-radius:14px;padding:8px 12px;font-size:12.5px}
 .pdf-chip .pdf-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;color:var(--accent)}
 .pdf-chip .btn.small{padding:7px 12px;font-size:11.5px;border-radius:10px}
@@ -301,12 +290,12 @@ button{font:inherit;cursor:pointer}
 .s-foot{padding:12px 14px calc(12px + env(safe-area-inset-bottom))}
 /* ===================== v18.5 EMBER DARK ===================== */
 :root[data-ai-theme="dark"]{
-  --bg:#1c1815; --surface:#262019; --surface2:#332b21; --text:#ece5db; --muted:#a3958a;
-  --line:#3b3328; --accent:#e08a5e; --accent2:#c96f3f; --danger:#e0685c;
-  --ai-bg:#1c1815; --ai-surface:#262019; --ai-text:#ece5db; --ai-muted:#a3958a;
-  --ai-border:#3b3328; --ai-card-bg:#332b21; --ai-accent:#e08a5e; --ai-accent2:#c96f3f;
-  --ai-user-bg:#a35c33; --ai-user-text:#ffffff;
-  --ai-code-bg:#151210; --ai-code-head:#0e0c0a; --ai-code-text:#e6e0d6; --ai-code-border:#2e2820;
+  --bg:#18181b; --surface:#27272a; --surface2:#2f2f34; --text:#f4f4f5; --muted:#a1a1aa;
+  --line:#3a3a41; --accent:#d97757; --accent2:#e8916e; --danger:#e0685c;
+  --ai-bg:#18181b; --ai-surface:#27272a; --ai-text:#f4f4f5; --ai-muted:#a1a1aa;
+  --ai-border:#3a3a41; --ai-card-bg:#2f2f34; --ai-accent:#d97757; --ai-accent2:#e8916e;
+  --ai-user-bg:#cc6633; --ai-user-text:#ffffff;
+  --ai-code-bg:#141416; --ai-code-head:#0f0f11; --ai-code-text:#e9e9ec; --ai-code-border:#2a2a2e;
 }
 [data-ai-theme="dark"] body,[data-ai-theme="dark"] #app{background:var(--bg);color:var(--text)}
 [data-ai-theme="dark"] .topbar{background:color-mix(in srgb,var(--surface) 88%,transparent);border-bottom-color:rgba(255,255,255,.07)}
@@ -459,14 +448,14 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
 .bar-row{margin-bottom:11px}
 .bar-top{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px}
 .bar{height:9px;border-radius:6px;background:rgba(0,0,0,.08);overflow:hidden}
-.bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#d97757,#a34a24);transition:width .5s}
+.bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#cc6633,#a34a24);transition:width .5s}
 .bar i.ok{background:linear-gradient(90deg,#34b36b,#1d8a4e)}
 .bar i.mid{background:linear-gradient(90deg,#e5a13c,#c77f1a)}
 .lib-card .lib-name{font-weight:800;font-size:14px;margin-bottom:2px;word-break:break-word}
 .lib-card .lib-sub{font-size:11px;color:var(--muted);margin-bottom:8px}
 .ch-btn{border:1px solid rgba(0,0,0,.1);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:11px;font-weight:700;margin:3px 4px 3px 0;cursor:pointer;font-family:inherit;color:var(--text)}
 .ch-btn:hover{border-color:rgba(163,74,36,.5)}
-.lib-open{background:linear-gradient(135deg,#a34a24,#d97757);color:#fff;border:none;border-radius:12px;padding:9px 16px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit}
+.lib-open{background:linear-gradient(135deg,#a34a24,#cc6633);color:#fff;border:none;border-radius:12px;padding:9px 16px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit}
 .empty{padding:34px 16px;text-align:center;color:var(--muted);font-size:13px}
 /* PDF Studio */
 #studioBack{position:fixed;inset:0;background:rgba(30,20,10,.4);z-index:78;opacity:0;pointer-events:none;transition:.2s}
@@ -610,7 +599,6 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
       </button>
     </div>
-  <div class="foot-note">AURISI can make mistakes.</div>
   </div>
 </div>
 
@@ -663,7 +651,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
   <button class="drawer-btn" onclick="switchView('chat');openMistakes()">📕 <span data-i18n="mistakesBtn">My Mistakes</span></button>
   <button class="drawer-btn" style="margin-bottom:12px" onclick="switchView('lib')">🗄️ <span data-i18n="lockerBtn">My Locker</span></button>
   <div class="chat-list" id="chatList"></div>
-  <div class="drawer-foot">AURISI · solo edition</div>
+  <div class="drawer-foot">AURISI</div>
 </div>
 
 <div class="modal-back" id="modalBack">
@@ -895,12 +883,12 @@ function modelOrder(cached,known){
 const STREAM={active:false,abort:null};
 
 /* ===================== THEME ===================== */
-const THEMES={tangerine:{label:"Tangerine Light"},dark:{label:"Ember Dark"}};
+const THEMES={tangerine:{label:"Light"},dark:{label:"Dark"}};
 function applyTheme(k){
   if(!THEMES[k])k="tangerine";
   document.documentElement.setAttribute("data-ai-theme",k);
   var tcm=document.querySelector('meta[name="theme-color"]');
-  if(tcm)tcm.setAttribute("content",k==="dark"?"#1c1815":(k==="peach"?"#fdf1ea":"#fbfaf8"));
+  if(tcm)tcm.setAttribute("content",k==="dark"?"#18181b":"#faf8f5");
   try{localStorage.setItem(STORAGE+"theme",k)}catch(e){}
 }
 function toggleTheme(){
@@ -1616,6 +1604,16 @@ function lockerQuiz(id,chIdx,all){
   closeLocker();
   quick("Generate a timed mock test from the attached PDF: one question at a time using [[QUIZ|...]] tokens, strictly from this content."+(getExamMode()==="none"?"":" Follow "+getExamMode().toUpperCase()+" pattern with negative marking."));
 }
+function lockerLoadChapter(id,i){
+  const p=getLocker().pdfs.find(x=>x.id===id);if(!p)return;
+  const chs=p.chapters||[];const ch=chs[i];if(!ch)return;
+  const end=(chs[i+1]&&chs[i+1].start>p.text.length)?p.text.length:(chs[i+1]?chs[i+1].start:p.text.length);
+  const slice=p.text.slice(ch.start,Math.max(ch.start+400,end)).trim();
+  if(!slice){toast("No text found in this chapter");return}
+  state.pdfText={name:p.name.replace(/\.pdf$/i,"")+" — "+ch.title,text:slice};
+  closeLocker();showPdfChip();STUDIO_PDF_ID=id;openStudio();
+  toast("⚡ "+ch.title.slice(0,34)+" loaded — notes, quiz & cheat sheet are live");
+}
 function useLockerPdf(id){
   const p=getLocker().pdfs.find(x=>x.id===id);if(!p)return;
   state.pdfText={name:p.name,text:p.text};
@@ -2153,6 +2151,7 @@ function renderLib(){
           const s=prog[c.title];
           const cls=s&&s.r+s.w>0?((s.r/(s.r+s.w))>=0.6?'style="border-color:#34b36b"':'style="border-color:#e5a13c"'):'';
           html+='<button class="ch-btn" '+cls+' onclick="lockerQuiz('+p.id+','+i+',false)">'+escH(c.title.length>26?c.title.slice(0,26)+'…':c.title)+(s&&s.r+s.w>0?' · '+s.r+'/'+(s.r+s.w):'')+'</button>';
+        html+='<button class="ch-btn" title="Quick-load this chapter into the Study Room" style="padding:4px 9px" onclick="lockerLoadChapter('+p.id+','+i+')">⚡</button>';
         });
         html+='</div>';
       }
@@ -2296,7 +2295,7 @@ function applyWhiteLabel(){
     const im=document.querySelector(".brand img");
     if(im)im.src=logo||AURISI_LOGO_DATA_URL;
     const df=document.querySelector(".drawer-foot");
-    if(df)df.textContent=n?n+" · powered by AURISI":"AURISI · solo edition";
+    if(df)df.textContent=n?n+" · powered by AURISI":"AURISI";
     const rb=$("railBrand");if(rb)rb.textContent=n||"AURISI";
     const rl=document.querySelector(".ws-rail-head img");if(rl)rl.src=logo||AURISI_LOGO_DATA_URL;
   }catch(e){}
@@ -2341,7 +2340,7 @@ function makeImageNotes(){
 function downloadNotes(txt){
   const inst=(localStorage.getItem(STORAGE+"instName")||"").trim();
   const body=(inst?"<h2 style='text-align:center;margin-bottom:4px'>"+escH(inst)+"</h2>":"")+safeMarkdown(txt||"");
-  const css="body{font-family:Georgia,'Times New Roman',serif;max-width:760px;margin:40px auto;padding:0 22px;line-height:1.75;color:#2b2622}h1,h2,h3{color:#a34a24;line-height:1.3}h2{border-bottom:1px solid #eadfd6;padding-bottom:5px}blockquote{background:#fdf1e8;border-left:4px solid #d97757;padding:10px 16px;border-radius:0 10px 10px 0;margin:14px 0}table{border-collapse:collapse;margin:14px 0}th,td{border:1px solid #e0d5cc;padding:7px 12px;text-align:left}code{background:#f4ede6;padding:2px 6px;border-radius:4px}pre{background:#2a2724;color:#eae5df;padding:14px;border-radius:10px;overflow-x:auto}pre code{background:none;color:inherit}a{color:#a34a24}";
+  const css="body{font-family:Georgia,'Times New Roman',serif;max-width:760px;margin:40px auto;padding:0 22px;line-height:1.75;color:#2b2622}h1,h2,h3{color:#a34a24;line-height:1.3}h2{border-bottom:1px solid #eadfd6;padding-bottom:5px}blockquote{background:#fdf1e8;border-left:4px solid #cc6633;padding:10px 16px;border-radius:0 10px 10px 0;margin:14px 0}table{border-collapse:collapse;margin:14px 0}th,td{border:1px solid #e0d5cc;padding:7px 12px;text-align:left}code{background:#f4ede6;padding:2px 6px;border-radius:4px}pre{background:#2a2724;color:#eae5df;padding:14px;border-radius:10px;overflow-x:auto}pre code{background:none;color:inherit}a{color:#a34a24}";
   const html="<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>AURISI Notes</title><style>"+css+"</style></head><body>"+body+"<p style='margin-top:44px;font-size:11px;color:#b3a89d'>Made with AURISI — open in browser, print to PDF if needed</p></body></html>";
   const blob=new Blob([html],{type:"text/html"});
   const a=document.createElement("a");
@@ -2850,7 +2849,7 @@ function initApp16(){
     var lg=$("instLogo");
     if(lg){var lgn=$("instLogoName");lg.addEventListener("change",function(){if(lgn)lgn.textContent=(lg.files&&lg.files[0])?lg.files[0].name:"No file chosen"})}
     try{
-      var man={name:"AURISI \u2014 AI Study Room",short_name:"AURISI",start_url:".",display:"standalone",background_color:"#fbfaf8",theme_color:"#d97757",icons:[{src:AURISI_LOGO_DATA_URL,sizes:"256x256",type:"image/png",purpose:"any"}]};
+      var man={name:"AURISI \u2014 AI Study Room",short_name:"AURISI",start_url:".",display:"standalone",background_color:"#faf8f5",theme_color:"#cc6633",icons:[{src:AURISI_LOGO_DATA_URL,sizes:"256x256",type:"image/png",purpose:"any"}]};
       var ml=document.createElement("link");ml.rel="manifest";
       ml.href="data:application/manifest+json;charset=utf-8,"+encodeURIComponent(JSON.stringify(man));
       document.head.appendChild(ml);
