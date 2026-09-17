@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#fbfaf8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="AURISI">
 <title>AURISI — AI Assistant</title>
 <script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
@@ -292,13 +296,39 @@ button{font:inherit;cursor:pointer}
 @media(max-width:879px){#app{padding-bottom:56px}.drawer{padding-bottom:70px}}
 @media(min-width:880px){
   .wsbot{display:none}
-  .wsrail{display:flex;flex-direction:column;gap:6px;position:fixed;left:0;top:0;bottom:0;width:78px;z-index:60;padding:76px 8px 14px;align-items:center;background:var(--surface);border-right:1px solid rgba(0,0,0,.07);box-shadow:2px 0 14px rgba(60,35,10,.04)}
-  #app{margin-left:78px;max-width:calc(100vw - 78px)}
+  .wsrail{display:flex;flex-direction:column;gap:5px;position:fixed;left:0;top:0;bottom:0;width:232px;z-index:60;padding:16px 14px;align-items:stretch;background:var(--surface);border-right:1px solid rgba(0,0,0,.07);box-shadow:2px 0 14px rgba(60,35,10,.04)}
+  .ws-rail-head{display:flex;align-items:center;gap:10px;padding:4px 6px 14px}
+  .ws-rail-head img{width:36px;height:36px;border-radius:10px;flex:none}
+  .ws-rail-head h2{margin:0;font-size:17px;letter-spacing:.4px;color:var(--text)}
+  .ws-rail-head small{display:block;font-size:9px;color:var(--muted);font-weight:800;letter-spacing:1.4px;text-transform:uppercase;margin-top:2px}
+  .ws-tab{flex-direction:row;justify-content:flex-start;width:100%;text-align:left;padding:11px 13px;border-radius:13px;gap:11px}
+  .ws-tab span{font-size:13.5px}
+  .ws-tab b{font-size:18px}
+  .ws-quote{margin-top:auto;background:linear-gradient(135deg,rgba(217,119,87,.16),rgba(163,74,36,.05));border:1px solid rgba(163,74,36,.16);border-radius:14px;padding:12px 13px;font-size:11.5px;line-height:1.55;color:var(--muted);font-weight:600}
+  .ws-quote b{display:block;font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+  #app{margin-left:232px;max-width:calc(100vw - 232px)}
   body.studio-on .wsrail{left:290px}
-  body.studio-on #app{margin-left:368px;max-width:calc(100vw - 368px)}
+  body.studio-on #app{margin-left:522px;max-width:calc(100vw - 522px)}
   body.studio-on #studioBack{display:none}
-  .drawer{left:78px}
+  .drawer{left:232px}
+  .topsearch{display:block}
 }
+/* ===================== v16 APP FEEL ===================== */
+html{-webkit-tap-highlight-color:transparent}
+body{overscroll-behavior-y:none;touch-action:manipulation}
+button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.topsearch{display:none;position:relative;margin-left:14px;flex:1;max-width:330px}
+#searchIn{width:100%;padding:8px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font:inherit;font-size:13px;font-weight:600}
+#searchIn:focus{outline:2px solid rgba(217,119,87,.35);outline-offset:-1px;border-color:var(--accent2)}
+#searchIn::-webkit-search-cancel-button{-webkit-appearance:none}
+.ts-drop{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 34px rgba(60,35,10,.16);overflow:hidden;display:none;z-index:90}
+.ts-drop.show{display:block}
+.ts-item{display:flex;gap:9px;align-items:center;width:100%;padding:10px 13px;background:none;border:none;text-align:left;cursor:pointer;font-family:inherit;font-size:13px;color:var(--text);font-weight:600}
+.ts-item:hover{background:var(--surface2)}
+.ts-item span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ts-item small{color:var(--muted);white-space:nowrap;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;font-weight:800}
+.ts-item.none{cursor:default;color:var(--muted)}
+@media(max-width:640px){input[type=text],input[type=search],input[type=password],textarea{font-size:16px!important}}
 .ws-view{display:none;flex:1;overflow-y:auto;padding:18px 16px 100px;-webkit-overflow-scrolling:touch}
 .ws-view.on{display:block}
 .ws-wrap{max-width:880px;margin:0 auto}
@@ -381,6 +411,10 @@ button{font:inherit;cursor:pointer}
       <img src="" alt="AURISI">
       <div><h1 id="brandTitle">AURISI</h1><small id="statusLine" data-i18n="appTagline">AI Assistant</small></div>
     </div>
+    <div class="topsearch" id="topSearch">
+      <input id="searchIn" type="search" placeholder="Search chats, books, actions..." autocomplete="off" spellcheck="false">
+      <div class="ts-drop" id="tsDrop"></div>
+    </div>
     <select id="modelSel" class="model-sel" onchange="setPrefModel(this.value)" title="AI model">
       <option value="auto">Auto</option>
       <option value="gemini-3.8-flash">3.8 Flash</option>
@@ -461,10 +495,12 @@ button{font:inherit;cursor:pointer}
 </div>
 
 <nav class="wsrail" id="wsRail">
-  <button class="ws-tab on" data-v="dash" onclick="switchView('dash')" title="Dashboard"><b>🏠</b><span>Home</span></button>
+  <div class="ws-rail-head"><img src="" alt="AURISI"><div><h2 id="railBrand">AURISI</h2><small>Study Room</small></div></div>
+  <button class="ws-tab on" data-v="dash" onclick="switchView('dash')" title="Dashboard"><b>🏠</b><span>Dashboard</span></button>
   <button class="ws-tab" data-v="lib" onclick="switchView('lib')" title="My Library"><b>📚</b><span>Library</span></button>
-  <button class="ws-tab" data-v="chat" onclick="switchView('chat')" title="AI Study Room"><b>💬</b><span>Study</span></button>
-  <button class="ws-tab" data-v="stats" onclick="switchView('stats')" title="Analytics"><b>📊</b><span>Stats</span></button>
+  <button class="ws-tab" data-v="chat" onclick="switchView('chat')" title="AI Study Room"><b>💬</b><span>AI Study Room</span></button>
+  <button class="ws-tab" data-v="stats" onclick="switchView('stats')" title="Analytics"><b>📊</b><span>Analytics</span></button>
+  <div class="ws-quote"><b>🔥 Daily fuel</b><span id="railQuote">Small steps every day lead to big results.</span></div>
 </nav>
 <nav class="wsbot" id="wsBot">
   <button class="ws-tab on" data-v="dash" onclick="switchView('dash')"><b>🏠</b><span>Home</span></button>
@@ -708,6 +744,8 @@ const THEMES={tangerine:{label:"Tangerine Sky"},peach:{label:"Peach Horizon"}};
 function applyTheme(k){
   if(!THEMES[k])k="tangerine";
   document.documentElement.setAttribute("data-ai-theme",k);
+  var tcm=document.querySelector('meta[name="theme-color"]');
+  if(tcm)tcm.setAttribute("content",k==="peach"?"#fdf1ea":"#fbfaf8");
   try{localStorage.setItem(STORAGE+"theme",k)}catch(e){}
 }
 function toggleTheme(){
@@ -1896,6 +1934,8 @@ function applyWhiteLabel(){
     if(im)im.src=logo||AURISI_LOGO_DATA_URL;
     const df=document.querySelector(".drawer-foot");
     if(df)df.textContent=n?n+" · powered by AURISI":"AURISI · solo edition";
+    const rb=$("railBrand");if(rb)rb.textContent=n||"AURISI";
+    const rl=document.querySelector(".ws-rail-head img");if(rl)rl.src=logo||AURISI_LOGO_DATA_URL;
   }catch(e){}
 }
 function getQuizLog(){try{return JSON.parse(localStorage.getItem(STORAGE+"quizLog")||"[]")}catch(e){return[]}}
@@ -2251,6 +2291,64 @@ function talkRenderWeak(){
 }
 
 /* ===================== INIT ===================== */
+/* ===================== v16 APP FEEL ===================== */
+const AURISI_QUOTES=["Small steps every day lead to big results.","Consistency beats intensity. Show up daily.","Revision today saves panic tomorrow.","One focused hour beats five distracted ones.","You do not need to be fast. You need to keep going."];
+function tsEsc(s){var d=document.createElement("div");d.textContent=String(s);return d.innerHTML}
+function hideTsDrop(){var d=$("tsDrop");if(d)d.classList.remove("show")}
+function renderSearchDrop(q){
+  var drop=$("tsDrop");if(!drop)return;
+  q=(q||"").trim().toLowerCase();var items=[];
+  if(q){
+    (state.savedChats||[]).forEach(function(c,i){
+      var first="";
+      try{first=String(((c.history||[])[0].parts||[{}])[0].text||"")}catch(e){}
+      var t=(c.title||"")+" "+first;
+      if(t.toLowerCase().indexOf(q)>-1)items.push({icon:"\ud83d\udcac",t:c.title||("Chat "+(i+1)),s:"chat",act:function(){hideTsDrop();switchView("chat");loadChat(i)}});
+    });
+    getLocker().pdfs.forEach(function(p){
+      if((p.name||"").toLowerCase().indexOf(q)>-1)items.push({icon:"\ud83d\udcd6",t:p.name,s:"book",act:function(){hideTsDrop();switchView("lib");useLockerPdf(p.id)}});
+    });
+    ["Quiz me","Daily brief","Predict my score","Fix my weak points","Make me a 50-mark test paper"].forEach(function(cmd){
+      if(cmd.toLowerCase().indexOf(q)>-1)items.push({icon:"\u26a1",t:cmd,s:"action",act:function(){hideTsDrop();quick(cmd)}});
+    });
+  }
+  drop.innerHTML="";
+  if(!items.length){
+    var n=document.createElement("div");n.className="ts-item none";n.textContent="No matches yet";
+    drop.appendChild(n);
+  }else{
+    items.slice(0,8).forEach(function(it){
+      var b=document.createElement("button");b.className="ts-item";
+      var ic=document.createElement("b");ic.textContent=it.icon;
+      var sp=document.createElement("span");sp.textContent=it.t;
+      var sm=document.createElement("small");sm.textContent=it.s;
+      b.appendChild(ic);b.appendChild(sp);b.appendChild(sm);
+      b.addEventListener("click",it.act);drop.appendChild(b);
+    });
+  }
+  drop.classList.add("show");
+}
+function initApp16(){
+  try{
+    var qe=$("railQuote");if(qe)qe.textContent=AURISI_QUOTES[Math.floor(Math.random()*AURISI_QUOTES.length)];
+    var si=$("searchIn");
+    if(si){
+      si.addEventListener("input",function(){renderSearchDrop(si.value)});
+      si.addEventListener("focus",function(){renderSearchDrop(si.value)});
+      si.addEventListener("keydown",function(e){
+        if(e.key==="Enter"){var f=$("tsDrop").querySelector(".ts-item:not(.none)");if(f)f.click()}
+        else if(e.key==="Escape")hideTsDrop();
+      });
+    }
+    document.addEventListener("click",function(e){if(!(e.target.closest&&e.target.closest(".topsearch")))hideTsDrop()});
+    try{
+      var man={name:"AURISI \u2014 AI Study Room",short_name:"AURISI",start_url:".",display:"standalone",background_color:"#fbfaf8",theme_color:"#d97757",icons:[{src:AURISI_LOGO_DATA_URL,sizes:"256x256",type:"image/png",purpose:"any"}]};
+      var ml=document.createElement("link");ml.rel="manifest";
+      ml.href="data:application/manifest+json;charset=utf-8,"+encodeURIComponent(JSON.stringify(man));
+      document.head.appendChild(ml);
+    }catch(e){}
+  }catch(e){}
+}
 function init(){
   document.querySelectorAll("img").forEach(i=>{if(!i.getAttribute("src"))i.src=AURISI_LOGO_DATA_URL});
   try{$("modelSel").value=localStorage.getItem(STORAGE+"prefModel")||"auto"}catch(e){}
@@ -2260,6 +2358,7 @@ function init(){
   try{switchView(localStorage.getItem(STORAGE+"view")||"dash")}catch(e){switchView("dash")}
   renderChat();
   renderDrawer();
+  initApp16();
   try{const L=getLocker();if(L.pdfs.length)setTimeout(()=>toast("🗄️ Locker ready — "+L.pdfs.length+" PDF"+(L.pdfs.length>1?"s":"")+" saved. Menu → My Locker"),1600)}catch(e){}
   const p=$("prompt");
   p.addEventListener("keydown",function(e){
