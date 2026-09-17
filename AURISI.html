@@ -1846,6 +1846,31 @@ function send(){
   renderChat();
   generate();
 }
+/* ===================== v19.12 SMOOTH TYPEWRITER ===================== */
+var CUR_TYPER=null;
+function smoothTyper(el){
+  var full="",shown=0,alive=true,res=null,timer=null;
+  function render(fin){el.innerHTML=safeMarkdown(full.slice(0,shown))+(fin?"":'<span class="ai-stream-cursor"></span>')}
+  function stopTimer(){if(timer){clearInterval(timer);timer=null}}
+  function step(){
+    if(!alive)return;
+    var remain=full.length-shown;
+    if(remain>0){
+      var rate=remain>500?Math.ceil(remain/10):remain>160?5:remain>50?2:1;
+      shown+=rate;render(false);scrollDown();
+    }else{
+      stopTimer();
+      if(res){var r=res;res=null;render(true);r()}
+    }
+  }
+  function start(){if(!timer)timer=setInterval(step,24)}
+  return {
+    push:function(t){if(!alive)return;if(t.length>full.length)full=t;start()},
+    skip:function(fin){if(!alive)return;shown=full.length;render(!!fin);stopTimer();if(res){var r=res;res=null;r()}},
+    finish:function(){return new Promise(function(r){if(!alive||full.length-shown<=0){r();return}res=r;start()})},
+    kill:function(){alive=false;stopTimer();if(res){var r=res;res=null;r()}}
+  };
+}
 async function generate(){
   const log=$("chatLog");
   const row=document.createElement("div");
@@ -1861,7 +1886,9 @@ async function generate(){
   $("welcome").style.display="none";
   scrollDown();
   setBusy(true);
-  STREAM.active=true;STREAM.abort=new AbortController();
+  if(CUR_TYPER)CUR_TYPER.skip(true);
+  STREAM.active=true;const myAbort=STREAM.abort=new AbortController();
+  const typer=CUR_TYPER=smoothTyper(md);
   const key=localStorage.getItem(STORAGE+"geminiKey")||"";
   let histForApi=state.chatHistory;
   if(state.pdfText){
@@ -1878,20 +1905,18 @@ async function generate(){
   try{
     full=await callGeminiStream(key,histForApi,(delta,soFar)=>{
       full=soFar;
-      md.innerHTML=safeMarkdown(soFar)+'<span class="ai-stream-cursor"></span>';
-      scrollDown();
-    },STREAM.abort.signal)||"";
+      typer.push(soFar);
+    },myAbort.signal)||"";
     if(!full.trim()){
       const data=await callGeminiFast(key,histForApi,false);
       full=(data?.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("").trim();
+      typer.push(full);
     }
     if(!full.trim())throw new Error("Empty response received.");
   }catch(err){
     if(err&&err.name==="AbortError"){stopped=true}
     else{full="⚠️ "+(err.message||"Error")}
   }
-  STREAM.active=false;STREAM.abort=null;
-  setBusy(false);
   const txt=full+(stopped?" _(stopped)_":"");
   if(full.trim()){
     var _pa=PENDING_ART,_ps=PENDING_SECTION;PENDING_ART=null;PENDING_SECTION=null;
@@ -1903,11 +1928,17 @@ async function generate(){
     persist();flushChat();
     if(state.pdfText)clearPdf();
   }
-  renderChat();
-  if(isHandsFree()&&full&&!full.startsWith("⚠️"))speakThenListen(txt);
+  await typer.finish();
+  if(CUR_TYPER===typer)CUR_TYPER=null;
+  if(STREAM.abort===myAbort){
+    STREAM.active=false;STREAM.abort=null;
+    setBusy(false);
+    renderChat();
+    if(isHandsFree()&&full&&!full.startsWith("⚠️"))speakThenListen(txt);
+  }
 }
 function mkAbortErr(){var e=new Error("aborted");e.name="AbortError";return e}
-function stopStream(){if(STREAM.abort){try{STREAM.abort.abort()}catch(e){}}}
+function stopStream(){if(CUR_TYPER)CUR_TYPER.skip();if(STREAM.abort){try{STREAM.abort.abort()}catch(e){}}}
 function setBusy(b){
   const s=$("sendBtn");
   s.classList.toggle("stop",b);
