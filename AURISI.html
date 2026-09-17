@@ -128,7 +128,7 @@ button{font:inherit;cursor:pointer}
 .dots span:nth-child(2){animation-delay:.15s}
 .dots span:nth-child(3){animation-delay:.3s}
 @keyframes bnc{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-7px);opacity:1}}
-.model-tag{font-size:10.5px;color:var(--muted);font-weight:600}
+.model-tag{margin-left:auto;font-size:10px;color:var(--muted);opacity:.6;font-weight:600;letter-spacing:.3px;padding:0 4px}
 .icon-btn{width:38px;height:38px;border-radius:12px;border:none;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center}
 .icon-btn:hover{background:var(--surface2)}
 .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
@@ -182,8 +182,11 @@ button{font:inherit;cursor:pointer}
 .ai-code-block .hljs-built_in,.ai-code-block .hljs-type{color:var(--tk-built)}
 .ai-stream-cursor{display:inline-block;width:8px;height:15px;background:var(--accent);border-radius:2px;margin-left:3px;animation:blink 1s infinite;vertical-align:-2px}
 @keyframes blink{50%{opacity:0}}
-.msg-actions{display:flex;gap:6px;margin-top:8px}
-.act-btn{border:none;background:transparent;color:var(--muted);font-size:11.5px;font-weight:700;border-radius:8px;padding:5px 10px}
+.msg-actions{display:flex;align-items:center;gap:2px;margin-top:4px}
+.act-btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border:none;background:transparent;color:var(--muted);border-radius:9px;padding:0;cursor:pointer;transition:background .12s,color .12s;font:inherit}
+.act-btn:hover{background:var(--surface2);color:var(--text)}
+.act-btn:active{transform:scale(.92)}
+.act-btn svg{display:block}
 .act-btn:hover{background:var(--surface2);color:var(--accent)}
 .busy-note{color:var(--muted);font-style:italic;font-size:13px}
 .bubble.user img.att{max-width:220px;border-radius:12px;margin-top:8px;display:block}
@@ -203,7 +206,7 @@ button{font:inherit;cursor:pointer}
 #sendBtn{width:40px;height:40px;flex:0 0 40px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(232,98,45,.4)}
 #sendBtn:disabled{opacity:.4;cursor:default}
 #sendBtn.stop{background:var(--danger)}
-.foot-note{text-align:center;font-size:10.5px;color:var(--muted);margin-top:7px}
+.foot-note{text-align:center;font-size:10.5px;color:var(--muted);margin-top:12px;opacity:.75}
 .pdf-chip{max-width:780px;margin:0 auto 10px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px dashed var(--accent2);border-radius:14px;padding:8px 12px;font-size:12.5px}
 .pdf-chip .pdf-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;color:var(--accent)}
 .pdf-chip .btn.small{padding:7px 12px;font-size:11.5px;border-radius:10px}
@@ -1416,17 +1419,23 @@ function msgRow(m,isLast){
       md.appendChild(pbox);
     }
     const acts=document.createElement("div");acts.className="msg-actions";
-    if(m._model){const tg=document.createElement("span");tg.className="model-tag";tg.textContent=m._model;acts.appendChild(tg)}
-    const cp=document.createElement("button");cp.className="act-btn";cp.textContent="⧉ Copy";
-    cp.onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>toast("Copied!")).catch(()=>toast("Copy failed"))};
-    const dl=document.createElement("button");dl.className="act-btn";dl.textContent="⬇ Save notes";
-    dl.onclick=()=>downloadNotes(txt);
-    const sp=document.createElement("button");sp.className="act-btn";sp.textContent="🔊 Listen";
-    sp.onclick=()=>speakText(txt);
-    const rg=document.createElement("button");rg.className="act-btn";rg.textContent="↻ Redo";
+    const SVG_OPEN='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+    const mkAct=function(title,inner){const b=document.createElement("button");b.className="act-btn";b.title=title;b.setAttribute("aria-label",title);b.innerHTML=SVG_OPEN+inner+"</svg>";return b};
+    const rg=mkAct("Regenerate",'<path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>');
     rg.onclick=regenerate;
+    const cp=mkAct("Copy",'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>');
+    cp.onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{
+      cp.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+      cp.style.color="var(--accent)";
+      setTimeout(()=>{cp.innerHTML=SVG_OPEN+'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>'+"</svg>";cp.style.color=""},1400)
+    }).catch(()=>toast("Copy failed"))};
+    const dl=mkAct("Save notes",'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>');
+    dl.onclick=()=>downloadNotes(txt);
+    const sp=mkAct("Listen",'<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>');
+    sp.onclick=()=>speakText(txt);
     if(isLast)acts.appendChild(rg);
     acts.appendChild(cp);acts.appendChild(dl);acts.appendChild(sp);
+    if(m._model){const tg=document.createElement("span");tg.className="model-tag";tg.textContent=m._model;acts.appendChild(tg)}
     b.appendChild(who);b.appendChild(md);b.appendChild(acts);
     row.appendChild(b);
   }
