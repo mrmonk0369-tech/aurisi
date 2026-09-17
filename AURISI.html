@@ -2016,6 +2016,30 @@ function lockerSubjectTest(subj){
   switchView("chat");
   quick("Create a challenging mixed test paper from my subject \""+subj+"\" covering ALL these chapters — cross-referencing is the key, mix questions ACROSS chapters instead of going chapter-by-chapter:\n"+chs.slice(0,40).map(function(c){return "- "+c}).join("\n")+"\n\nMake 20 questions: 10 one-mark facts, 6 two-mark conceptual, 2 tricky cross-chapter puzzles, 2 assertion-reason. Number them, keep marks on the right, and add a clearly separated ANSWER KEY at the end.");
 }
+/* ===================== v19.3 CONTENT REQUEST ===================== */
+var REQ_TYPE="notes";
+function setReqType(t,btn){
+  REQ_TYPE=t;
+  var chips=$("reqChips");if(!chips)return;
+  Array.prototype.forEach.call(chips.children,function(c){c.classList.toggle("on",c===btn)});
+}
+function requestContent(){
+  if(STREAM.active){toast("AURISI is still answering — try again in a moment");return}
+  var inp=$("reqTopic");
+  var topic=(inp&&inp.value?inp.value:"").replace(/['"<>]/g,"").trim().slice(0,80);
+  if(!topic){toast("Type what you want — e.g. Class 9 Maths notes");return}
+  var P={
+    notes:"Create complete, exam-focused study notes on: "+topic+". Structure: numbered sections with clear headings, key terms in bold, small tables where they help, worked examples where relevant, '📌 Remember' callout boxes for must-know facts, and end with '✍️ In one line:' summary. Make it thorough enough that a student does not need the textbook for this topic.",
+    cheat:"Create an ultra-compact revision cheat sheet on: "+topic+" — every important formula, date, definition and keyword in clean tables, one table per category. Ruthless and short, for last-day-before-exam revision.",
+    test:"Create a 50-mark practice test paper on: "+topic+" — General Instructions header, Section A: 10 MCQs × 1 mark, Section B: 6 short-answer × 5 marks, Section C: 1 long-answer × 10 marks, marks shown on the right of every question, total 50. After the paper, add a clearly separated 'ANSWER KEY' section with mark-scheme hints.",
+    cards:"Make me a set of 12 flashcards on: "+topic+" — for each card: **Front:** the term or question, **Back:** a crisp answer a student can recall under exam pressure. Cover the most exam-important points.",
+    podcast:"Create an engaging 2-host podcast script on: "+topic+" — a warm conversation between a teacher and a curious student covering the key ideas step by step, with fun memory hooks and a rapid-fire recap at the end."
+  };
+  var T={notes:"📝 Notes · ",cheat:"⚡ Cheat sheet · ",test:"🎯 Test paper · ",cards:"📇 Flashcards · ",podcast:"🎧 Podcast · "};
+  artPending("req_"+(P[REQ_TYPE]?REQ_TYPE:"notes")+"|"+topic,(T[REQ_TYPE]||T.notes)+topic);
+  quick(P[REQ_TYPE]||P.notes);
+  if(inp)inp.value="";
+}
 function regenerate(){
   if(STREAM.active)return;
   for(let i=state.chatHistory.length-1;i>=0;i--){
@@ -2116,6 +2140,16 @@ function renderDash(){
   html+='<span class="chip">🗄️ '+L.pdfs.length+' book'+(L.pdfs.length===1?'':'s')+' in library</span>';
   html+='<span class="chip">📕 '+ms.length+' mistake'+(ms.length===1?'':'s')+' logged</span>';
   html+='</div></div>';
+  html+='<div class="ws-card"><h3>🎯 Request Content</h3><p>Can'+String.fromCharCode(8217)+'t find material on something? Tell AURISI what you need — it gets built fresh, saved with version history.</p>';
+  html+='<input id="reqTopic" placeholder="e.g. Class 9 Maths — Number Systems · HSSC CET GK · English tenses" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:13px;background:var(--surface);color:var(--text);margin:8px 0 4px" onkeydown="if(event.key===\'Enter\')requestContent()">';
+  html+='<div class="lib-chips" id="reqChips" style="margin:6px 0 2px">';
+  html+='<button class="lib-chip on" onclick="setReqType(\'notes\',this)">📝 Notes</button>';
+  html+='<button class="lib-chip" onclick="setReqType(\'cheat\',this)">⚡ Cheat sheet</button>';
+  html+='<button class="lib-chip" onclick="setReqType(\'test\',this)">📋 Test paper</button>';
+  html+='<button class="lib-chip" onclick="setReqType(\'cards\',this)">📇 Flashcards</button>';
+  html+='<button class="lib-chip" onclick="setReqType(\'podcast\',this)">🎧 Podcast</button>';
+  html+='</div>';
+  html+='<div style="margin-top:8px"><button class="lib-open" onclick="requestContent()">✨ Create my content</button></div></div>';
   html+='<div class="ws-h">📊 Your stats</div><div class="ws-grid">';
   html+='<div class="ws-card"><div class="stat-num">'+L.pdfs.length+'</div><div class="stat-lbl">📚 Library books</div></div>';
   html+='<div class="ws-card"><div class="stat-num">'+log.length+'</div><div class="stat-lbl">❓ Quiz answers</div></div>';
