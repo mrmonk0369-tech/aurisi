@@ -2315,7 +2315,7 @@ function renderDash(){
   html+='</div>';
   html+='<div class="ws-h">🕘 Recent chats</div><div class="ws-card" style="padding:6px">';
   if(!sc.length)html+='<div class="empty">No chats yet — start one from Quick actions ☝</div>';
-  sc.forEach((c,i)=>{html+='<button class="rc-item" onclick="loadChat('+(state.savedChats.indexOf(c))+')"><span>💬</span><span class="rc-t">'+escH(c.title||"Untitled chat")+'</span></button>'});
+  sc.forEach((c,i)=>{html+='<button class="rc-item" onclick="loadChat('+(state.savedChats.indexOf(c))+')"><span>'+modeEmoji(c.mode||"")+'</span><span class="rc-t">'+escH(c.title||"Untitled chat")+'</span></button>'});
   html+='</div>';
   html+='<div class="ws-h">🗄️ Library</div><div class="ws-card">';
   if(!L.pdfs.length)html+='<div class="empty">No books yet — attach a PDF in Study Room and tap “🗄️ Save to Locker”.</div>';
@@ -2711,6 +2711,18 @@ function autoGrow(el){el.style.height="auto";el.style.height=Math.min(el.scrollH
 
 /* ===================== HISTORY / PERSIST ===================== */
 function persist(){try{localStorage.setItem(STORAGE+"curChat",JSON.stringify(state.chatHistory));localStorage.setItem(STORAGE+"activeId",JSON.stringify(state.activeId))}catch(e){}}
+function modeEmoji(m){return m==="feynman"?"\u{1F9D1}\u200D\u{1F3EB}":m==="sanskrit"?"\u{1FA94}":(LANG_MODES[m]?LANG_MODES[m].emoji:"\u{1F4AC}")}
+function restoreMode(md){
+  FEYNMAN_ON=md==="feynman";
+  SANS_ON=md==="sanskrit";
+  LANG_ON=(LANG_MODES[md]&&md!=="feynman"&&md!=="sanskrit")?md:"";
+  try{
+    if(FEYNMAN_ON)localStorage.setItem(STORAGE+"feynman","1");else localStorage.removeItem(STORAGE+"feynman");
+    if(SANS_ON)localStorage.setItem(STORAGE+"sanskrit","1");else localStorage.removeItem(STORAGE+"sanskrit");
+    if(LANG_ON)localStorage.setItem(STORAGE+"langmode",LANG_ON);else localStorage.removeItem(STORAGE+"langmode");
+  }catch(e){}
+  renderFeynmanChip();renderSanskritChip();renderLangChip();
+}
 function flushChat(){
   if(state.chatHistory.length<2)return;
   const first=state.chatHistory.find(h=>h.role==="user");
@@ -2719,6 +2731,7 @@ function flushChat(){
   let c=state.savedChats.find(x=>x.id===state.activeId);
   if(!c){c={id:"c"+Date.now(),title:title,history:[]};state.savedChats.unshift(c);state.activeId=c.id}
   c.title=title;c.history=[...state.chatHistory];
+  c.mode=FEYNMAN_ON?"feynman":(SANS_ON?"sanskrit":(LANG_ON||""));
   if(state.savedChats.length>40)state.savedChats.length=40;
   saveChats();
 }
@@ -2736,7 +2749,10 @@ function loadChat(i){switchView("chat");
   flushChat();
   state.activeId=c.id;
   state.chatHistory=[...(c.history||[])];
+  var _md=c.mode||"";
+  restoreMode(_md);
   persist();renderChat();closeDrawer();
+  if(_md)toast(modeEmoji(_md)+" Mode resumed — pick up right where you left off");
 }
 function delChat(i,ev){
   if(ev)ev.stopPropagation();
@@ -2747,7 +2763,7 @@ function renderDrawer(){
   list.innerHTML=state.savedChats.length?"":"<div style='padding:14px;font-size:12.5px;color:var(--muted)'>"+escH(tKey("noChats"))+"</div>";
   state.savedChats.forEach((c,i)=>{
     const d=document.createElement("div");d.className="chat-item"+(c.live?" ":" ");
-    const s=document.createElement("span");s.className="t";s.textContent=c.title||"Chat";
+    const s=document.createElement("span");s.className="t";s.textContent=modeEmoji(c.mode||"")+"  "+(c.title||"Chat");
     const x=document.createElement("button");x.className="x";x.textContent="🗑";
     x.onclick=(ev)=>delChat(i,ev);
     d.appendChild(s);d.appendChild(x);
