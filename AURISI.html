@@ -1157,6 +1157,7 @@ async function getAvailableModels(apiKey){
   return null;
 }
 
+function apiContents(history){return (history||[]).map(h=>({role:h.role,parts:(h.parts||[]).map(p=>p.inline_data?{inline_data:p.inline_data}:{text:p.text||""})}))}
 async function callGeminiFast(apiKey, history, jsonMode, sysPrompt) {
   apiKey=(apiKey||"").trim();
   if(!apiKey)return await callPuter(history,jsonMode,sysPrompt);
@@ -1170,7 +1171,7 @@ async function callGeminiFast(apiKey, history, jsonMode, sysPrompt) {
         headers:{"Content-Type":"application/json","x-goog-api-key":apiKey},
         body:JSON.stringify({
           system_instruction:{parts:[{text:sysPrompt||SYS_PROMPT()}]},
-          contents:history,
+          contents:apiContents(history),
           generationConfig:{temperature:0.7,maxOutputTokens:jsonMode?4096:2048},
           ...(jsonMode?{responseMimeType:"application/json"}:{}),
           ...(localStorage.getItem(STORAGE+"webSearch")==="1"?{tools:[{google_search:{}}]}:{})
@@ -1202,7 +1203,7 @@ async function callGeminiStream(apiKey, history, onDelta, signal, sysPrompt){
         headers:{"Content-Type":"application/json","x-goog-api-key":apiKey},
         body:JSON.stringify({
           system_instruction:{parts:[{text:sysPrompt||SYS_PROMPT()}]},
-          contents:history,
+          contents:apiContents(history),
           generationConfig:{temperature:0.7,maxOutputTokens:2048},
           ...(localStorage.getItem(STORAGE+"webSearch")==="1"?{tools:[{google_search:{}}]}:{})
         }),
