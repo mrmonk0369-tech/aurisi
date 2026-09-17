@@ -1121,16 +1121,21 @@ async function callPuterStream(history,onDelta,sysPrompt){
   const models=cached?[cached,...PUTER_MODELS.filter(m=>m!==cached)]:PUTER_MODELS;
   let lastErr="";
   for(const model of models){
+    if(STREAM&&STREAM.abort&&STREAM.abort.signal.aborted)throw mkAbortErr();
     try{
       const stream=await puter.ai.chat(msgs,{model:model,stream:true});
       let full="";
       for await(const part of stream){
+        if(STREAM&&STREAM.abort&&STREAM.abort.signal.aborted)throw mkAbortErr();
         const d=part&&part.text;
         if(d){full+=d;try{onDelta(d,full)}catch(e){}}
       }
       if(full.trim()){localStorage.setItem(STORAGE+"puterModel",model);lastModel=model+" (puter)";return full}
       lastErr="empty stream";
-    }catch(e){lastErr=(e&&e.message)||String(e)}
+    }catch(e){
+      if(e&&e.name==="AbortError")throw e;
+      lastErr=(e&&e.message)||String(e);
+    }
   }
   throw new Error("Puter stream failed: "+lastErr);
 }
@@ -1239,7 +1244,7 @@ async function callGeminiStream(apiKey, history, onDelta, signal, sysPrompt){
     }
   }
   try{return await callPuterStream(history,onDelta,sysPrompt)}
-  catch(pe){throw new Error((lastErr||"Streaming failed")+" | Puter: "+((pe&&pe.message)||pe))}
+  catch(pe){if(pe&&pe.name==="AbortError")throw pe;throw new Error((lastErr||"Streaming failed")+" | Puter: "+((pe&&pe.message)||pe))}
 }
 
 /* ===================== MARKDOWN ===================== */
@@ -1872,6 +1877,7 @@ async function generate(){
   let full="",stopped=false;
   try{
     full=await callGeminiStream(key,histForApi,(delta,soFar)=>{
+      full=soFar;
       md.innerHTML=safeMarkdown(soFar)+'<span class="ai-stream-cursor"></span>';
       scrollDown();
     },STREAM.abort.signal)||"";
@@ -1900,6 +1906,7 @@ async function generate(){
   renderChat();
   if(isHandsFree()&&full&&!full.startsWith("⚠️"))speakThenListen(txt);
 }
+function mkAbortErr(){var e=new Error("aborted");e.name="AbortError";return e}
 function stopStream(){if(STREAM.abort){try{STREAM.abort.abort()}catch(e){}}}
 function setBusy(b){
   const s=$("sendBtn");
