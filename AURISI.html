@@ -531,6 +531,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
 </div>
 <div class="fy-chip" id="fyChip"><b>🧑‍🏫 Feynman Mode</b><button class="fy-x" onclick="stopFeynman()" aria-label="Exit Feynman Mode" title="Exit Feynman Mode">✕</button></div>
 <div class="fy-chip" id="sansChip" style="background:linear-gradient(135deg,#7a4a12,#b07a1e)"><b>🪔 Sanskrit Mode</b><button class="fy-x" onclick="stopSanskrit()" aria-label="Exit Sanskrit Mode" title="Exit Sanskrit Mode">✕</button></div>
+<div class="fy-chip" id="langChip" style="background:linear-gradient(135deg,#1f5f8b,#2a7ab0)"><b id="langChipLbl">🌍 Language Mode</b><button class="fy-x" onclick="stopLangMode()" aria-label="Exit Language Mode" title="Exit Language Mode">✕</button></div>
 <div id="app">
   <div class="topbar">
     <button class="icon-btn chat-back-btn" onclick="goBackHome()" aria-label="Back to home" title="Back to home">
@@ -1035,7 +1036,7 @@ function SYS_PROMPT(){
   "TEST PAPER: when a teacher asks for a question paper or test paper, output a properly formatted exam — general instructions, sections, marks per question on the right, total marks and time — strictly from the attached PDF, followed by a clearly separated ANSWER KEY with mark-scheme hints. "+
   "GRADER: when a homework photo is attached for grading, check every question, mark right/partial/wrong, give a total score, one-line corrections, and a 2-line submission report; if the handwriting is unclear, say what you could not read instead of guessing. "+
   "VIDEO PROMPT: when the learner or teacher asks for an animation/video prompt for a concept, output a ready-to-paste 30-second prompt for AI video tools — scene-by-scene visuals, narration script, style notes — and mention free options like Manim (great for math/physics) or any text-to-video AI they have. "+
-  "PREDICTION: when predicting the learner's score, use the quiz data provided honestly — give a percentage range, the 2 biggest risk areas, and what to fix first; never flatter."+(SANS_ON?("\n\n"+SANSKRIT_RULES):(FEYNMAN_ON?("\n\n"+FEYNMAN_RULES):""));
+  "PREDICTION: when predicting the learner's score, use the quiz data provided honestly — give a percentage range, the 2 biggest risk areas, and what to fix first; never flatter."+(LANG_ON?("\n\n"+langRules()):(SANS_ON?("\n\n"+SANSKRIT_RULES):(FEYNMAN_ON?("\n\n"+FEYNMAN_RULES):"")));
 }
 
 /* ===================== GEMINI + PUTER ENGINES ===================== */
@@ -1278,7 +1279,7 @@ function renderChat(){
   $("welcome").style.display=state.chatHistory.length?"none":"block";
   if(state.pdfText)showPdfChip();else clearPdf();
   state.chatHistory.forEach((m,i)=>{log.appendChild(msgRow(m,i===state.chatHistory.length-1))});
-  scrollDown();renderFeynmanChip();renderSanskritChip();
+  scrollDown();renderFeynmanChip();renderSanskritChip();renderLangChip();
 }
 function msgRow(m,isLast){
   const row=document.createElement("div");
@@ -1791,6 +1792,7 @@ function send(){
   const v=el.value.trim();
   if(/^stop[! ]*feynman$/i.test(v)){el.value="";stopFeynman();return}
   if(/^stop[! ]*sanskrit$/i.test(v)){el.value="";stopSanskrit();return}
+  if(/^stop[! ]*(language|english|spanish|mandarin|chinese|german)$/i.test(v)){el.value="";stopLangMode();return}
   if(!v&&!state.currentImageBase64){toast("Type something or attach an image");return}
   const parts=[];
   if(v)parts.push({text:v});
@@ -2067,7 +2069,9 @@ function renderFeynmanChip(){var c=$("fyChip");if(c)c.style.display=FEYNMAN_ON?"
 function startFeynman(){
   if(STREAM.active){toast("AURISI is still answering — try again in a moment");return}
   newChat();
-  SANS_ON=false;try{localStorage.removeItem(STORAGE+"sanskrit")}catch(e){}renderSanskritChip();
+  SANS_ON=false;LANG_ON="";
+  try{localStorage.removeItem(STORAGE+"sanskrit");localStorage.removeItem(STORAGE+"langmode")}catch(e){}
+  renderSanskritChip();renderLangChip();
   FEYNMAN_ON=true;
   try{localStorage.setItem(STORAGE+"feynman","1")}catch(e){}
   state.chatHistory.push({role:"model",parts:[{text:"🧑‍🏫 **Feynman Mode ON!**\n\nFrom now on, I'll teach you the way Richard Feynman taught — no jargon, just simple ideas, everyday analogies, and real understanding from the ground up. You explain things back to me, and we'll build it until it clicks.\n\n**So — what do you want to truly understand today?**\nAny subject, any class: Physics, Chemistry, Maths, anything. Name the topic and let's enjoy finding things out! 🎯"}]});
@@ -2105,7 +2109,9 @@ function renderSanskritChip(){var c=$("sansChip");if(c)c.style.display=SANS_ON?"
 function startSanskrit(){
   if(STREAM.active){toast("AURISI is still answering — try again in a moment");return}
   newChat();
-  FEYNMAN_ON=false;try{localStorage.removeItem(STORAGE+"feynman")}catch(e){}renderFeynmanChip();
+  FEYNMAN_ON=false;LANG_ON="";
+  try{localStorage.removeItem(STORAGE+"feynman");localStorage.removeItem(STORAGE+"langmode")}catch(e){}
+  renderFeynmanChip();renderLangChip();
   SANS_ON=true;
   try{localStorage.setItem(STORAGE+"sanskrit","1")}catch(e){}
   state.chatHistory.push({role:"model",parts:[{text:"\u{1FA94} **Sanskrit Mode ON!** \u0928\u092e\u0938\u094d\u0924\u0947 (namaste)!\n\nFrom now on, I am your dedicated Sanskrit teacher \u2014 reading (\u092a\u0920\u0928\u092e\u094d), writing (\u0932\u093f\u0916\u0928\u092e\u094d), speaking (\u0935\u091a\u0928\u092e\u094d) and everything in between \u2014 step by step, from the alphabet to shlokas.\n\n**First, tell me your level:**\n**1\uFE0F Complete beginner** \u2014 start from the alphabet\n**2\uFE0F I read Devanagari** \u2014 teach me sentences & grammar\n**3\uFE0F Advanced** \u2014 shlokas, subhashitas & translation\n\nOr just name what you want to learn today! \u{1F3AF}"}]});
@@ -2119,6 +2125,60 @@ function stopSanskrit(){
   state.chatHistory.push({role:"model",parts:[{text:"\u2705 **Sanskrit Mode off.** \u0927\u0928\u094d\u092f\u0935\u093e\u0926 (dhanyavaad) for learning! Back to normal teaching."}]});
   persist();renderChat();
   toast("Sanskrit Mode off");
+}
+/* ===================== v19.6 LANGUAGE MODES ===================== */
+const LANG_MODES={
+ "global-english":{name:"Global English",emoji:"\u{1F310}",special:"Teach neutral, international English — clear standard grammar and vocabulary that works worldwide. Avoid region-specific slang; when a word differs between British/American/global usage, note it briefly."},
+ "american-english":{name:"American English",emoji:"\u{1F1FA}\u{1F1F8}",special:"Teach American English — US spelling (color, favorite, realize), common idioms and slang, natural contractions, and American pronunciation habits (flap T in water, strong R). Use US context examples."},
+ spanish:{name:"Spanish",emoji:"\u{1F1EA}\u{1F1F8}",special:"Teach Spanish (Espa\u00f1ol) — ALWAYS include the gender of nouns (el/la), teach ser vs estar and verb conjugations step by step."},
+ mandarin:{name:"Mandarin Chinese",emoji:"\u{1F1E8}\u{1F1F3}",special:"Teach Mandarin Chinese (\u666e\u901a\u8bdd) — every Chinese phrase in simplified \u6c49\u5b57 + Pinyin WITH tone marks + meaning. Teach the four tones (m\u0101 m\u00e1 m\u01ce m\u00e0) with memorable examples. Explain character radicals/meaning components simply."},
+ german:{name:"German",emoji:"\u{1F1E9}\u{1F1EA}",special:"Teach German (Deutsch) — ALWAYS include noun articles (der/die/das), capitalization of all nouns, the four cases step by step, and pronunciation of \u00e4 \u00f6 \u00fc \u00df."}
+};
+var LANG_ON="";
+try{LANG_ON=localStorage.getItem(STORAGE+"langmode")||"";if(LANG_ON&&!LANG_MODES[LANG_ON])LANG_ON=""}catch(e){}
+function langRules(){
+  var L=LANG_MODES[LANG_ON];if(!L)return "";
+  return "===== "+L.name.toUpperCase()+" TEACHING MODE (ACTIVE FOR THIS WHOLE CONVERSATION) ===== "+
+  "You are now AURISI's dedicated "+L.name+" teacher. Follow these rules in EVERY reply: "+
+  "(1) LEVEL TRACKING: find the learner's level first and remember it — BEGINNER (alphabet/pronunciation, greetings, simple words), INTERMEDIATE (sentences, everyday conversation, core grammar), ADVANCED (nuance, idioms, fluency, culture). Adapt depth. "+
+  "(2) EVERY phrase in the target language appears in its native script, then a simple pronunciation guide in parentheses, then the meaning. Never only one of these. "+
+  "(3) TINY STEPS: teach ONE word, rule or pattern at a time. After each, give a micro-exercise (say this word / translate this sentence / fill the blank) and CHECK the answer before moving on. Never dump walls of text. "+
+  "(4) SPEAKING & WRITING: encourage the learner to write replies in the target language; correct errors warmly and always explain WHY (the rule behind it). "+
+  "(5) GRAMMAR FIRST PRINCIPLES: explain each rule with 2 clear examples, then drill. "+L.special+" "+
+  "(6) Explain in the learner's language (how they write to you), but all teaching content stays in the target language. "+
+  "(7) Weave in ONE cultural note occasionally (customs, etiquette, famous phrases) — max once every few turns. "+
+  "(8) End each section with a 1-line recap + one practice sentence to translate. "+
+  "(9) If asked how to exit: tap the \u2715 on the language badge at the top. "+
+  "Keep every other AURISI rule (identity, safety).";
+}
+function renderLangChip(){
+  var c=$("langChip"),l=$("langChipLbl");
+  var L=LANG_MODES[LANG_ON];
+  if(c)c.style.display=L?"flex":"none";
+  if(l&&L)l.textContent=L.emoji+" "+L.name;
+}
+function startLangMode(k){
+  if(STREAM.active){toast("AURISI is still answering — try again in a moment");return}
+  if(!LANG_MODES[k]){toast("Unknown language");return}
+  newChat();
+  FEYNMAN_ON=false;SANS_ON=false;
+  try{localStorage.removeItem(STORAGE+"feynman");localStorage.removeItem(STORAGE+"sanskrit")}catch(e){}
+  renderFeynmanChip();renderSanskritChip();
+  LANG_ON=k;
+  try{localStorage.setItem(STORAGE+"langmode",k)}catch(e){}
+  var L=LANG_MODES[k];
+  state.chatHistory.push({role:"model",parts:[{text:L.emoji+" **"+L.name+" Mode ON!**\n\nFrom now on, I am your dedicated "+L.name+" teacher \u2014 reading, writing, speaking and real understanding, step by step.\n\n**First, tell me your level:**\n**1\uFE0F Complete beginner** \u2014 start from the basics\n**2\uFE0F Some knowledge** \u2014 build sentences & conversation\n**3\uFE0F Advanced** \u2014 fluency, nuance & culture\n\nOr just tell me what you want to learn first! \u{1F3AF}"}]});
+  persist();renderChat();switchView("chat");
+  toast(L.emoji+" "+L.name+" Mode ON");
+}
+function stopLangMode(){
+  var L=LANG_MODES[LANG_ON];
+  LANG_ON="";
+  try{localStorage.removeItem(STORAGE+"langmode")}catch(e){}
+  renderLangChip();
+  state.chatHistory.push({role:"model",parts:[{text:"\u2705 **"+(L?L.name:"Language")+" Mode off.** \u2014 Back to normal teaching!"}]});
+  persist();renderChat();
+  toast("Language Mode off");
 }
 function regenerate(){
   if(STREAM.active)return;
@@ -2239,6 +2299,13 @@ function renderDash(){
   html+='<div class="ws-h">⚡ Quick actions</div><div class="qa-row">';
   html+='<button class="qa-btn" onclick="startFeynman()">🧑‍🏫 Feynman Mode<small>Learn like Richard Feynman</small></button>';
   html+='<button class="qa-btn" onclick="startSanskrit()">🪔 Sanskrit Mode<small>संस्कृत — read, write, speak</small></button>';
+  html+='<div class="ws-card"><h3>🌍 Learn a Language</h3><p>Dedicated teachers for 5 world languages — reading, writing, speaking & culture, step by step.</p><div class="lib-chips" style="margin:8px 0 2px">';
+  html+='<button class="lib-chip" onclick="startLangMode(\'global-english\')">🌐 Global English</button>';
+  html+='<button class="lib-chip" onclick="startLangMode(\'american-english\')">🇺🇸 American English</button>';
+  html+='<button class="lib-chip" onclick="startLangMode(\'spanish\')">🇪🇸 Spanish</button>';
+  html+='<button class="lib-chip" onclick="startLangMode(\'mandarin\')">🇨🇳 Mandarin</button>';
+  html+='<button class="lib-chip" onclick="startLangMode(\'german\')">🇩🇪 German</button>';
+  html+='</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Plus 🪔 Sanskrit Mode above — 6 languages total.</div></div>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');newChat()">💬 New chat<small>Start a fresh lesson</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');openExamHub()">🎯 Exam mode<small>HSSC / SSC / UPSC mock</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');testWeak()">📕 Fix weak points<small>Quiz me on my mistakes</small></button>';
@@ -2658,8 +2725,8 @@ function flushChat(){
 function saveChats(){try{localStorage.setItem(STORAGE+"savedChats",JSON.stringify(state.savedChats))}catch(e){}}
 function newChat(){
   flushChat();
-  FEYNMAN_ON=false;SANS_ON=false;
-  try{localStorage.removeItem(STORAGE+"feynman");localStorage.removeItem(STORAGE+"sanskrit")}catch(e){}
+  FEYNMAN_ON=false;SANS_ON=false;LANG_ON="";
+  try{localStorage.removeItem(STORAGE+"feynman");localStorage.removeItem(STORAGE+"sanskrit");localStorage.removeItem(STORAGE+"langmode")}catch(e){}
   state.activeId=null;
   state.chatHistory=[];
   persist();renderChat();renderDrawer();closeDrawer();
