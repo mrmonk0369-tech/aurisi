@@ -664,14 +664,14 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
   <div class="ws-rail-head"><img src="" alt="AURISI"><div><h2 id="railBrand">AURISI</h2><small>Study Room</small></div></div>
   <button class="ws-tab on" data-v="dash" onclick="switchView('dash')" title="Dashboard"><b>🏠</b><span>Dashboard</span></button>
   <button class="ws-tab" data-v="lib" onclick="switchView('lib')" title="My Library"><b>📚</b><span>Library</span></button>
-  <button class="ws-tab" data-v="chat" onclick="switchView('chat')" title="AI Study Room"><b>💬</b><span>AI Study Room</span></button>
+  <button class="ws-tab" data-v="chat" onclick="studyTab()" title="AI Study Room"><b>💬</b><span>AI Study Room</span></button>
   <button class="ws-tab" data-v="stats" onclick="switchView('stats')" title="Analytics"><b>📊</b><span>Analytics</span></button>
   <div class="ws-quote"><b>🔥 Daily fuel</b><span id="railQuote">Small steps every day lead to big results.</span></div>
 </nav>
 <nav class="wsbot" id="wsBot">
   <button class="ws-tab on" data-v="dash" onclick="switchView('dash')"><b>🏠</b><span>Home</span></button>
   <button class="ws-tab" data-v="lib" onclick="switchView('lib')"><b>📚</b><span>Library</span></button>
-  <button class="ws-tab" data-v="chat" onclick="switchView('chat')"><b>💬</b><span>Study</span></button>
+  <button class="ws-tab" data-v="chat" onclick="studyTab()"><b>💬</b><span>Study</span></button>
   <button class="ws-tab" data-v="stats" onclick="switchView('stats')"><b>📊</b><span>Stats</span></button>
 </nav>
 
@@ -2857,6 +2857,13 @@ function flushChat(){
   saveChats();
 }
 function saveChats(){try{localStorage.setItem(STORAGE+"savedChats",JSON.stringify(state.savedChats))}catch(e){}}
+function studyTab(){
+  switchView("chat");
+  if(state.chatHistory.length){
+    newChat();
+    toast("Fresh lesson started ✨ — your previous chat is saved in the menu");
+  }
+}
 function newChat(){
   flushChat();
   FEYNMAN_ON=false;SANS_ON=false;LANG_ON="";
