@@ -255,6 +255,40 @@ button{font:inherit;cursor:pointer}
 .btn.danger{background:var(--danger)}
 .hint{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5}
 
+/* ===================== v18.1 PREMIUM SETTINGS ===================== */
+.settings-modal{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.modal-back.open .modal{animation:mIn .22s cubic-bezier(.2,.9,.3,1.15)}
+@keyframes mIn{from{transform:translateY(14px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.s-head{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;border-bottom:1px solid var(--line)}
+.s-ico{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,rgba(217,119,87,.22),rgba(163,74,36,.08));border:1px solid rgba(163,74,36,.18);display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.settings-modal h2{margin:0;font-size:17px;letter-spacing:-.2px}
+.settings-modal .sub{margin:2px 0 0;font-size:11.5px}
+.s-body{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.settings-modal .field{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:13px 14px;transition:border-color .15s}
+.settings-modal .field:focus-within{border-color:rgba(217,119,87,.45)}
+.settings-modal .field label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:800}
+.settings-modal .field label:has(input[type=checkbox]){display:flex;align-items:flex-start;gap:11px;text-transform:none;letter-spacing:0;font-size:12.5px;color:var(--text);font-weight:600;margin-bottom:0;cursor:pointer}
+.field input[type=checkbox]{appearance:none;-webkit-appearance:none;width:42px;height:24px;border-radius:99px;background:rgba(0,0,0,.15);position:relative;transition:.2s;flex:none;margin:1px 0 0;cursor:pointer;border:none}
+.field input[type=checkbox]:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.field input[type=checkbox]:checked{background:var(--accent)}
+.field input[type=checkbox]:checked:after{left:21px}
+.field .select,.settings-modal .select{appearance:none;-webkit-appearance:none;width:100%;min-width:0;padding:11px 36px 11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center/12px;color:var(--text);font:inherit;font-size:13.5px;cursor:pointer}
+.settings-modal .field input[type=password],.settings-modal .field input[type=text]{background:var(--surface)}
+.settings-modal .field input:focus,.field .select:focus{outline:none;border-color:var(--accent2);box-shadow:0 0 0 3px rgba(217,119,87,.16)}
+.field input[type=password]{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.4px}
+.settings-modal .hint{margin-top:8px;font-size:11px}
+.s-foot{padding:12px 14px;border-top:1px solid var(--line);background:var(--surface)}
+.s-foot .row-btns{margin-top:0;gap:8px}
+.s-foot .btn{flex:1;padding:12px 10px}
+.s-foot .btn.danger{flex:0 0 auto;padding:12px 14px}
+.btn{cursor:pointer;transition:transform .12s,filter .12s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:scale(.97)}
+.btn.danger{background:transparent;border:1.5px solid var(--danger);color:var(--danger)}
+.file-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.file-btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;font-family:inherit}
+.file-btn:hover{border-color:var(--accent2)}
+.file-name{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* talk */
 .screen{position:fixed;inset:0;background:var(--bg);z-index:70;display:none;flex-direction:column}
 .screen.open{display:flex}
@@ -547,9 +581,12 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
 </div>
 
 <div class="modal-back" id="modalBack">
-  <div class="modal">
-    <h2 data-i18n="settingsTitle">Settings</h2>
-    <div class="sub" data-i18n="settingsSub">Everything is saved only in your browser.</div>
+  <div class="modal settings-modal">
+    <div class="s-head">
+      <div class="s-ico">⚙️</div>
+      <div><h2 data-i18n="settingsTitle">Settings</h2><div class="sub" data-i18n="settingsSub">Everything is saved only in your browser.</div></div>
+    </div>
+    <div class="s-body">
 
     <div class="field">
       <label data-i18n="langLabel">🌍 Language (AURISI replies &amp; speaks in this)</label>
@@ -579,7 +616,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
     <div class="field">
       <label><input type="checkbox" id="aiVoicesChk" style="vertical-align:-2px"> 🗣️ AI Voices — natural neural speech for podcasts and replies (needs Gemini key)</label>
       <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
-        <select class="select" id="aiVoiceSel" style="flex:1;min-width:150px"></select>
+        <select class="select" id="aiVoiceSel" style="flex:1;min-width:0"></select>
         <button class="btn small" onclick="previewAiVoice()">▶ Preview</button>
       </div>
       <div class="hint">Falls back to the browser voice when no key is set.</div>
@@ -588,7 +625,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
       <label>🎤 Desi Voices — Sarvam key (optional)</label>
       <input type="password" id="sarvamKeyInput" placeholder="Paste key from dashboard.sarvam.ai (free)">
       <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
-        <select class="select" id="sarvamVoiceSel" style="flex:1;min-width:150px"></select>
+        <select class="select" id="sarvamVoiceSel" style="flex:1;min-width:0"></select>
         <button class="btn small" onclick="previewSarvamVoice()">▶ Preview</button>
       </div>
       <div class="hint">Natural Indian voices — best for Hindi/Hinglish. Takes priority over Gemini voices when a key is set. Free key: dashboard.sarvam.ai</div>
@@ -600,7 +637,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
     </div>
     <div class="field">
       <label>🖼️ Institute logo (optional — leave empty to keep current)</label>
-      <input type="file" id="instLogo" accept="image/*">
+      <div class="file-row"><label class="file-btn">🖼️ Choose image<input type="file" id="instLogo" accept="image/*" style="display:none"></label><span class="file-name" id="instLogoName">No file chosen</span></div>
     </div>
     <div class="field">
       <label data-i18n="keyLabel">Gemini API key (optional)</label>
@@ -610,10 +647,13 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
     <div class="field">
       <label><input type="checkbox" id="searchChk" style="vertical-align:-2px"> <span data-i18n="searchLabel">Google Search on replies (Web search)</span></label>
     </div>
-    <div class="row-btns">
-      <button class="btn" data-i18n="saveBtn" onclick="saveSettings()">Save</button>
-      <button class="btn soft" data-i18n="closeBtn" onclick="closeModal()">Close</button>
-      <button class="btn danger" data-i18n="deleteBtn" onclick="clearAll()">Delete all data</button>
+    </div>
+    <div class="s-foot">
+      <div class="row-btns">
+        <button class="btn" data-i18n="saveBtn" onclick="saveSettings()">Save</button>
+        <button class="btn soft" data-i18n="closeBtn" onclick="closeModal()">Close</button>
+        <button class="btn danger" data-i18n="deleteBtn" onclick="clearAll()">Delete all data</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2509,6 +2549,8 @@ function initApp16(){
       });
     }
     document.addEventListener("click",function(e){if(!(e.target.closest&&e.target.closest(".topsearch")))hideTsDrop()});
+    var lg=$("instLogo");
+    if(lg){var lgn=$("instLogoName");lg.addEventListener("change",function(){if(lgn)lgn.textContent=(lg.files&&lg.files[0])?lg.files[0].name:"No file chosen"})}
     try{
       var man={name:"AURISI \u2014 AI Study Room",short_name:"AURISI",start_url:".",display:"standalone",background_color:"#fbfaf8",theme_color:"#d97757",icons:[{src:AURISI_LOGO_DATA_URL,sizes:"256x256",type:"image/png",purpose:"any"}]};
       var ml=document.createElement("link");ml.rel="manifest";
