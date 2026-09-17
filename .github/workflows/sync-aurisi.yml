@@ -1,0 +1,18 @@
+name: Sync AURISI.html from release
+on: [push, workflow_dispatch]
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -e
+          curl -fsSL -o AURISI.html "https://github.com/mrmonk0369-tech/aurisi/releases/download/v15.0.0/AURISI.html"
+          test "$(wc -c < AURISI.html)" -eq 260809
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add AURISI.html
+          git commit -m "chore: sync AURISI.html from release v15.0.0" || echo "no changes"
+          git push
