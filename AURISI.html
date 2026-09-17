@@ -355,6 +355,25 @@ button{font:inherit;cursor:pointer}
 .lib-chip.new{border-style:dashed;color:var(--muted)}
 [data-ai-theme="dark"] .art-panel{border-left-color:rgba(255,255,255,.08);box-shadow:-8px 0 30px rgba(0,0,0,.5)}
 [data-ai-theme="dark"] .art-back{background:rgba(0,0,0,.55)}
+/* ===================== v19.8 PRO SECTIONS ===================== */
+.ws-h{display:flex;align-items:center;gap:10px;margin:26px 2px 10px;font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}
+.ws-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.teacher-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.teacher-card{display:flex;align-items:center;gap:12px;transition:.15s;cursor:default}
+.teacher-card:hover{transform:translateY(-1px);border-color:rgba(163,74,36,.4);box-shadow:0 8px 18px rgba(163,74,36,.1)}
+.tc-ico{width:46px;height:46px;font-size:22px;background:var(--surface2);border-radius:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.teacher-card>div:nth-child(2){flex:1;min-width:0}
+.teacher-card b{display:block;font-size:13.5px}
+.teacher-card small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.teacher-card .lib-open{flex:none;font-size:11px;padding:8px 15px;margin:0}
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px;margin-top:12px}
+.lang-tile{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 13px;cursor:pointer;font-family:inherit;transition:.15s;text-align:left}
+.lang-tile:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:0 6px 14px rgba(163,74,36,.12)}
+.lang-tile .lt-flag{font-size:21px;line-height:1}
+.lang-tile b{font-size:12.5px;color:var(--text);margin-top:5px}
+.lang-tile small{font-size:10.5px;color:var(--muted)}
+[data-ai-theme="dark"] .lang-tile:hover{box-shadow:0 6px 14px rgba(0,0,0,.4)}
+[data-ai-theme="dark"] .teacher-card:hover{border-color:rgba(224,138,94,.4)}
 /* ===================== v19.2 FOCUS MODE ===================== */
 body.chat-focus .wsbot{display:none!important}
 @media(max-width:879px){
@@ -1792,7 +1811,7 @@ function send(){
   const v=el.value.trim();
   if(/^stop[! ]*feynman$/i.test(v)){el.value="";stopFeynman();return}
   if(/^stop[! ]*sanskrit$/i.test(v)){el.value="";stopSanskrit();return}
-  if(/^stop[! ]*(language|english|spanish|mandarin|chinese|german)$/i.test(v)){el.value="";stopLangMode();return}
+  if(/^stop[! ]*(language|english|spanish|mandarin|chinese|german|korean|japanese|french)$/i.test(v)){el.value="";stopLangMode();return}
   if(!v&&!state.currentImageBase64){toast("Type something or attach an image");return}
   const parts=[];
   if(v)parts.push({text:v});
@@ -2132,7 +2151,10 @@ const LANG_MODES={
  "american-english":{name:"American English",emoji:"\u{1F1FA}\u{1F1F8}",special:"Teach American English — US spelling (color, favorite, realize), common idioms and slang, natural contractions, and American pronunciation habits (flap T in water, strong R). Use US context examples."},
  spanish:{name:"Spanish",emoji:"\u{1F1EA}\u{1F1F8}",special:"Teach Spanish (Espa\u00f1ol) — ALWAYS include the gender of nouns (el/la), teach ser vs estar and verb conjugations step by step."},
  mandarin:{name:"Mandarin Chinese",emoji:"\u{1F1E8}\u{1F1F3}",special:"Teach Mandarin Chinese (\u666e\u901a\u8bdd) — every Chinese phrase in simplified \u6c49\u5b57 + Pinyin WITH tone marks + meaning. Teach the four tones (m\u0101 m\u00e1 m\u01ce m\u00e0) with memorable examples. Explain character radicals/meaning components simply."},
- german:{name:"German",emoji:"\u{1F1E9}\u{1F1EA}",special:"Teach German (Deutsch) — ALWAYS include noun articles (der/die/das), capitalization of all nouns, the four cases step by step, and pronunciation of \u00e4 \u00f6 \u00fc \u00df."}
+ german:{name:"German",emoji:"\u{1F1E9}\u{1F1EA}",special:"Teach German (Deutsch) — ALWAYS include noun articles (der/die/das), capitalization of all nouns, the four cases step by step, and pronunciation of \u00e4 \u00f6 \u00fc \u00df."},
+ korean:{name:"Korean",emoji:"\u{1F1F0}\u{1F1F7}",special:"Teach Korean (\ud55c\uad6d\uc5b4) — every phrase in Hangul + romanization + meaning. Teach Hangul as logical blocks (consonants + vowels combining), and explain politeness levels (\uc874\ub377\ub9d0/\ubc18\ub9d0) simply."},
+ japanese:{name:"Japanese",emoji:"\u{1F1EF}\u{1F1F5}",special:"Teach Japanese (\u65e5\u672c\u8a9e) — every phrase in kana/kanji + romaji + meaning. Teach hiragana first, then katakana, then basic kanji with their components; explain particles (\u306f\u3001\u304c\u3001\u3092) with clear examples."},
+ french:{name:"French",emoji:"\u{1F1EB}\u{1F1F7}",special:"Teach French (Fran\u00e7ais) — ALWAYS include gender (le/la), teach liaison and nasal vowels, verb conjugations starting with \u00eatre and avoir, step by step."}
 };
 var LANG_ON="";
 try{LANG_ON=localStorage.getItem(STORAGE+"langmode")||"";if(LANG_ON&&!LANG_MODES[LANG_ON])LANG_ON=""}catch(e){}
@@ -2280,6 +2302,29 @@ function renderDash(){
   html+='<span class="chip">🗄️ '+L.pdfs.length+' book'+(L.pdfs.length===1?'':'s')+' in library</span>';
   html+='<span class="chip">📕 '+ms.length+' mistake'+(ms.length===1?'':'s')+' logged</span>';
   html+='</div></div>';
+  html+='<div class="ws-h">⚡ Study Tools</div><div class="qa-row">';
+  html+='<button class="qa-btn" onclick="switchView(\'chat\');newChat()">💬 New chat<small>Start a fresh lesson</small></button>';
+  html+='<button class="qa-btn" onclick="switchView(\'chat\');openExamHub()">🎯 Exam mode<small>HSSC / SSC / UPSC mock</small></button>';
+  html+='<button class="qa-btn" onclick="switchView(\'chat\');testWeak()">📕 Fix weak points<small>Quiz me on my mistakes</small></button>';
+  html+='<button class="qa-btn" onclick="switchView(\'chat\');dailyBrief()">📅 Daily brief<small>Today\'s study plan</small></button>';
+  html+='<button class="qa-btn" onclick="predictMyScore()">🔮 Predict my score<small>Real data, honest answer</small></button>';
+  html+='<button class="qa-btn" onclick="switchView(\'stats\')">📈 Full analytics<small>Charts & weak areas</small></button>';
+  html+='</div>';
+  html+='<div class="ws-h">🧑‍🏫 Your Teachers</div><div class="teacher-row">';
+  html+='<div class="ws-card teacher-card"><div class="tc-ico">🧑‍🏫</div><div><b>Feynman Mode</b><small>Learn like the legendary physicist — simple words, everyday analogies, explain-back technique</small></div><button class="lib-open" onclick="startFeynman()">Start</button></div>';
+  html+='<div class="ws-card teacher-card"><div class="tc-ico">🪔</div><div><b>Sanskrit Mode</b><small>संस्कृत — reading, writing, speaking, grammar & shlokas, from वर्णमाला up</small></div><button class="lib-open" onclick="startSanskrit()">Start</button></div>';
+  html+='</div>';
+  html+='<div class="ws-h">🌍 Language Academy</div><div class="ws-card"><p style="margin:0;font-size:12px;color:var(--muted)">Eight world languages, each with a dedicated level-tracked teacher — reading, writing, speaking & culture.</p><div class="lang-grid">';
+  html+='<button class="lang-tile" onclick="startLangMode(\'global-english\')"><span class="lt-flag">🌐</span><b>Global English</b><small>International</small></button>';
+  html+='<button class="lang-tile" onclick="startLangMode(\'american-english\')"><span class="lt-flag">🇺🇸</span><b>American English</b><small>United States</small></button>';
+  html+='<button class="lang-tile" onclick="startLangMode(\'spanish\')"><span class="lt-flag">🇪🇸</span><b>Spanish</b><small>Español</small></button>';
+  html+='<button class="lang-tile" onclick="startLangMode(\'french\')"><span class="lt-flag">🇫🇷</span><b>French</b><small>Français</small></button>';
+  html+='<button class="lang-tile" onclick="startLangMode(\'german\')"><span class="lt-flag">🇩🇪</span><b>German</b><small>Deutsch</small></button>';
+  html+='<button class="lang-tile" onclick="startLangMode(\'korean\')"><span class="lt-flag">🇰🇷</span><b>Korean</b><small>한국어</small></button>';
+  html+='<button class="lang-tile" onclick="startLangMode(\'japanese\')"><span class="lt-flag">🇯🇵</span><b>Japanese</b><small>日本語</small></button>';
+  html+='<button class="lang-tile" onclick="startLangMode(\'mandarin\')"><span class="lt-flag">🇨🇳</span><b>Mandarin</b><small>普通话</small></button>';
+  html+='</div></div>';
+  html+='<div class="ws-h">✨ Content Studio</div>';
   html+='<div class="ws-card"><h3>🎯 Request Content</h3><p>Can'+String.fromCharCode(8217)+'t find material on something? Tell AURISI what you need — it gets built fresh, saved with version history.</p>';
   html+='<input id="reqTopic" placeholder="e.g. Class 9 Maths — Number Systems · HSSC CET GK · English tenses" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:13px;background:var(--surface);color:var(--text);margin:8px 0 4px" onkeydown="if(event.key===\'Enter\')requestContent()">';
   html+='<div class="lib-chips" id="reqChips" style="margin:6px 0 2px">';
@@ -2295,23 +2340,6 @@ function renderDash(){
   html+='<div class="ws-card"><div class="stat-num">'+log.length+'</div><div class="stat-lbl">❓ Quiz answers</div></div>';
   html+='<div class="ws-card"><div class="stat-num">'+(acc===null?"—":acc+"%")+'</div><div class="stat-lbl">🎯 Recent accuracy</div></div>';
   html+='<div class="ws-card"><div class="stat-num">'+ms.length+'</div><div class="stat-lbl">📕 Mistakes vault</div></div>';
-  html+='</div>';
-  html+='<div class="ws-h">⚡ Quick actions</div><div class="qa-row">';
-  html+='<button class="qa-btn" onclick="startFeynman()">🧑‍🏫 Feynman Mode<small>Learn like Richard Feynman</small></button>';
-  html+='<button class="qa-btn" onclick="startSanskrit()">🪔 Sanskrit Mode<small>संस्कृत — read, write, speak</small></button>';
-  html+='<div class="ws-card"><h3>🌍 Learn a Language</h3><p>Dedicated teachers for 5 world languages — reading, writing, speaking & culture, step by step.</p><div class="lib-chips" style="margin:8px 0 2px">';
-  html+='<button class="lib-chip" onclick="startLangMode(\'global-english\')">🌐 Global English</button>';
-  html+='<button class="lib-chip" onclick="startLangMode(\'american-english\')">🇺🇸 American English</button>';
-  html+='<button class="lib-chip" onclick="startLangMode(\'spanish\')">🇪🇸 Spanish</button>';
-  html+='<button class="lib-chip" onclick="startLangMode(\'mandarin\')">🇨🇳 Mandarin</button>';
-  html+='<button class="lib-chip" onclick="startLangMode(\'german\')">🇩🇪 German</button>';
-  html+='</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Plus 🪔 Sanskrit Mode above — 6 languages total.</div></div>';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');newChat()">💬 New chat<small>Start a fresh lesson</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');openExamHub()">🎯 Exam mode<small>HSSC / SSC / UPSC mock</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');testWeak()">📕 Fix weak points<small>Quiz me on my mistakes</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');dailyBrief()">📅 Daily brief<small>Today\'s study plan</small></button>';
-  html+='<button class="qa-btn" onclick="predictMyScore()">🔮 Predict my score<small>Real data, honest answer</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'stats\')">📈 Full analytics<small>Charts & weak areas</small></button>';
   html+='</div>';
   html+='<div class="ws-h">🕘 Recent chats</div><div class="ws-card" style="padding:6px">';
   if(!sc.length)html+='<div class="empty">No chats yet — start one from Quick actions ☝</div>';
