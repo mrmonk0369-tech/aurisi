@@ -577,12 +577,21 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
       <label><input type="checkbox" id="handsFreeChk" style="vertical-align:-2px"> 🎙️ Hands-free mode — AURISI speaks its reply and starts listening automatically</label>
     </div>
     <div class="field">
-      <label><input type="checkbox" id="aiVoicesChk" style="vertical-align:-2px"> \ud83d\udde3\ufe0f AI Voices — natural neural speech for podcasts and replies (needs Gemini key)</label>
+      <label><input type="checkbox" id="aiVoicesChk" style="vertical-align:-2px"> 🗣️ AI Voices — natural neural speech for podcasts and replies (needs Gemini key)</label>
       <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
         <select class="select" id="aiVoiceSel" style="flex:1;min-width:150px"></select>
-        <button class="btn small" onclick="previewAiVoice()">\u25b6 Preview</button>
+        <button class="btn small" onclick="previewAiVoice()">▶ Preview</button>
       </div>
       <div class="hint">Falls back to the browser voice when no key is set.</div>
+    </div>
+    <div class="field">
+      <label>🎤 Desi Voices — Sarvam key (optional)</label>
+      <input type="password" id="sarvamKeyInput" placeholder="Paste key from dashboard.sarvam.ai (free)">
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+        <select class="select" id="sarvamVoiceSel" style="flex:1;min-width:150px"></select>
+        <button class="btn small" onclick="previewSarvamVoice()">▶ Preview</button>
+      </div>
+      <div class="hint">Natural Indian voices — best for Hindi/Hinglish. Takes priority over Gemini voices when a key is set. Free key: dashboard.sarvam.ai</div>
     </div>
     <div class="field">
       <label>🏫 Institute name (white-label — optional)</label>
@@ -1305,8 +1314,10 @@ function msgRow(m,isLast){
         if(!window.speechSynthesis&&!aiVoicesOn())return;
         playing=true;btn.textContent="⏸ Stop";
         try{speechSynthesis.cancel()}catch(e){}
-        const useAi=aiVoicesOn();
+        const useSarvam=sarvamKeySet();
+        const useAi=!useSarvam&&aiVoicesOn();
         const va=getAiVoice(),vb=AI_VOICE_PAIR[va]||"Puck";
+        const sa=getSarvamVoice(),sb=SARVAM_PAIR[sa]||"abhilash";
         let i=0;
         const voices=speechSynthesis.getVoices()||[];
         const langP=speechLangFor(getUiLang()).slice(0,2).toLowerCase();
@@ -1328,12 +1339,14 @@ function msgRow(m,isLast){
           if(!playing)return;
           if(i>=pData.length){playing=false;btn.textContent="▶ Play podcast";toast("Podcast finished ✅");return}
           const seg=pData[i];
-          if(useAi){
-            aiSpeak(seg,(i%2===0)?va:vb,function(ok){
+          if(useSarvam||useAi){
+            var onTTS=function(ok){
               if(!playing)return;
               if(ok){i++;setTimeout(nextLine,350)}
               else browserLine(seg,function(){if(!playing)return;i++;setTimeout(nextLine,200)});
-            },true);
+            };
+            if(useSarvam)sarvamSpeak(seg,(i%2===0)?sa:sb,onTTS,true);
+            else aiSpeak(seg,(i%2===0)?va:vb,onTTS,true);
           }else{
             browserLine(seg,function(){if(!playing)return;i++;setTimeout(nextLine,320)});
           }
@@ -1560,13 +1573,21 @@ function dailyBrief(){
 function speakThenListen(t){
   var clean=cleanForSpeech(t);
   var afterVoice=()=>{setTimeout(()=>{if(!STREAM.active&&isHandsFree()&&!state.isListening)micInput()},700)};
-  if(aiVoicesOn()){
+  var gemOrBrowser=function(){
+    if(aiVoicesOn()){
+      stopAiAudio();
+      aiSpeak(clean,getAiVoice(),function(ok){if(!ok)browserSpeakFallback(clean,afterVoice);else afterVoice()},true);
+      return;
+    }
+    if(!window.speechSynthesis)return;
+    browserSpeakFallback(clean,afterVoice);
+  };
+  if(sarvamKeySet()){
     stopAiAudio();
-    aiSpeak(clean,getAiVoice(),function(ok){if(!ok)browserSpeakFallback(clean,afterVoice);else afterVoice()});
+    sarvamSpeak(clean,getSarvamVoice(),function(ok){if(!ok)gemOrBrowser();else afterVoice()},true);
     return;
   }
-  if(!window.speechSynthesis)return;
-  browserSpeakFallback(clean,afterVoice);
+  gemOrBrowser();
 }
 const QUIZ_ANSWERED={};const QUIZ_SCORE={right:0,wrong:0,level:"medium",streak:0,wstreak:0,timed:false};
 function showQuizResult(box,q,ans,picked,expl){
@@ -2103,8 +2124,48 @@ function browserSpeakFallback(clean,onend){
     window.speechSynthesis.speak(u);
   }catch(e){if(onend)onend()}
 }
+/* ===================== v18 DESI VOICES (Sarvam Bulbul TTS) ===================== */
+const SARVAM_VOICE_OPTIONS=[["anushka","Anushka — female, warm"],["abhilash","Abhilash — male, clear"],["manisha","Manisha — female, soft"],["vidya","Vidya — female, teacher-like"],["arya","Arya — female, young"],["meera","Meera — female, calm"]];
+const SARVAM_PAIR={anushka:"abhilash",abhilash:"anushka",manisha:"abhilash",vidya:"abhilash",arya:"abhilash",meera:"abhilash"};
+function sarvamKeySet(){return (localStorage.getItem(STORAGE+"sarvamKey")||"").trim().length>10}
+function getSarvamVoice(){return localStorage.getItem(STORAGE+"sarvamVoice")||"anushka"}
+async function sarvamSpeak(text,speaker,onend,quiet){
+  var key=(localStorage.getItem(STORAGE+"sarvamKey")||"").trim();
+  if(!key){if(onend)onend(false);return false}
+  try{
+    var r=await fetch("https://api.sarvam.ai/text-to-speech",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","api-subscription-key":key},
+      body:JSON.stringify({text:cleanForSpeech(text).slice(0,1200),speaker:speaker||getSarvamVoice(),pitch:0,pace:1.0,loudness:1.0,speech_sample_rate:24000,enable_preprocessing:true,model:"bulbul:v2"})
+    });
+    if(!r.ok)throw new Error("sarvam "+r.status);
+    var d=await r.json();
+    var b64=d&&d.audios&&d.audios[0];
+    if(!b64)throw new Error("no audio");
+    var bin=atob(b64),n=bin.length,buf=new Uint8Array(n);
+    for(var i=0;i<n;i++)buf[i]=bin.charCodeAt(i);
+    stopAiAudio();
+    AI_AUDIO=new Audio(URL.createObjectURL(new Blob([buf],{type:"audio/wav"})));
+    AI_AUDIO.onended=function(){if(onend)onend(true)};
+    AI_AUDIO.onerror=function(){if(onend)onend(false)};
+    await AI_AUDIO.play();
+    return true;
+  }catch(e){
+    if(!quiet)toast("Desi voice failed — switching voice");
+    if(onend)onend(false);
+    return false;
+  }
+}
+function previewSarvamVoice(){
+  var v=$("sarvamVoiceSel")?$("sarvamVoiceSel").value:"anushka";
+  if(!(localStorage.getItem(STORAGE+"sarvamKey")||"").trim()){toast("Add your Sarvam key first — free at dashboard.sarvam.ai");return}
+  localStorage.setItem(STORAGE+"sarvamVoice",v);
+  stopAiAudio();
+  sarvamSpeak("Namaste! Main AURISI hoon, aapki AI study companion. Aaj hum kuch naya seekhein!",v,null,true);
+}
 function speakText(text){
   var clean=cleanForSpeech(text);
+  if(sarvamKeySet()){stopAiAudio();sarvamSpeak(clean,getSarvamVoice(),null,false);return}
   if(aiVoicesOn()){stopAiAudio();aiSpeak(clean,getAiVoice());return}
   if(!window.speechSynthesis){toast("Speech not supported");return}
   try{
@@ -2174,6 +2235,9 @@ function openSettings(){
   const avsel=$("aiVoiceSel");
   if(avsel){avsel.innerHTML=AI_VOICE_OPTIONS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join("");avsel.value=getAiVoice()||"Kore"}
   const avchk=$("aiVoicesChk");if(avchk)avchk.checked=localStorage.getItem(STORAGE+"aiVoices")==="1";
+  var skIn=$("sarvamKeyInput");if(skIn)skIn.value=localStorage.getItem(STORAGE+"sarvamKey")||"";
+  var svs=$("sarvamVoiceSel");
+  if(svs){svs.innerHTML=SARVAM_VOICE_OPTIONS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join("");svs.value=getSarvamVoice()||"anushka"}
   $("modalBack").classList.add("open");
 }
 function closeModal(){$("modalBack").classList.remove("open")}
@@ -2188,6 +2252,10 @@ function saveSettings(){
   localStorage.setItem(STORAGE+"handsFree",$("handsFreeChk").checked?"1":"0");
   localStorage.setItem(STORAGE+"aiVoices",$("aiVoicesChk").checked?"1":"0");
   localStorage.setItem(STORAGE+"aiVoice",$("aiVoiceSel").value||"Kore");
+  var sk=$("sarvamKeyInput").value.trim();
+  if(sk)localStorage.setItem(STORAGE+"sarvamKey",sk);
+  else localStorage.removeItem(STORAGE+"sarvamKey");
+  localStorage.setItem(STORAGE+"sarvamVoice",$("sarvamVoiceSel").value||"anushka");
   localStorage.setItem(STORAGE+"instName",($("instName").value||"").trim());
   const lf=$("instLogo");
   if(lf&&lf.files&&lf.files[0]){
