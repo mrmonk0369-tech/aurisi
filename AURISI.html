@@ -530,6 +530,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
   <div class="art-body md" id="artBody"></div>
 </div>
 <div class="fy-chip" id="fyChip"><b>🧑‍🏫 Feynman Mode</b><button class="fy-x" onclick="stopFeynman()" aria-label="Exit Feynman Mode" title="Exit Feynman Mode">✕</button></div>
+<div class="fy-chip" id="sansChip" style="background:linear-gradient(135deg,#7a4a12,#b07a1e)"><b>🪔 Sanskrit Mode</b><button class="fy-x" onclick="stopSanskrit()" aria-label="Exit Sanskrit Mode" title="Exit Sanskrit Mode">✕</button></div>
 <div id="app">
   <div class="topbar">
     <button class="icon-btn chat-back-btn" onclick="goBackHome()" aria-label="Back to home" title="Back to home">
@@ -1034,7 +1035,7 @@ function SYS_PROMPT(){
   "TEST PAPER: when a teacher asks for a question paper or test paper, output a properly formatted exam — general instructions, sections, marks per question on the right, total marks and time — strictly from the attached PDF, followed by a clearly separated ANSWER KEY with mark-scheme hints. "+
   "GRADER: when a homework photo is attached for grading, check every question, mark right/partial/wrong, give a total score, one-line corrections, and a 2-line submission report; if the handwriting is unclear, say what you could not read instead of guessing. "+
   "VIDEO PROMPT: when the learner or teacher asks for an animation/video prompt for a concept, output a ready-to-paste 30-second prompt for AI video tools — scene-by-scene visuals, narration script, style notes — and mention free options like Manim (great for math/physics) or any text-to-video AI they have. "+
-  "PREDICTION: when predicting the learner's score, use the quiz data provided honestly — give a percentage range, the 2 biggest risk areas, and what to fix first; never flatter."+(FEYNMAN_ON?("\n\n"+FEYNMAN_RULES):"");
+  "PREDICTION: when predicting the learner's score, use the quiz data provided honestly — give a percentage range, the 2 biggest risk areas, and what to fix first; never flatter."+(SANS_ON?("\n\n"+SANSKRIT_RULES):(FEYNMAN_ON?("\n\n"+FEYNMAN_RULES):""));
 }
 
 /* ===================== GEMINI + PUTER ENGINES ===================== */
@@ -1277,7 +1278,7 @@ function renderChat(){
   $("welcome").style.display=state.chatHistory.length?"none":"block";
   if(state.pdfText)showPdfChip();else clearPdf();
   state.chatHistory.forEach((m,i)=>{log.appendChild(msgRow(m,i===state.chatHistory.length-1))});
-  scrollDown();renderFeynmanChip();
+  scrollDown();renderFeynmanChip();renderSanskritChip();
 }
 function msgRow(m,isLast){
   const row=document.createElement("div");
@@ -1789,6 +1790,7 @@ function send(){
   const el=$("prompt");
   const v=el.value.trim();
   if(/^stop[! ]*feynman$/i.test(v)){el.value="";stopFeynman();return}
+  if(/^stop[! ]*sanskrit$/i.test(v)){el.value="";stopSanskrit();return}
   if(!v&&!state.currentImageBase64){toast("Type something or attach an image");return}
   const parts=[];
   if(v)parts.push({text:v});
@@ -2065,6 +2067,7 @@ function renderFeynmanChip(){var c=$("fyChip");if(c)c.style.display=FEYNMAN_ON?"
 function startFeynman(){
   if(STREAM.active){toast("AURISI is still answering — try again in a moment");return}
   newChat();
+  SANS_ON=false;try{localStorage.removeItem(STORAGE+"sanskrit")}catch(e){}renderSanskritChip();
   FEYNMAN_ON=true;
   try{localStorage.setItem(STORAGE+"feynman","1")}catch(e){}
   state.chatHistory.push({role:"model",parts:[{text:"🧑‍🏫 **Feynman Mode ON!**\n\nFrom now on, I'll teach you the way Richard Feynman taught — no jargon, just simple ideas, everyday analogies, and real understanding from the ground up. You explain things back to me, and we'll build it until it clicks.\n\n**So — what do you want to truly understand today?**\nAny subject, any class: Physics, Chemistry, Maths, anything. Name the topic and let's enjoy finding things out! 🎯"}]});
@@ -2078,6 +2081,44 @@ function stopFeynman(){
   state.chatHistory.push({role:"model",parts:[{text:"✅ **Feynman Mode off.** Back to normal teaching — you can ask me anything the regular way."}]});
   persist();renderChat();
   toast("Feynman Mode off");
+}
+/* ===================== v19.5 SANSKRIT MODE ===================== */
+var SANS_ON=false;
+try{SANS_ON=localStorage.getItem(STORAGE+"sanskrit")==="1"}catch(e){}
+const SANSKRIT_RULES=
+"===== SANSKRIT TEACHING MODE (ACTIVE FOR THIS WHOLE CONVERSATION) ===== "+
+"You are now AURISI's dedicated Sanskrit teacher (संस्कृतशिक्षक). Follow these rules in EVERY reply: "+
+"(1) LEVEL TRACKING: first find the learner's level and remember it — BEGINNER (alphabet \u0938\u094d\u0935\u0930/\u0935\u094d\u092f\u091e\u094d\u091c\u0928, simple words), INTERMEDIATE (sentences, \u0936\u092c\u094d\u0926 \u0930\u0942\u092a, \u0927\u093e\u0924\u0941 \u0930\u0942\u092a, sandhi, vibhakti), ADVANCED (shlokas, subhashitas, Gita verses, translation & meaning). Adapt depth accordingly. "+
+"(2) ALWAYS write Sanskrit in Devanagari first, followed by simple transliteration in parentheses, then meaning — e.g. \u0928\u092e\u0938\u094d\u0924\u0947 (namaste) — 'I bow to you'. Never give only the transliteration. "+
+"(3) PRONUNCIATION: for every new word give a simple phonetic guide in parentheses, e.g. \u0927\u0930\u094d\u092e (dharm). Keep these short so text-to-speech stays clean. "+
+"(4) TINY STEPS: teach ONE letter, rule or word at a time for beginners; ONE concept at a time otherwise. After each, give a micro-exercise (translate this word / identify the vibhakti / join this sandhi / read this line) and CHECK the answer before moving on. Never dump walls of text. "+
+"(5) WRITING (likhna): when teaching the alphabet, describe stroke order simply, group vowels (\u0938\u094d\u0935\u0930) and consonants (\u0935\u094d\u092f\u091e\u094d\u091c\u0928), and give 2-3 practice words using only letters taught so far. "+
+"(6) READING (padhna): give short lines for the learner to read aloud; gently correct. "+
+"(7) SPEAKING (bolna): encourage the learner to type Sanskrit responses; correct their errors warmly and explain WHY (grammar rule). "+
+"(8) GRAMMAR FIRST PRINCIPLES: explain sandhi, vibhakti and verb forms with 2 clear examples each, then drill with practice. "+
+"(9) Explain in the learner's language (English/Hindi as they write), but all Sanskrit content stays in Devanagari. "+
+"(10) Occasionally weave in ONE cultural note (a subhashita's meaning, why a word matters) — max once every few turns. "+
+"(11) End each section with a 1-line recap + one practice sentence to translate. "+
+"(12) If asked how to exit: tap the \u2715 on the Sanskrit badge at the top. "+
+"Keep every other AURISI rule (identity, safety, language matching).";
+function renderSanskritChip(){var c=$("sansChip");if(c)c.style.display=SANS_ON?"flex":"none"}
+function startSanskrit(){
+  if(STREAM.active){toast("AURISI is still answering — try again in a moment");return}
+  newChat();
+  FEYNMAN_ON=false;try{localStorage.removeItem(STORAGE+"feynman")}catch(e){}renderFeynmanChip();
+  SANS_ON=true;
+  try{localStorage.setItem(STORAGE+"sanskrit","1")}catch(e){}
+  state.chatHistory.push({role:"model",parts:[{text:"\u{1FA94} **Sanskrit Mode ON!** \u0928\u092e\u0938\u094d\u0924\u0947 (namaste)!\n\nFrom now on, I am your dedicated Sanskrit teacher \u2014 reading (\u092a\u0920\u0928\u092e\u094d), writing (\u0932\u093f\u0916\u0928\u092e\u094d), speaking (\u0935\u091a\u0928\u092e\u094d) and everything in between \u2014 step by step, from the alphabet to shlokas.\n\n**First, tell me your level:**\n**1\uFE0F Complete beginner** \u2014 start from the alphabet\n**2\uFE0F I read Devanagari** \u2014 teach me sentences & grammar\n**3\uFE0F Advanced** \u2014 shlokas, subhashitas & translation\n\nOr just name what you want to learn today! \u{1F3AF}"}]});
+  persist();renderChat();switchView("chat");
+  toast("\u{1FA94} Sanskrit Mode \u2014 \u0928\u092e\u0938\u094d\u0924\u0947!");
+}
+function stopSanskrit(){
+  SANS_ON=false;
+  try{localStorage.removeItem(STORAGE+"sanskrit")}catch(e){}
+  renderSanskritChip();
+  state.chatHistory.push({role:"model",parts:[{text:"\u2705 **Sanskrit Mode off.** \u0927\u0928\u094d\u092f\u0935\u093e\u0926 (dhanyavaad) for learning! Back to normal teaching."}]});
+  persist();renderChat();
+  toast("Sanskrit Mode off");
 }
 function regenerate(){
   if(STREAM.active)return;
@@ -2197,6 +2238,7 @@ function renderDash(){
   html+='</div>';
   html+='<div class="ws-h">⚡ Quick actions</div><div class="qa-row">';
   html+='<button class="qa-btn" onclick="startFeynman()">🧑‍🏫 Feynman Mode<small>Learn like Richard Feynman</small></button>';
+  html+='<button class="qa-btn" onclick="startSanskrit()">🪔 Sanskrit Mode<small>संस्कृत — read, write, speak</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');newChat()">💬 New chat<small>Start a fresh lesson</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');openExamHub()">🎯 Exam mode<small>HSSC / SSC / UPSC mock</small></button>';
   html+='<button class="qa-btn" onclick="switchView(\'chat\');testWeak()">📕 Fix weak points<small>Quiz me on my mistakes</small></button>';
@@ -2616,7 +2658,8 @@ function flushChat(){
 function saveChats(){try{localStorage.setItem(STORAGE+"savedChats",JSON.stringify(state.savedChats))}catch(e){}}
 function newChat(){
   flushChat();
-  FEYNMAN_ON=false;try{localStorage.removeItem(STORAGE+"feynman")}catch(e){}
+  FEYNMAN_ON=false;SANS_ON=false;
+  try{localStorage.removeItem(STORAGE+"feynman");localStorage.removeItem(STORAGE+"sanskrit")}catch(e){}
   state.activeId=null;
   state.chatHistory=[];
   persist();renderChat();renderDrawer();closeDrawer();
