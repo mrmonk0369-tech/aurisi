@@ -351,6 +351,15 @@ button{font:inherit;cursor:pointer}
 .lib-chip.new{border-style:dashed;color:var(--muted)}
 [data-ai-theme="dark"] .art-panel{border-left-color:rgba(255,255,255,.08);box-shadow:-8px 0 30px rgba(0,0,0,.5)}
 [data-ai-theme="dark"] .art-back{background:rgba(0,0,0,.55)}
+/* ===================== v19.2 FOCUS MODE ===================== */
+body.chat-focus .wsbot{display:none!important}
+@media(max-width:879px){
+  body.chat-focus #app{padding-bottom:0}
+  body.chat-focus .drawer{padding-bottom:14px}
+}
+.chat-back-btn{display:none;flex:none;margin-right:2px}
+body.chat-focus .chat-back-btn{display:flex}
+body.chat-focus .chat-back-btn:hover{background:var(--surface2)}
 /* talk */
 .screen{position:fixed;inset:0;background:var(--bg);z-index:70;display:none;flex-direction:column}
 .screen.open{display:flex}
@@ -513,6 +522,9 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
 </div>
 <div id="app">
   <div class="topbar">
+    <button class="icon-btn chat-back-btn" onclick="goBackHome()" aria-label="Back to home" title="Back to home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
     <button class="icon-btn" onclick="toggleDrawer()" aria-label="Chats">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h13"/></svg>
     </button>
@@ -2068,10 +2080,13 @@ function quizFromPdf(){
   if(!state.pdfText){toast("Attach a PDF first");return}
   quick("Generate a timed exam from the attached PDF: one question at a time using [[QUIZ|...]] tokens, strictly based on the PDF's own content — its core topics, dates, facts and concepts."+(getExamMode()==="none"?"":" Follow "+getExamMode().toUpperCase()+" exam pattern with negative marking.")+" Start with question 1 immediately.");
 }
-let CUR_VIEW="";let STUDIO_PDF_ID=null;
+let CUR_VIEW="";let STUDIO_PDF_ID=null;let LAST_HOME="dash";
+function goBackHome(){switchView(LAST_HOME||"dash")}
 function switchView(v){
   if(CUR_VIEW===v)return;
+  if(CUR_VIEW&&CUR_VIEW!=="chat")LAST_HOME=CUR_VIEW;
   CUR_VIEW=v;
+  document.body.classList.toggle("chat-focus",v==="chat");
   try{localStorage.setItem(STORAGE+"view",v)}catch(e){}
   const ids={dash:"viewDash",lib:"viewLib",stats:"viewStats"};
   Object.keys(ids).forEach(k=>{const el=$(ids[k]);if(el)el.classList.toggle("on",k===v)});
