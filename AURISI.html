@@ -2184,10 +2184,17 @@ function browserSpeakFallback(clean,onend){
   }catch(e){if(onend)onend()}
 }
 /* ===================== v18 DESI VOICES (Sarvam Bulbul TTS) ===================== */
-const SARVAM_VOICE_OPTIONS=[["anushka","Anushka · Female"],["abhilash","Abhilash · Male"],["manisha","Manisha · Female"],["vidya","Vidya · Female"],["arya","Arya · Female"],["meera","Meera · Female"]];
-const SARVAM_PAIR={anushka:"abhilash",abhilash:"anushka",manisha:"abhilash",vidya:"abhilash",arya:"abhilash",meera:"abhilash"};
+const SARVAM_VOICE_OPTIONS=[["shubh","Shubh · Male"],["aditya","Aditya · Male"],["rahul","Rahul · Male"],["ritu","Ritu · Female"],["priya","Priya · Female"],["neha","Neha · Female"],["pooja","Pooja · Female"],["shruti","Shruti · Female"]];
+const SARVAM_PAIR={shubh:"priya",aditya:"ritu",rahul:"neha",ritu:"aditya",priya:"shubh",neha:"rahul",pooja:"aditya",shruti:"shubh"};
 function sarvamKeySet(){return (localStorage.getItem(STORAGE+"sarvamKey")||"").trim().length>10}
-function getSarvamVoice(){return localStorage.getItem(STORAGE+"sarvamVoice")||"anushka"}
+function getSarvamVoice(){var v=localStorage.getItem(STORAGE+"sarvamVoice")||"shubh";return SARVAM_PAIR[v]?v:"shubh"}
+function sarvamLang(){
+  try{
+    var c=speechLangFor(getUiLang())||"en-IN";
+    var sup=["bn-IN","en-IN","gu-IN","hi-IN","kn-IN","ml-IN","mr-IN","od-IN","pa-IN","ta-IN","te-IN"];
+    return sup.indexOf(c)>-1?c:"en-IN"
+  }catch(e){return "en-IN"}
+}
 async function sarvamSpeak(text,speaker,onend,quiet){
   var key=(localStorage.getItem(STORAGE+"sarvamKey")||"").trim();
   if(!key){if(onend)onend(false);return false}
@@ -2195,9 +2202,12 @@ async function sarvamSpeak(text,speaker,onend,quiet){
     var r=await fetch("https://api.sarvam.ai/text-to-speech",{
       method:"POST",
       headers:{"Content-Type":"application/json","api-subscription-key":key},
-      body:JSON.stringify({text:cleanForSpeech(text).slice(0,1200),speaker:speaker||getSarvamVoice(),pitch:0,pace:1.0,loudness:1.0,speech_sample_rate:24000,enable_preprocessing:true,model:"bulbul:v2"})
+      body:JSON.stringify({text:cleanForSpeech(text).slice(0,2400),target_language_code:sarvamLang(),speaker:speaker||getSarvamVoice(),model:"bulbul:v3",pace:1.0,speech_sample_rate:24000,output_audio_codec:"wav"})
     });
-    if(!r.ok)throw new Error("sarvam "+r.status);
+    if(!r.ok){
+      var em="";try{var ej=await r.json();em=(ej&&ej.error&&ej.error.message)||""}catch(e){}
+      throw new Error("sarvam "+r.status+(em?": "+em:""));
+    }
     var d=await r.json();
     var b64=d&&d.audios&&d.audios[0];
     if(!b64)throw new Error("no audio");
@@ -2210,17 +2220,21 @@ async function sarvamSpeak(text,speaker,onend,quiet){
     await AI_AUDIO.play();
     return true;
   }catch(e){
-    if(!quiet)toast("Desi voice failed — switching voice");
+    if(!quiet)toast("Desi voice failed — "+String(e&&e.message||"error").slice(0,90));
     if(onend)onend(false);
     return false;
   }
 }
 function previewSarvamVoice(){
-  var v=$("sarvamVoiceSel")?$("sarvamVoiceSel").value:"anushka";
+  var ki=$("sarvamKeyInput");
+  var typed=ki?(ki.value||"").trim():"";
+  if(typed){try{localStorage.setItem(STORAGE+"sarvamKey",typed)}catch(e){}}
+  var v=$("sarvamVoiceSel")?$("sarvamVoiceSel").value:"shubh";
   if(!(localStorage.getItem(STORAGE+"sarvamKey")||"").trim()){toast("Add your Sarvam key first — free at dashboard.sarvam.ai");return}
   localStorage.setItem(STORAGE+"sarvamVoice",v);
   stopAiAudio();
-  sarvamSpeak("Namaste! Main AURISI hoon, aapki AI study companion. Aaj hum kuch naya seekhein!",v,null,true);
+  toast("Testing Desi voice…");
+  sarvamSpeak("Namaste! Main AURISI hoon, aapki AI study companion. Aaj hum kuch naya seekhein!",v,null,false);
 }
 function speakText(text){
   var clean=cleanForSpeech(text);
@@ -2296,7 +2310,7 @@ function openSettings(){
   const avchk=$("aiVoicesChk");if(avchk)avchk.checked=localStorage.getItem(STORAGE+"aiVoices")==="1";
   var skIn=$("sarvamKeyInput");if(skIn)skIn.value=localStorage.getItem(STORAGE+"sarvamKey")||"";
   var svs=$("sarvamVoiceSel");
-  if(svs){svs.innerHTML=SARVAM_VOICE_OPTIONS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join("");svs.value=getSarvamVoice()||"anushka"}
+  if(svs){svs.innerHTML=SARVAM_VOICE_OPTIONS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join("");svs.value=getSarvamVoice()||"shubh"}
   settingsTab("general");
   $("modalBack").classList.add("open");
 }
