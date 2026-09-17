@@ -285,6 +285,30 @@ button{font:inherit;cursor:pointer}
 .file-btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;font-family:inherit}
 .file-btn:hover{border-color:var(--accent2)}
 .file-name{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ===================== v20 AGENT CARDS + SURVEY FLASHCARDS + GEMINI WORDMARK ===================== */
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:10px}
+.agent-card{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:13px 16px;cursor:pointer;font-family:inherit;text-align:left;transition:.16s}
+.agent-card:hover{border-color:rgba(217,119,87,.45);box-shadow:0 8px 22px rgba(60,35,10,.1);transform:translateY(-1px)}
+.agent-card b{display:block;font-size:13.5px;color:var(--text);letter-spacing:.2px;font-weight:800}
+.agent-card small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.35;font-weight:600}
+.agent-ico{flex:none;width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;background:linear-gradient(135deg,rgba(217,119,87,.16),rgba(163,74,36,.07));border:1px solid rgba(217,119,87,.28)}
+.sv-dashes{display:flex;gap:6px;margin-bottom:16px}
+.sv-dash{height:4px;flex:1;border-radius:99px;background:var(--line);transition:.2s}
+.sv-dash.on{background:var(--accent)}
+.sv-qnum{font-size:10.5px;font-weight:800;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.sv-qtext{font-family:Georgia,'Times New Roman',serif;font-size:19px;line-height:1.5;color:var(--text);margin-bottom:8px}
+.sv-hint{font-size:9.5px;font-weight:800;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;cursor:pointer}
+.sv-ans{display:none;border-top:1px dashed var(--line);margin-top:12px;padding-top:12px;font-size:14.5px;line-height:1.55;color:var(--text)}
+.sv-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+.sv-back{background:none;border:none;font:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;padding:8px 2px;font-family:inherit}
+.sv-next{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:99px;padding:9px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
+.cards-box{border-radius:24px;box-shadow:0 12px 32px rgba(60,35,10,.09);max-width:520px}
+.brand h1{font-size:17px}
+.brand>div{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.brand small{display:inline-block;background:var(--surface2);border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:9.5px;letter-spacing:.3px}
+[data-ai-theme="dark"] .agent-card{border-color:rgba(255,255,255,.11)}
+[data-ai-theme="dark"] .agent-card:hover{box-shadow:0 8px 22px rgba(0,0,0,.4)}
+[data-ai-theme="dark"] .cards-box{box-shadow:0 12px 32px rgba(0,0,0,.45)}
 /* ===================== v18.2 SETTINGS TABS ===================== */
 .modal-back{z-index:95}
 .s-tabs{display:flex;gap:6px;padding:12px 14px 2px}
@@ -1464,31 +1488,40 @@ function msgRow(m,isLast){
     }
     if(cData&&cData.length>1){
       const cbox=document.createElement("div");cbox.className="cards-box";
-      const hint=document.createElement("div");hint.className="fc-hint";hint.textContent="Tap the card to flip it";cbox.appendChild(hint);
       const pairs=[];
       for(let i=0;i+1<cData.length;i+=2)pairs.push([cData[i],cData[i+1]]);
       let idx=0;
-      const fc=document.createElement("div");fc.className="fc";
-      const inner=document.createElement("div");inner.className="fc-inner";
-      const front=document.createElement("div");front.className="fc-face fc-front";
-      const back=document.createElement("div");back.className="fc-face fc-back";
-      inner.appendChild(front);inner.appendChild(back);fc.appendChild(inner);
-      fc.onclick=()=>fc.classList.toggle("flipped");
-      cbox.appendChild(fc);
-      const nav=document.createElement("div");nav.className="fc-nav";
-      const prev=document.createElement("button");prev.textContent="‹";
+      const dashes=document.createElement("div");dashes.className="sv-dashes";
+      const dEls=pairs.map(()=>{const d=document.createElement("div");d.className="sv-dash";dashes.appendChild(d);return d});
+      cbox.appendChild(dashes);
+      const qnum=document.createElement("div");qnum.className="sv-qnum";
+      const qtext=document.createElement("div");qtext.className="sv-qtext";
+      const hint=document.createElement("div");hint.className="sv-hint";hint.textContent="Tap to reveal answer";
+      const ans=document.createElement("div");ans.className="sv-ans";
+      const qwrap=document.createElement("div");
+      qwrap.appendChild(qnum);qwrap.appendChild(qtext);qwrap.appendChild(hint);qwrap.appendChild(ans);
+      qwrap.onclick=()=>{
+        if(ans.style.display==="block"){ans.style.display="none";hint.textContent="Tap to reveal answer"}
+        else{ans.style.display="block";hint.textContent="Answer"}
+      };
+      cbox.appendChild(qwrap);
+      const foot=document.createElement("div");foot.className="sv-foot";
+      const back=document.createElement("button");back.className="sv-back";back.textContent="Back";
       const cnt=document.createElement("span");cnt.className="fc-count";
-      const next=document.createElement("button");next.textContent="›";
-      nav.appendChild(prev);nav.appendChild(cnt);nav.appendChild(next);
-      cbox.appendChild(nav);
+      const next=document.createElement("button");next.className="sv-next";next.textContent="Next";
+      foot.appendChild(back);foot.appendChild(cnt);foot.appendChild(next);
+      cbox.appendChild(foot);
       function showCard(){
         if(!pairs.length)return;
         idx=(idx+pairs.length)%pairs.length;
-        front.textContent=pairs[idx][0];back.textContent=pairs[idx][1];
-        fc.classList.remove("flipped");
-        cnt.textContent=(idx+1)+"/"+pairs.length;
+        qnum.textContent="QUESTION "+String(idx+1).padStart(2,"0");
+        qtext.textContent=pairs[idx][0];
+        ans.textContent=pairs[idx][1];ans.style.display="none";
+        hint.textContent="Tap to reveal answer";
+        dEls.forEach((d,i)=>d.classList.toggle("on",i<=idx));
+        cnt.textContent=(idx+1)+" of "+pairs.length;
       }
-      prev.onclick=()=>{idx--;showCard()};
+      back.onclick=()=>{idx--;showCard()};
       next.onclick=()=>{idx++;showCard()};
       showCard();
       md.appendChild(cbox);
@@ -2433,13 +2466,13 @@ function renderDash(){
   html+='<span class="chip">🗄️ '+L.pdfs.length+' book'+(L.pdfs.length===1?'':'s')+' in library</span>';
   html+='<span class="chip">📕 '+ms.length+' mistake'+(ms.length===1?'':'s')+' logged</span>';
   html+='</div></div>';
-  html+='<div class="ws-h">⚡ Study Tools</div><div class="qa-row">';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');newChat()">💬 New chat<small>Start a fresh lesson</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');openExamHub()">🎯 Exam mode<small>HSSC / SSC / UPSC mock</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');testWeak()">📕 Fix weak points<small>Quiz me on my mistakes</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'chat\');dailyBrief()">📅 Daily brief<small>Today\'s study plan</small></button>';
-  html+='<button class="qa-btn" onclick="predictMyScore()">🔮 Predict my score<small>Real data, honest answer</small></button>';
-  html+='<button class="qa-btn" onclick="switchView(\'stats\')">📈 Full analytics<small>Charts & weak areas</small></button>';
+  html+='<div class="ws-h">⚡ Study Tools</div><div class="agent-grid">';
+  html+='<button class="agent-card" onclick="switchView(\'chat\');newChat()"><span class="agent-ico">✨</span><span><b>New Lesson</b><small>Start a fresh chat on any subject or topic</small></span></button>';
+  html+='<button class="agent-card" onclick="switchView(\'chat\');openExamHub()"><span class="agent-ico">🎯</span><span><b>Mock Exam</b><small>Full timed practice test — HSSC, SSC, UPSC style</small></span></button>';
+  html+='<button class="agent-card" onclick="switchView(\'chat\');testWeak()"><span class="agent-ico">📕</span><span><b>Mistake Drill</b><small>Re-test quiz built from your past wrong answers</small></span></button>';
+  html+='<button class="agent-card" onclick="switchView(\'chat\');dailyBrief()"><span class="agent-ico">📋</span><span><b>Daily Brief</b><small>Today\'s plan + 5 current-affairs points for exams</small></span></button>';
+  html+='<button class="agent-card" onclick="predictMyScore()"><span class="agent-ico">🔮</span><span><b>Score Predictor</b><small>Predicts your real exam score from your study data</small></span></button>';
+  html+='<button class="agent-card" onclick="switchView(\'stats\')"><span class="agent-ico">📈</span><span><b>Full Analytics</b><small>Charts, streaks and your weakest topics in one view</small></span></button>';
   html+='</div>';
   html+='<div class="ws-h">🧑‍🏫 Your Teachers</div><div class="teacher-row">';
   html+='<div class="ws-card teacher-card"><div class="tc-ico">🧑‍🏫</div><div><b>Feynman Mode</b><small>Learn like the legendary physicist — simple words, everyday analogies, explain-back technique</small></div><button class="lib-open" onclick="startFeynman()">Start</button></div>';
