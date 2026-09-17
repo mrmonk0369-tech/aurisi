@@ -289,6 +289,13 @@ button{font:inherit;cursor:pointer}
 .file-btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;font-family:inherit}
 .file-btn:hover{border-color:var(--accent2)}
 .file-name{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ===================== v18.2 SETTINGS TABS ===================== */
+.modal-back{z-index:95}
+.s-tabs{display:flex;gap:6px;padding:12px 14px 2px}
+.stab-btn{flex:1;border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:9px 4px;font:inherit;font-size:11.5px;font-weight:800;color:var(--muted);cursor:pointer;letter-spacing:.2px;transition:.15s;font-family:inherit}
+.stab-btn.on{background:linear-gradient(135deg,rgba(217,119,87,.16),rgba(163,74,36,.06));border-color:rgba(163,74,36,.32);color:var(--accent)}
+.stab-grp{display:flex;flex-direction:column;gap:10px}
+.s-foot{padding:12px 14px calc(12px + env(safe-area-inset-bottom))}
 /* talk */
 .screen{position:fixed;inset:0;background:var(--bg);z-index:70;display:none;flex-direction:column}
 .screen.open{display:flex}
@@ -586,7 +593,14 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
       <div class="s-ico">⚙️</div>
       <div><h2 data-i18n="settingsTitle">Settings</h2><div class="sub" data-i18n="settingsSub">Everything is saved only in your browser.</div></div>
     </div>
+    <div class="s-tabs">
+      <button class="stab-btn on" data-t="general" onclick="settingsTab('general')">⚙️ General</button>
+      <button class="stab-btn" data-t="voice" onclick="settingsTab('voice')">🗣️ Voices</button>
+      <button class="stab-btn" data-t="advanced" onclick="settingsTab('advanced')">🔑 Advanced</button>
+    </div>
     <div class="s-body">
+      <div class="stab-grp" id="stab-general">
+
 
     <div class="field">
       <label data-i18n="langLabel">🌍 Language (AURISI replies &amp; speaks in this)</label>
@@ -613,6 +627,11 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
     <div class="field">
       <label><input type="checkbox" id="handsFreeChk" style="vertical-align:-2px"> 🎙️ Hands-free mode — AURISI speaks its reply and starts listening automatically</label>
     </div>
+          <div class="field">
+      <label><input type="checkbox" id="searchChk" style="vertical-align:-2px"> <span data-i18n="searchLabel">Google Search on replies (Web search)</span></label>
+    </div>
+      </div>
+      <div class="stab-grp" id="stab-voice">
     <div class="field">
       <label><input type="checkbox" id="aiVoicesChk" style="vertical-align:-2px"> 🗣️ AI Voices — natural neural speech for podcasts and replies (needs Gemini key)</label>
       <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
@@ -630,6 +649,8 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
       </div>
       <div class="hint">Natural Indian voices — best for Hindi/Hinglish. Takes priority over Gemini voices when a key is set. Free key: dashboard.sarvam.ai</div>
     </div>
+      </div>
+      <div class="stab-grp" id="stab-advanced">
     <div class="field">
       <label>🏫 Institute name (white-label — optional)</label>
       <input type="text" id="instName" placeholder="e.g. Apex Classes">
@@ -644,9 +665,7 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
       <input type="password" id="keyInput" placeholder="AIza…">
       <div class="hint" data-i18n="keyHint">No key? No problem — AURISI runs free through the Puter fallback (a Puter sign-in window may appear on first use). You can also get a free key at aistudio.google.com.</div>
     </div>
-    <div class="field">
-      <label><input type="checkbox" id="searchChk" style="vertical-align:-2px"> <span data-i18n="searchLabel">Google Search on replies (Web search)</span></label>
-    </div>
+      </div>
     </div>
     <div class="s-foot">
       <div class="row-btns">
@@ -2094,7 +2113,7 @@ function micInput(){
   try{rec.start()}catch(e){toast("Could not start the mic")}
 }
 /* ===================== v17 AI VOICES (Gemini neural TTS) ===================== */
-const AI_VOICE_OPTIONS=[["Kore","Kore — female, firm"],["Puck","Puck — male, upbeat"],["Charon","Charon — male, informative"],["Aoede","Aoede — female, breezy"],["Fenrir","Fenrir — male, excitable"],["Zephyr","Zephyr — female, bright"],["Orus","Orus — male, firm"],["Phebe","Phebe — female, smooth"]];
+const AI_VOICE_OPTIONS=[["Kore","Kore · Female"],["Puck","Puck · Male"],["Charon","Charon · Male"],["Aoede","Aoede · Female"],["Fenrir","Fenrir · Male"],["Zephyr","Zephyr · Female"],["Orus","Orus · Male"],["Phebe","Phebe · Female"]];
 const AI_VOICE_PAIR={Kore:"Puck",Puck:"Kore",Charon:"Aoede",Aoede:"Charon",Fenrir:"Zephyr",Zephyr:"Fenrir",Orus:"Phebe",Phebe:"Orus"};
 function aiVoicesOn(){return localStorage.getItem(STORAGE+"aiVoices")==="1"&&(localStorage.getItem(STORAGE+"geminiKey")||"").trim().length>10}
 function getAiVoice(){return localStorage.getItem(STORAGE+"aiVoice")||"Kore"}
@@ -2165,7 +2184,7 @@ function browserSpeakFallback(clean,onend){
   }catch(e){if(onend)onend()}
 }
 /* ===================== v18 DESI VOICES (Sarvam Bulbul TTS) ===================== */
-const SARVAM_VOICE_OPTIONS=[["anushka","Anushka — female, warm"],["abhilash","Abhilash — male, clear"],["manisha","Manisha — female, soft"],["vidya","Vidya — female, teacher-like"],["arya","Arya — female, young"],["meera","Meera — female, calm"]];
+const SARVAM_VOICE_OPTIONS=[["anushka","Anushka · Female"],["abhilash","Abhilash · Male"],["manisha","Manisha · Female"],["vidya","Vidya · Female"],["arya","Arya · Female"],["meera","Meera · Female"]];
 const SARVAM_PAIR={anushka:"abhilash",abhilash:"anushka",manisha:"abhilash",vidya:"abhilash",arya:"abhilash",meera:"abhilash"};
 function sarvamKeySet(){return (localStorage.getItem(STORAGE+"sarvamKey")||"").trim().length>10}
 function getSarvamVoice(){return localStorage.getItem(STORAGE+"sarvamVoice")||"anushka"}
@@ -2278,6 +2297,7 @@ function openSettings(){
   var skIn=$("sarvamKeyInput");if(skIn)skIn.value=localStorage.getItem(STORAGE+"sarvamKey")||"";
   var svs=$("sarvamVoiceSel");
   if(svs){svs.innerHTML=SARVAM_VOICE_OPTIONS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join("");svs.value=getSarvamVoice()||"anushka"}
+  settingsTab("general");
   $("modalBack").classList.add("open");
 }
 function closeModal(){$("modalBack").classList.remove("open")}
@@ -2535,6 +2555,10 @@ function renderSearchDrop(q){
     });
   }
   drop.classList.add("show");
+}
+function settingsTab(t){
+  document.querySelectorAll(".stab-btn").forEach(function(b){b.classList.toggle("on",b.dataset.t===t)});
+  ["general","voice","advanced"].forEach(function(k){var el=$("stab-"+k);if(el)el.style.display=k===t?"":"none"});
 }
 function initApp16(){
   try{
