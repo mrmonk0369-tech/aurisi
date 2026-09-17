@@ -577,6 +577,14 @@ button,.ws-tab,.icon-btn,.chip,.qa-btn,.ch-btn,.rc-item,.ts-item{-webkit-touch-c
       <label><input type="checkbox" id="handsFreeChk" style="vertical-align:-2px"> 🎙️ Hands-free mode — AURISI speaks its reply and starts listening automatically</label>
     </div>
     <div class="field">
+      <label><input type="checkbox" id="aiVoicesChk" style="vertical-align:-2px"> \ud83d\udde3\ufe0f AI Voices — natural neural speech for podcasts and replies (needs Gemini key)</label>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+        <select class="select" id="aiVoiceSel" style="flex:1;min-width:150px"></select>
+        <button class="btn small" onclick="previewAiVoice()">\u25b6 Preview</button>
+      </div>
+      <div class="hint">Falls back to the browser voice when no key is set.</div>
+    </div>
+    <div class="field">
       <label>🏫 Institute name (white-label — optional)</label>
       <input type="text" id="instName" placeholder="e.g. Apex Classes">
       <div class="hint">Your institute's name and logo replace AURISI branding — on the app and on printed papers.</div>
@@ -1289,31 +1297,46 @@ function msgRow(m,isLast){
     if(pData&&pData.length>1){
       const pbox=document.createElement("div");pbox.className="podcast-box";
       const ph=document.createElement("div");ph.className="pod-h";ph.textContent="🎧 Audio Podcast — "+pData.length+" parts";pbox.appendChild(ph);
-      const phint=document.createElement("div");phint.className="pod-hint";phint.textContent="Two-host conversational summary — plug in your earphones and tap play.";pbox.appendChild(phint);
+      const phint=document.createElement("div");phint.className="pod-hint";phint.textContent="Two-host conversational summary — plug in your earphones and tap play."+(aiVoicesOn()?" \ud83d\udde3\ufe0f AI voices on.":"");pbox.appendChild(phint);
       const btn=document.createElement("button");btn.className="quiz-next";btn.textContent="▶ Play podcast";
       let playing=false;
       btn.onclick=()=>{
-        if(playing){playing=false;try{speechSynthesis.cancel()}catch(e){};btn.textContent="▶ Play podcast";return}
-        if(!window.speechSynthesis)return;
+        if(playing){playing=false;try{speechSynthesis.cancel()}catch(e){};stopAiAudio();btn.textContent="▶ Play podcast";return}
+        if(!window.speechSynthesis&&!aiVoicesOn())return;
         playing=true;btn.textContent="⏸ Stop";
         try{speechSynthesis.cancel()}catch(e){}
+        const useAi=aiVoicesOn();
+        const va=getAiVoice(),vb=AI_VOICE_PAIR[va]||"Puck";
+        let i=0;
         const voices=speechSynthesis.getVoices()||[];
         const langP=speechLangFor(getUiLang()).slice(0,2).toLowerCase();
         const pool=voices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(langP));
         const usePool=pool.length?pool:voices;
-        let i=0;
+        const browserLine=(seg,after)=>{
+          try{
+            const u=new SpeechSynthesisUtterance(seg.slice(0,500));
+            if(usePool.length>1&&usePool[i%usePool.length])u.voice=usePool[i%usePool.length];
+            u.lang=speechLangFor(getUiLang());
+            u.pitch=(i%2===0)?1.05:0.92;
+            u.rate=(i%2===0)?1:1.02;
+            u.onend=after;
+            u.onerror=after;
+            speechSynthesis.speak(u);
+          }catch(e){after()}
+        };
         const nextLine=()=>{
           if(!playing)return;
           if(i>=pData.length){playing=false;btn.textContent="▶ Play podcast";toast("Podcast finished ✅");return}
           const seg=pData[i];
-          const u=new SpeechSynthesisUtterance(seg.slice(0,500));
-          if(usePool.length>1&&usePool[i%usePool.length])u.voice=usePool[i%usePool.length];
-          u.lang=speechLangFor(getUiLang());
-          u.pitch=(i%2===0)?1.05:0.92;
-          u.rate=(i%2===0)?1:1.02;
-          u.onend=()=>{i++;setTimeout(nextLine,320)};
-          u.onerror=()=>{i++;setTimeout(nextLine,80)};
-          speechSynthesis.speak(u);
+          if(useAi){
+            aiSpeak(seg,(i%2===0)?va:vb,function(ok){
+              if(!playing)return;
+              if(ok){i++;setTimeout(nextLine,350)}
+              else browserLine(seg,function(){if(!playing)return;i++;setTimeout(nextLine,200)});
+            },true);
+          }else{
+            browserLine(seg,function(){if(!playing)return;i++;setTimeout(nextLine,320)});
+          }
         };
         nextLine();
       };
@@ -1535,14 +1558,15 @@ function dailyBrief(){
   quick("Today's daily study brief (today is "+new Date().toDateString()+"): exactly 5 one-line current affairs bullets — 3 national India, 2 Haryana state — then 1 active-recall flashcard as [[CARDS|question|answer]]. Keep it tight.");
 }
 function speakThenListen(t){
+  var clean=String(t).replace(/\[\[[A-Z]+\|[^\]]*\]\]/g,"").replace(/[*_#`>|]/g," ").replace(/\s+/g," ").slice(0,600);
+  var afterVoice=()=>{setTimeout(()=>{if(!STREAM.active&&isHandsFree()&&!state.isListening)micInput()},700)};
+  if(aiVoicesOn()){
+    stopAiAudio();
+    aiSpeak(clean,getAiVoice(),function(ok){if(!ok)browserSpeakFallback(clean,afterVoice);else afterVoice()});
+    return;
+  }
   if(!window.speechSynthesis)return;
-  try{
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(String(t).replace(/\[\[[A-Z]+\|[^\]]*\]\]/g,"").replace(/[*_#`>|]/g," ").replace(/\s+/g," ").slice(0,600));
-    u.lang=speechLangFor(getUiLang());u.rate=1;
-    u.onend=()=>{setTimeout(()=>{if(!STREAM.active&&isHandsFree()&&!state.isListening)micInput()},700)};
-    window.speechSynthesis.speak(u);
-  }catch(e){}
+  browserSpeakFallback(clean,afterVoice);
 }
 const QUIZ_ANSWERED={};const QUIZ_SCORE={right:0,wrong:0,level:"medium",streak:0,wstreak:0,timed:false};
 function showQuizResult(box,q,ans,picked,expl){
@@ -2008,13 +2032,74 @@ function micInput(){
   };
   try{rec.start()}catch(e){toast("Could not start the mic")}
 }
+/* ===================== v17 AI VOICES (Gemini neural TTS) ===================== */
+const AI_VOICE_OPTIONS=[["Kore","Kore — female, firm"],["Puck","Puck — male, upbeat"],["Charon","Charon — male, informative"],["Aoede","Aoede — female, breezy"],["Fenrir","Fenrir — male, excitable"],["Zephyr","Zephyr — female, bright"],["Orus","Orus — male, firm"],["Phebe","Phebe — female, smooth"]];
+const AI_VOICE_PAIR={Kore:"Puck",Puck:"Kore",Charon:"Aoede",Aoede:"Charon",Fenrir:"Zephyr",Zephyr:"Fenrir",Orus:"Phebe",Phebe:"Orus"};
+function aiVoicesOn(){return localStorage.getItem(STORAGE+"aiVoices")==="1"&&(localStorage.getItem(STORAGE+"geminiKey")||"").trim().length>10}
+function getAiVoice(){return localStorage.getItem(STORAGE+"aiVoice")||"Kore"}
+let AI_AUDIO=null;
+function stopAiAudio(){try{if(AI_AUDIO){AI_AUDIO.pause();AI_AUDIO.src=""}}catch(e){}AI_AUDIO=null}
+function pcmToWavUrl(b64,rate){
+  var bin=atob(b64),n=bin.length,buf=new Uint8Array(n);
+  for(var i=0;i<n;i++)buf[i]=bin.charCodeAt(i);
+  var hdr=new ArrayBuffer(44),h=new DataView(hdr);
+  function wr(o,s){for(var i=0;i<s.length;i++)h.setUint8(o+i,s.charCodeAt(i))}
+  wr(0,"RIFF");h.setUint32(4,36+n,true);wr(8,"WAVE");wr(12,"fmt ");
+  h.setUint32(16,16,true);h.setUint16(20,1,true);h.setUint16(22,1,true);
+  h.setUint32(24,rate,true);h.setUint32(28,rate*2,true);h.setUint16(32,2,true);h.setUint16(34,16,true);
+  wr(36,"data");h.setUint32(40,n,true);
+  return URL.createObjectURL(new Blob([hdr,buf],{type:"audio/wav"}));
+}
+async function aiSpeak(text,voice,onend,quiet){
+  var key=(localStorage.getItem(STORAGE+"geminiKey")||"").trim();
+  if(!key){if(onend)onend(false);return false}
+  try{
+    var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-goog-api-key":key},
+      body:JSON.stringify({contents:[{parts:[{text:String(text).slice(0,1200)}]}],generationConfig:{responseModalities:["AUDIO"],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:voice||getAiVoice()}}}}})
+    });
+    if(!r.ok)throw new Error("tts "+r.status);
+    var d=await r.json();
+    var part=d&&d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0];
+    if(!part||!part.inlineData||!part.inlineData.data)throw new Error("no audio");
+    var m=/rate=(\d+)/.exec(part.inlineData.mimeType||"");
+    var url=pcmToWavUrl(part.inlineData.data,m&&m[1]?parseInt(m[1],10):24000);
+    stopAiAudio();
+    AI_AUDIO=new Audio(url);
+    AI_AUDIO.onended=function(){if(onend)onend(true)};
+    AI_AUDIO.onerror=function(){if(onend)onend(false)};
+    await AI_AUDIO.play();
+    return true;
+  }catch(e){
+    if(!quiet)toast("AI voice failed — using browser voice");
+    if(onend)onend(false);
+    return false;
+  }
+}
+function previewAiVoice(){
+  var v=$("aiVoiceSel")?$("aiVoiceSel").value:"Kore";
+  if(!(localStorage.getItem(STORAGE+"geminiKey")||"").trim()){toast("Add your Gemini key in Settings first");return}
+  localStorage.setItem(STORAGE+"aiVoice",v);
+  stopAiAudio();
+  aiSpeak("Hello! I am AURISI, your AI study companion. Let us make today count!",v,null,true);
+}
+function browserSpeakFallback(clean,onend){
+  try{
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(clean);
+    u.lang=speechLangFor(getUiLang());u.rate=1;
+    u.onend=onend;
+    window.speechSynthesis.speak(u);
+  }catch(e){if(onend)onend()}
+}
 function speakText(text){
+  var clean=String(text).replace(/\s+/g," ").slice(0,600);
+  if(aiVoicesOn()){stopAiAudio();aiSpeak(clean,getAiVoice());return}
   if(!window.speechSynthesis){toast("Speech not supported");return}
   try{
     window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(String(text).replace(/\s+/g," ").slice(0,600));
-    u.lang=speechLangFor(getUiLang());u.rate=1;
-    window.speechSynthesis.speak(u);
+    browserSpeakFallback(clean,null);
   }catch(e){}
 }
 function autoGrow(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,130)+"px"}
@@ -2076,6 +2161,9 @@ function openSettings(){
   $("stepChk").checked=getStepMode();
   $("handsFreeChk").checked=isHandsFree();
   $("instName").value=localStorage.getItem(STORAGE+"instName")||"";
+  const avsel=$("aiVoiceSel");
+  if(avsel){avsel.innerHTML=AI_VOICE_OPTIONS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join("");avsel.value=getAiVoice()||"Kore"}
+  const avchk=$("aiVoicesChk");if(avchk)avchk.checked=localStorage.getItem(STORAGE+"aiVoices")==="1";
   $("modalBack").classList.add("open");
 }
 function closeModal(){$("modalBack").classList.remove("open")}
@@ -2088,6 +2176,8 @@ function saveSettings(){
   localStorage.setItem(STORAGE+"curriculum",$("curriculumSel").value||"auto");
   localStorage.setItem(STORAGE+"stepMode",$("stepChk").checked?"1":"0");
   localStorage.setItem(STORAGE+"handsFree",$("handsFreeChk").checked?"1":"0");
+  localStorage.setItem(STORAGE+"aiVoices",$("aiVoicesChk").checked?"1":"0");
+  localStorage.setItem(STORAGE+"aiVoice",$("aiVoiceSel").value||"Kore");
   localStorage.setItem(STORAGE+"instName",($("instName").value||"").trim());
   const lf=$("instLogo");
   if(lf&&lf.files&&lf.files[0]){
