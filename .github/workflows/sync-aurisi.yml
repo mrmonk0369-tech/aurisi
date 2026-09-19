@@ -9,10 +9,10 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           set -e
-          curl -fsSL -o AURISI.html "https://github.com/mrmonk0369-tech/aurisi/releases/download/v35.2.0/AURISI.html"
-          test "$(wc -c < AURISI.html)" -eq 655809
+          curl -fsSL -o AURISI.html "https://github.com/mrmonk0369-tech/aurisi/releases/download/v36.0.0/AURISI.html"
+          test "$(wc -c < AURISI.html)" -eq 663926
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: sync AURISI.html from release v35.2.0" || echo "no changes"
+          git commit -m "chore: sync AURISI.html from release v36.0.0" || echo "no changes"
           git push
