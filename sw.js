@@ -1,4 +1,4 @@
-/* AURISI service worker v50 - network-first (always latest), offline cache */
+/* AURISI service worker v50 - network-first (always latest), offline cache - original logo icons */
 var CACHE = "aurisi-v50";
 var ASSETS = ["./", "./index.html", "./AURISI.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 
