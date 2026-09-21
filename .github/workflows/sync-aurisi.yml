@@ -13,7 +13,7 @@ jobs:
           if grep -q 'APP_VERSION="58.3"' AURISI.html; then echo "already v58.3 - nothing to do"; exit 0; fi
           test "$(wc -c < AURISI.html)" -eq 1156157
           python3 .github/scripts/build_v583.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1159445
+          test "$(wc -c < AURISI_new.html)" -eq 1159443
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
