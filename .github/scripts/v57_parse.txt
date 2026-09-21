@@ -1,0 +1,11 @@
+    let gData=null;
+    const gRe=/\[\[GRAPH\|([^|\]]+)\|(-?[\d.]+)\|(-?[\d.]+)\]\]/g;
+    const gAll=[];let gg;
+    while((gg=gRe.exec(txt)))gAll.push([gg[1].trim(),parseFloat(gg[2]),parseFloat(gg[3]),"gslot"+(msgRow._gn=(msgRow._gn||0)+1),gg[0]]);
+    if(gAll.length){gData=gAll;gAll.forEach(function(d){txt=txt.replace(d[4],'<div data-gslot="'+d[3]+'"></div>')})}
+    let mapData=null;
+    const mpTok=txt.match(/\[\[MAP\|([\s\S]+?)\]\]/);
+    if(mpTok){txt=txt.replace(mpTok[0],"").trim();mapData=mpTok[1].split("|").map(s=>s.trim()).filter(Boolean)}
+    let slData=null;
+    const slTok=txt.match(/\[\[SLIDES\|([\s\S]+?)\]\]/);
+    if(slTok){txt=txt.replace(slTok[0],"").trim();slData=slTok[1].split("|").map(s=>s.trim()).filter(Boolean)}
