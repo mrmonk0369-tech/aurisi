@@ -105,7 +105,7 @@ var AK=localStorage.getItem("aurisi_admin_key")||"";
 function H(){return{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"}}
 function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2400)}
 async function rpc(fn,body){var r=await fetch(SB+"/rpc/"+fn,{method:"POST",headers:H(),body:JSON.stringify(body)});return await r.json()}
-function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})
+function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})}
 
 async function doLogin(){
   var k=document.getElementById("keyIn").value.trim();
