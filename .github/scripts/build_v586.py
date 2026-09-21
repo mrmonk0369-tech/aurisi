@@ -34,8 +34,8 @@ R1 = '''function profileCats(){
   if(p.role==="institute"){
     if(p.detail==="SSC & Govt exams")return ["ssc","hssc","dsssb","english","other"];
     if(p.detail==="NEET")return ["neet","class11","class12","other"];
-    if(p.detail=="JEE")return ["jee","class11","class12","other"];
-    if(p.detail=="Board exams")return ["class9","class10","class11","class12","english","other"];
+    if("JEE"===p.detail)return ["jee","class11","class12","other"];
+    if("Board exams"===p.detail)return ["class9","class10","class11","class12","english","other"];
     return null;
   }
   return null;
