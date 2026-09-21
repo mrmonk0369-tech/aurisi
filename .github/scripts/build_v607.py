@@ -92,7 +92,7 @@ R5 = Q('''const speakSlide=()=>{
           if(si>=slides.length){stopSpeak();toast("Lecture finished ~B~u2705");return}
           show();
           const s=slides[si];
-          var narr=s.n||((s.t+". ")+s.b.join(". ")));
+          var narr=s.n||((s.t+". ")+s.b.join(". "));
           var sents=narr.match(/[^.!?]+[.!?]+/g)||[narr];
           var nb=Math.max(1,s.b.length);
           var chunks=[];
