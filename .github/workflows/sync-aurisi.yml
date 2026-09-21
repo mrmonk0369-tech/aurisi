@@ -12,7 +12,7 @@ jobs:
           test -f AURISI.html
           test "$(wc -c < AURISI.html)" -eq 1093584
           python3 .github/scripts/build_v58.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1099986
+          test "$(wc -c < AURISI_new.html)" -eq 1100066
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
