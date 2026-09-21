@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AURISI Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--cream:#F7F0E3;--cream2:#FFFBF3;--dark:#2A2118;--muted:#78682F;--orange:#FF6A3D;--gold:#D4A03F;--line:#E4D9C4;--green:#2E9E5B;--red:#D64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;padding:16px;max-width:860px;margin:0 auto}
+h1{font-size:22px;display:flex;align-items:center;gap:8px}
+.sub{color:var(--muted);font-size:13px;margin-top:3px}
+.card{background:var(--cream2);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 4px 14px -8px rgba(42,33,24,.15)}
+.card h2{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+button{font:inherit;cursor:pointer;border:none;border-radius:12px;padding:9px 14px;background:var(--orange);color:#fff;font-weight:600;font-size:13px}
+button.sec{background:var(--cream);color:var(--dark);border:1px solid var(--line)}
+button.sm{padding:6px 10px;font-size:12px;border-radius:9px}
+button.on{background:var(--green)}
+button.off{background:var(--red)}
+input,select{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--dark);font-size:13px;width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.inst{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:10px;background:#fff}
+.inst .nm{font-weight:700;font-size:14px}
+.inst .meta{color:var(--muted);font-size:12px;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700}
+.pill.ok{background:#E3F3E9;color:var(--green)}
+.pill.no{background:#FBE7E7;color:var(--red)}
+.pill.pro{background:#FDEEDB;color:var(--orange)}
+code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-weight:700;letter-spacing:1px;font-size:13px}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.tbl th,.tbl td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
+.tbl th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.newcode{background:#E3F3E9;border:1px solid var(--green);border-radius:13px;padding:12px;margin-top:10px;font-size:15px;text-align:center}
+.hide{display:none}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw}
+#toast.show{opacity:.95}
+.mut{color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<h1>💼 AURISI <span style="color:var(--orange)">Admin</span></h1>
+<div class="sub">The control room — everything in your hands.</div>
+
+<div id="loginCard" class="card">
+  <h2>🔐 Admin login</h2>
+  <input id="keyIn" placeholder="Admin key" type="password">
+  <div style="margin-top:10px"><button onclick="doLogin()">Enter control room</button></div>
+  <div class="mut" style="margin-top:8px">Only the Aurisi owner has this key.</div>
+</div>
+
+<div id="dash" class="hide">
+  <div class="row" style="margin-top:14px">
+    <button onclick="refreshAll()">🔄 Refresh</button>
+    <button class="sec" onclick="logout()">Log out</button>
+  </div>
+
+  <div class="card">
+    <h2>🎛️ Live switches</h2>
+    <div class="row">
+      <span>Students Pro (paid mode):</span><button id="swPro" class="sm" onclick="togglePro()">…</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <span>Business section visible:</span><button id="swBiz" class="sm" onclick="toggleBiz()">…</button>
+    </div>
+    <div class="mut" style="margin-top:8px">Pro ON → students need a Pro code to use the app. Business visible → full Business & Institute section shows in Settings for pitch/demo.</div>
+  </div>
+
+  <div class="card">
+    <h2>🪙 Generate code (pay as you go)</h2>
+    <div class="row">
+      <div style="flex:1;min-width:110px"><input id="daysIn" type="number" value="365" placeholder="Days"></div>
+      <div style="flex:1;min-width:140px"><select id="kindIn"><option value="institute">🏫 Institute license</option><option value="pro">✨ Student Pro</option></select></div>
+    </div>
+    <div style="margin-top:8px"><input id="noteIn" placeholder="Note (customer name, price…)"></div>
+    <div style="margin-top:10px"><button onclick="makeCode()">Generate code</button></div>
+    <div id="newCodeBox"></div>
+  </div>
+
+  <div class="card">
+    <h2>🏫 Institutes</h2>
+    <div id="instList"><span class="mut">Loading…</span></div>
+  </div>
+
+  <div class="card">
+    <h2>🔑 Activation codes</h2>
+    <div id="codeList"><span class="mut">Loading…</span></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+var SB="https://ehbdvjkguungjccaaqsm.supabase.co/rest/v1",KEY="sb_publishable_ip0uOdOcSplrTkOIw5MDnA_jwSe6jDa";
+var AK=localStorage.getItem("aurisi_admin_key")||"";
+function H(){return{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"}}
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2400)}
+async function rpc(fn,body){var r=await fetch(SB+"/rpc/"+fn,{method:"POST",headers:H(),body:JSON.stringify(body)});return await r.json()}
+function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})}
+
+async function doLogin(){
+  var k=document.getElementById("keyIn").value.trim();
+  if(!k)return;
+  var ok=await rpc("admin_login",{p_key:k});
+  if(ok!==true){toast("Wrong admin key");return}
+  AK=k;localStorage.setItem("aurisi_admin_key",k);showDash();
+}
+function logout(){localStorage.removeItem("aurisi_admin_key");location.reload()}
+function showDash(){document.getElementById("loginCard").classList.add("hide");document.getElementById("dash").classList.remove("hide");refreshAll()}
+
+async function refreshAll(){await loadSwitches();loadInsts();loadCodes()}
+async function loadSwitches(){
+  try{
+    var r=await fetch(SB+"/app_config?select=key,value",{headers:H()});
+    var rows=await r.json();
+    var m={};rows.forEach(function(x){m[x.key]=x.value});
+    var p=document.getElementById("swPro"),b=document.getElementById("swBiz");
+    p.textContent=m.student_pro_enabled==="true"?"ON":"OFF";
+    p.className="sm "+(m.student_pro_enabled==="true"?"on":"off");
+    b.textContent=m.biz_mode==="visible"?"VISIBLE":"HIDDEN";
+    b.className="sm "+(m.biz_mode==="visible"?"on":"off");
+  }catch(e){toast("Could not reach server")}
+}
+async function togglePro(){var on=document.getElementById("swPro").textContent==="ON";await rpc("admin_set_config",{p_key:AK,p_cfg:"student_pro_enabled",p_value:on?"false":"true"});toast(on?"Students Pro OFF — app is free":"Students Pro ON — Pro code required");loadSwitches()}
+async function toggleBiz(){var on=document.getElementById("swBiz").textContent==="VISIBLE";await rpc("admin_set_config",{p_key:AK,p_cfg:"biz_mode",p_value:on?"hidden":"visible"});toast(on?"Business section HIDDEN":"Business section VISIBLE");loadSwitches()}
+
+async function makeCode(){
+  var days=parseInt(document.getElementById("daysIn").value,10);
+  var kind=document.getElementById("kindIn").value;
+  var note=document.getElementById("noteIn").value.trim();
+  var code=await rpc("admin_make_code",{p_key:AK,p_days:days,p_kind:kind,p_note:note});
+  var box=document.getElementById("newCodeBox");
+  if(typeof code!=="string"||code.indexOf("ERR:")===0){toast(code||"Failed");box.innerHTML="";return}
+  box.innerHTML='<div class="newcode">New '+escH(kind)+' code — <code>'+code+'</code> ('+days+' days)<br><small>'+escH(note||"")+'</small></div>';
+  toast("Code generated — copy & send it");
+  loadCodes();
+}
+
+function fmtDate(s){try{return new Date(s).toLocaleDateString()}catch(e){return s}}
+function daysLeft(s){try{var d=Math.ceil((new Date(s)-Date.now())/86400000);return d} catch(e){return "?"}}
+async function loadInsts(){
+  try{
+    var rows=await rpc("admin_list_institutes",{p_key:AK});
+    var el=document.getElementById("instList");
+    if(!rows||!rows.length){el.innerHTML='<span class="mut">No institutes yet. Generate an institute code to sell your first license.</span>';return}
+    var h="";
+    rows.forEach(function(x){
+      h+='<div class="inst"><div class="nm">🏫 '+escH(x.name)+' <span class="pill '+(x.active?'ok':'no')+'">'+(x.active?'ACTIVE':'OFF')+'</span></div>';
+      h+='<div class="meta"><span>Code <b>'+x.code+'</b></span><span>Classes '+escH(x.cls)+(x.exams?' · '+escH(x.exams):'')+'</span><span>Expires '+fmtDate(x.expires)+' ('+daysLeft(x.expires)+'d left)</span><span>'+x.material_count+' material</span></div>';
+      h+='<div class="row" style="margin-top:8px">';
+      h+=x.active?'<button class="sm off" onclick="setInst(\''+x.code+'\',false,0)">⛔ Turn OFF</button>':'<button class="sm on" onclick="setInst(\''+x.code+'\',true,0)">✅ Turn ON</button>';
+      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,30)">+30 days</button>';
+      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,365)">+365 days</button>';
+      h+='<button class="sm sec" onclick="customExt(\''+x.code+'\')">Custom…</button>';
+      h+='</div></div>';
+    });
+    el.innerHTML=h;
+  }catch(e){document.getElementById("instList").innerHTML='<span class="mut">Could not load.</span>'}
+}
+function customExt(code){var d=parseInt(prompt("How many days to add?","90"),10);if(d>0)setInst(code,null,d)}
+async function setInst(code,active,addDays){
+  var ok=await rpc("admin_set_institute",{p_key:AK,p_code:code,p_active:active,p_add_days:addDays});
+  toast(ok===true?"Done":"Failed");loadInsts();
+}
+async function loadCodes(){
+  try{
+    var rows=await rpc("admin_list_codes",{p_key:AK});
+    var el=document.getElementById("codeList");
+    if(!rows||!rows.length){el.innerHTML='<span class="mut">No codes yet.</span>';return}
+    var h='<table class="tbl"><tr><th>Code</th><th>Type</th><th>Valid</th><th>Status</th><th>Note</th></tr>';
+    rows.forEach(function(x){
+      h+='<tr><td><code>'+escH(x.code)+'</code></td><td>'+(x.kind==='pro'?'<span class="pill pro">PRO</span>':'🏫 Inst')+'</td><td>'+x.days+'d</td><td>'+(x.used?'<span class="pill no">used</span>':'<span class="pill ok">FREE</span>')+'</td><td>'+escH(x.note||"")+'</td></tr>';
+    });
+    el.innerHTML=h+'</table>';
+  }catch(e){document.getElementById("codeList").innerHTML='<span class="mut">Could not load.</span>'}
+}
+
+if(AK){rpc("admin_login",{p_key:AK}).then(function(ok){if(ok===true)showDash()})}
+</script>
+</body>
+</html>
