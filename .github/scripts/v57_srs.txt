@@ -1,0 +1,14 @@
+function srsRec(front,r,back){
+  try{
+    var d=JSON.parse(localStorage.getItem(STORAGE+"cardsrs")||"{}");
+    var k=String(front).slice(0,120);
+    d[k]=d[k]||{h:0,g:0,e:0,ease:2.5,reps:0,iv:0,due:0,f:String(front).slice(0,320),b:String(back||"").slice(0,320)};
+    d[k][r]=(d[k][r]||0)+1;
+    if(back)d[k].b=String(back).slice(0,320);
+    var q=(r==="h")?3:(r==="g")?4:5;
+    var c=d[k];
+    if(r==="h"){c.reps++;c.iv=1;c.due=Date.now()+86400000}
+    else{c.reps++;c.iv=(c.reps===1)?1:(c.reps===2)?6:Math.max(1,Math.round((c.iv||1)*c.ease));if(r==="e")c.iv+=1;c.due=Date.now()+c.iv*86400000}
+    c.ease=Math.max(1.3,c.ease+(0.1-(5-q)*(0.08+(5-q)*0.02)));
+    localStorage.setItem(STORAGE+"cardsrs",JSON.stringify(d));
+  }catch(e){}}
