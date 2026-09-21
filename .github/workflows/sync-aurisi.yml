@@ -1,4 +1,4 @@
-name: Build AURISI v58
+name: Build AURISI v58.1
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,13 +10,13 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="58.0"' AURISI.html; then echo "already v58 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1093584
-          python3 .github/scripts/build_v58.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1100066
+          if grep -q 'APP_VERSION="58.1"' AURISI.html; then echo "already v58.1 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1100066
+          python3 .github/scripts/build_v581.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1100293
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v58.0 (Fix & Flow)" || echo "no changes"
+          git commit -m "chore: build AURISI v58.1 (tolerant token parsing)" || echo "no changes"
           git push
