@@ -10,6 +10,7 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
+          if grep -q 'APP_VERSION="58.0"' AURISI.html; then echo "already v58 - nothing to do"; exit 0; fi
           test "$(wc -c < AURISI.html)" -eq 1093584
           python3 .github/scripts/build_v58.py AURISI.html AURISI_new.html
           test "$(wc -c < AURISI_new.html)" -eq 1100066
