@@ -1,23 +1,20 @@
-name: Sync AURISI.html from release
+name: Build AURISI v57
 on: [push, workflow_dispatch]
 permissions:
   contents: write
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: |
           set -e
-          BASE="https://github.com/mrmonk0369-tech/aurisi/releases/download/v56.0.0"
-          curl -fsSL -o AURISI.html "$BASE/AURISI.html"
+          curl -fsSL -m 120 -o AURISI.html "https://github.com/mrmonk0369-tech/aurisi/releases/download/v56.0.0/AURISI.html"
           test "$(wc -c < AURISI.html)" -eq 1076828
-          curl -fsSL -o icon-192.png "$BASE/icon-192.png"
-          curl -fsSL -o icon-512.png "$BASE/icon-512.png"
-          curl -fsSL -o icon-maskable-512.png "$BASE/icon-maskable-512.png"
-          curl -fsSL -o apple-touch-icon.png "$BASE/apple-touch-icon.png"
+          python3 .github/scripts/build_v57.py AURISI.html
+          test "$(wc -c < AURISI.html)" -eq 1093584
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add AURISI.html icon-192.png icon-512.png icon-maskable-512.png apple-touch-icon.png
-          git commit -m "chore: sync AURISI + PWA assets from release v56.0.0" || echo "no changes"
+          git add AURISI.html
+          git commit -m "chore: build AURISI v57.0 (Power Features Drop)" || echo "no changes"
           git push
