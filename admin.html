@@ -67,6 +67,16 @@ code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padd
   </div>
 
   <div class="card">
+    <h2>🤖 House AI key (Gemini)</h2>
+    <input id="hkIn" placeholder="Paste Gemini API key (aistudio.google.com)">
+    <div class="row" style="margin-top:10px">
+      <button onclick="saveHK()">Save key</button>
+      <button class="sec" onclick="clearHK()">Remove</button>
+    </div>
+    <div class="mut" style="margin-top:8px">Ye key sab users ke liye default AI ban jati hai — students ko koi setup nahi karna padta, chat apne aap chalta hai. User apni key daale to wahi chalegi.</div>
+  </div>
+
+  <div class="card">
     <h2>🪙 Generate code (pay as you go)</h2>
     <div class="row">
       <div style="flex:1;min-width:110px"><input id="daysIn" type="number" value="365" placeholder="Days"></div>
@@ -95,7 +105,7 @@ var AK=localStorage.getItem("aurisi_admin_key")||"";
 function H(){return{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"}}
 function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2400)}
 async function rpc(fn,body){var r=await fetch(SB+"/rpc/"+fn,{method:"POST",headers:H(),body:JSON.stringify(body)});return await r.json()}
-function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})}
+function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})
 
 async function doLogin(){
   var k=document.getElementById("keyIn").value.trim();
@@ -118,11 +128,18 @@ async function loadSwitches(){
     p.className="sm "+(m.student_pro_enabled==="true"?"on":"off");
     b.textContent=m.biz_mode==="visible"?"VISIBLE":"HIDDEN";
     b.className="sm "+(m.biz_mode==="visible"?"on":"off");
+    var hk=m.ai_house_key||"";
+    document.getElementById("hkIn").placeholder=hk?("Current: "+hk.slice(0,4)+"..."+hk.slice(-4)):"Paste Gemini API key (aistudio.google.com)";
   }catch(e){toast("Could not reach server")}
 }
 async function togglePro(){var on=document.getElementById("swPro").textContent==="ON";await rpc("admin_set_config",{p_key:AK,p_cfg:"student_pro_enabled",p_value:on?"false":"true"});toast(on?"Students Pro OFF — app is free":"Students Pro ON — Pro code required");loadSwitches()}
 async function toggleBiz(){var on=document.getElementById("swBiz").textContent==="VISIBLE";await rpc("admin_set_config",{p_key:AK,p_cfg:"biz_mode",p_value:on?"hidden":"visible"});toast(on?"Business section HIDDEN":"Business section VISIBLE");loadSwitches()}
 
+async function saveHK(){var k=document.getElementById("hkIn").value.trim();if(!k){toast("Paste the key first");return}
+  var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"ai_house_key",p_value:k});
+  toast(ok===true?"House AI key saved — chat now works for everyone":"Failed");loadSwitches()}
+async function clearHK(){var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"ai_house_key",p_value:""});
+  toast(ok===true?"House AI key removed":"Failed");document.getElementById("hkIn").value="";loadSwitches()}
 async function makeCode(){
   var days=parseInt(document.getElementById("daysIn").value,10);
   var kind=document.getElementById("kindIn").value;
