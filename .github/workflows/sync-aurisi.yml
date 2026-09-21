@@ -1,4 +1,4 @@
-name: Build AURISI v58.1
+name: Build AURISI v58.2
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,13 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="58.1"' AURISI.html; then echo "already v58.1 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1100066
-          python3 .github/scripts/build_v581.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1100293
+          if grep -q 'APP_VERSION="58.2"' AURISI.html; then echo "already v58.2 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1100293
+          pip install --quiet pillow==12.3.0
+          curl -sL -o logo.png https://github.com/mrmonk0369-tech/aurisi/releases/download/v57.0.0/aurisi-logo-source.png
+          test "$(wc -c < logo.png)" -eq 1702227
+          python3 .github/scripts/build_v582.py AURISI.html AURISI_new.html logo.png .
+          test "$(wc -c < AURISI_new.html)" -eq 1156157
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add AURISI.html
-          git commit -m "chore: build AURISI v58.1 (tolerant token parsing)" || echo "no changes"
+          git add AURISI.html icon-192.png icon-512.png icon-maskable-512.png apple-touch-icon.png
+          git commit -m "chore: build AURISI v58.2 (new gold-A logo)" || echo "no changes"
           git push
