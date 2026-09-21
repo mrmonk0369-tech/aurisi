@@ -3,12 +3,16 @@
 # 1) Truncated/unmatched [[SLIDES|...]] tokens now still parse into the
 #    smart-board card instead of dumping raw code into the chat.
 # 2) Smart-board slide text renders math: KaTeX when available, plain
-#    readable notation otherwise ($ stripped, \frac -> (a)/(b), greek
-#    letters, sqrt -> v, exponents kept readable).
-# 3) Narration spoken aloud uses the same readable math (no "backslash
-#    frac" in the voice).
+#    readable notation otherwise ($ stripped, frac -> (a)/(b), greek
+#    letters, sqrt symbol, readable exponents).
+# 3) Narration spoken aloud uses the same readable math.
+# Transport note: every backslash is written as ~B~ and unwrapped by Q(),
+# so this file contains no literal backslash characters at all.
 # Base: AURISI.html v60.5. Idempotent: no-op if already v60.6.
 import sys, io
+
+def Q(s):
+    return s.replace("~B~", chr(92))
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "AURISI.html"
 OUT = sys.argv[2] if len(sys.argv) > 2 else "AURISI_new.html"
@@ -24,27 +28,30 @@ assert 'APP_VERSION="60.5"' in h, "base must be v60.5"
 
 # P1: plainMath helper before msgRow
 F1 = "function msgRow(m,isLast){"
-R1 = '''function plainMath(s){
-  s=String(s||"").replace(/\\$\\$?/g,"");
-  var gm={alpha:"\u03b1",beta:"\u03b2",gamma:"\u03b3",delta:"\u03b4",Delta:"\u0394",epsilon:"\u03b5",theta:"\u03b8",lambda:"\u03bb",mu:"\u03bc",pi:"\u03c0",rho:"\u03c1",sigma:"\u03c3",tau:"\u03c4",phi:"\u03c6",Phi:"\u03a6",omega:"\u03c9",Omega:"\u03a9",infty:"\u221e",times:"\u00d7",cdot:"\u00b7",approx:"\u2248",neq:"\u2260",leq:"\u2264",geq:"\u2265",to:"\u2192",sum:"\u03a3",int:"\u222b",pm:"\u00b1",ldots:"\u2026"};
-  s=s.replace(/\\\\([A-Za-z]+)/g,function(m,k){return gm[k]!==undefined?gm[k]:m});
-  s=s.replace(/\\\\frac\\s*\\{([^{}]*)\\}\\s*\\{([^{}]*)\\}/g,"($1)/($2)");
-  s=s.replace(/\\\\sqrt\\s*\\{([^{}]*)\\}/g,"\u221a($1)");
-  s=s.replace(/\\^\\{([^{}]+)\\}/g,"^($1)");
-  s=s.replace(/_\\{([^{}]+)\\}/g,"_($1)");
-  s=s.replace(/\\\\left|\\\\right|\\\\,|\\\\;|\\\\!/g,"");
-  return s;
-}
-function msgRow(m,isLast){'''
+R1 = Q(
+'function plainMath(s){\n'
+'  s=String(s||"").replace(/~B~$~B~$?/g,"");\n'
+'  var gm={alpha:"α",beta:"β",gamma:"γ",delta:"δ",Delta:"Δ",epsilon:"ε",theta:"θ",lambda:"λ",mu:"μ",pi:"π",rho:"ρ",sigma:"σ",tau:"τ",phi:"φ",Phi:"Φ",omega:"ω",Omega:"Ω",infty:"∞",times:"×",cdot:"·",approx:"≈",neq:"≠",leq:"≤",geq:"≥",to:"→",sum:"Σ",int:"∫",pm:"±",ldots:"…"};\n'
+'  s=s.replace(/~B~~B~([A-Za-z]+)/g,function(m,k){return gm[k]!==undefined?gm[k]:m});\n'
+'  s=s.replace(/~B~~B~frac~B~s*~B~{([^{}]*)}~B~s*~B~{([^{}]*)}/g,"($1)/($2)");\n'
+'  s=s.replace(/~B~~B~sqrt~B~s*~B~{([^{}]*)}/g,"√($1)");\n'
+'  s=s.replace(/~B~^{([^{}]+)}/g,"^($1)");\n'
+'  s=s.replace(/_{([^{}]+)}/g,"_($1)");\n'
+'  s=s.replace(/~B~~B~left|~B~~B~right|~B~~B~,|~B~~B~;|~B~~B~!/g,"");\n'
+'  return s;\n'
+'}\n'
+'function msgRow(m,isLast){')
 assert h.count(F1) == 1, "P1 anchor not found"
 h = h.replace(F1, R1)
 
 # P2: smart-board show() renders math (KaTeX or plain fallback)
-F2 = '''st.textContent=(si+1)+". "+s.t;
-          ul.innerHTML=s.b.map(b=>"<div><span>\u2022</span><span>"+escH(b)+"</span></div>").join("");'''
-R2 = '''st.textContent=(si+1)+". "+(window.renderMathInElement?s.t:plainMath(s.t));
-          if(window.renderMathInElement){ul.innerHTML=s.b.map(b=>"<div><span>\u2022</span><span>"+escH(b)+"</span></div>").join("");try{renderMathIn(ul)}catch(e){}}
-          else{ul.innerHTML=s.b.map(b=>"<div><span>\u2022</span><span>"+escH(plainMath(b))+"</span></div>").join("");}'''
+F2 = Q(
+'st.textContent=(si+1)+". "+s.t;\n'
+'          ul.innerHTML=s.b.map(b=>"<div><span>~B~u2022</span><span>"+escH(b)+"</span></div>").join("");')
+R2 = Q(
+'st.textContent=(si+1)+". "+(window.renderMathInElement?s.t:plainMath(s.t));\n'
+'          if(window.renderMathInElement){ul.innerHTML=s.b.map(b=>"<div><span>~B~u2022</span><span>"+escH(b)+"</span></div>").join("");try{renderMathIn(ul)}catch(e){}}\n'
+'          else{ul.innerHTML=s.b.map(b=>"<div><span>~B~u2022</span><span>"+escH(plainMath(b))+"</span></div>").join("");}')
 assert h.count(F2) == 1, "P2 anchor not found"
 h = h.replace(F2, R2)
 
@@ -56,8 +63,9 @@ h = h.replace(F3, R3)
 
 # P4: truncated/unmatched [[SLIDES token still parses
 F4 = 'if(slTok){txt=txt.replace(slTok[0],"").trim();slData=slTok[1].split("|").map(s=>s.trim()).filter(Boolean)}'
-R4 = '''if(slTok){txt=txt.replace(slTok[0],"").trim();slData=slTok[1].split("|").map(s=>s.trim()).filter(Boolean)}
-    if(!slTok){const slAny=txt.match(/\\[\\[\\s*SLIDES\\s*\\|/i);if(slAny){var _rest=txt.slice(slAny.index+slAny[0].length).replace(/\\]\\]\\s*$/,"");slData=_rest.split("|").map(s=>s.trim()).filter(Boolean);txt=txt.slice(0,slAny.index).trim()}}'''
+R4 = Q(
+'if(slTok){txt=txt.replace(slTok[0],"").trim();slData=slTok[1].split("|").map(s=>s.trim()).filter(Boolean)}\n'
+'    if(!slTok){const slAny=txt.match(/~B~[~B~[~B~s*SLIDES~B~s*~B~|/i);if(slAny){var _rest=txt.slice(slAny.index+slAny[0].length).replace(/~B~]~B~]~B~s*$/,"");slData=_rest.split("|").map(s=>s.trim()).filter(Boolean);txt=txt.slice(0,slAny.index).trim()}}')
 assert h.count(F4) == 1, "P4 anchor not found"
 h = h.replace(F4, R4)
 
