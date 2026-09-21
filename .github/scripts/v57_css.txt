@@ -1,0 +1,23 @@
+
+/* ===================== v57 POWER FEATURES ===================== */
+.graph-box{border:1px solid var(--line);border-radius:16px;background:var(--surface2);margin:12px 0;max-width:480px;padding:10px}
+.graph-box canvas{width:100%;height:auto;border-radius:10px;display:block;background:var(--surface)}
+.graph-cap{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;font-weight:700;word-break:break-all}
+.mm-box{border:1px solid var(--line);border-radius:16px;background:var(--surface);margin:14px 0;overflow:auto;max-width:480px;-webkit-overflow-scrolling:touch}
+.mm-head{font-weight:800;font-size:13px;padding:10px 14px 0;color:var(--text)}
+.mm-svg{min-width:340px;height:auto;display:block;margin:6px}
+.mm-node rect{fill:var(--surface2);stroke:var(--line);stroke-width:1.2}
+.mm-node text{font-size:10.5px;font-weight:700;fill:var(--text);pointer-events:none;font-family:inherit}
+.mm-root rect{fill:var(--accent);stroke:none}
+.mm-root text{fill:var(--on-accent);font-size:12px}
+.mm-node{cursor:pointer}
+.slides-box{border:1px solid var(--line);border-radius:18px;background:var(--surface);margin:14px 0;max-width:480px;overflow:hidden;position:relative}
+.slide-view{min-height:230px;padding:22px 20px;display:flex;flex-direction:column;justify-content:center;animation:rise .3s ease}
+.slide-title{font-weight:800;font-size:19px;line-height:1.25;margin:8px 0 14px;color:var(--text)}
+.slide-list{display:grid;gap:10px}
+.slide-list>div{display:flex;gap:10px;font-size:14px;line-height:1.45;color:var(--text)}
+.slide-list span:first-child{color:var(--accent);font-weight:900}
+.slide-dots{display:flex;gap:6px;justify-content:center;padding:12px 0 4px;flex-wrap:wrap}
+.slide-dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.slide-dot.on{background:var(--accent)}
+.slide-bar{display:flex;gap:8px;align-items:center;justify-content:center;padding:10px 14px 16px}
