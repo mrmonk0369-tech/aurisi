@@ -1,0 +1,85 @@
+      pbox.appendChild(btn);
+      md.appendChild(pbox);
+    }
+    if(gData&&gData.length){
+      gData.forEach(function(gd){
+        const gbox=document.createElement("div");gbox.className="graph-box";
+        const cv=document.createElement("canvas");cv.width=440;cv.height=300;cv.style.width="100%";
+        gbox.appendChild(cv);
+        const cap=document.createElement("div");cap.className="graph-cap";cap.textContent="y = "+gd[0]+"   ·   x: "+gd[1]+" to "+gd[2];gbox.appendChild(cap);
+        var slot=null;
+        try{var gsels=md.querySelectorAll("[data-gslot]");for(var w=0;w<gsels.length;w++){if(gsels[w].getAttribute("data-gslot")===gd[3]){slot=gsels[w];break}}}catch(e9){}
+        if(slot)slot.appendChild(gbox);else md.appendChild(gbox);
+        try{drawGraph57(cv,gd[0],gd[1],gd[2])}catch(e){}
+      });
+    }
+    if(mapData&&mapData.length>1){
+      try{
+        var mmw=buildMindMap57(mapData);
+        if(mmw){var mbox=document.createElement("div");mbox.className="mm-box";
+          var mh=document.createElement("div");mh.className="mm-head";mh.textContent="\u{1F5FA}\u{FE0F} Mind Map \u2014 tap a node to fold / unfold";mbox.appendChild(mh);
+          mbox.appendChild(mmw);md.appendChild(mbox);}
+      }catch(e){}
+    }
+    if(slData&&slData.length){
+      const slides=slData.map(s=>{const pp=s.split("::");return{t:(pp[0]||"").trim(),b:(pp[1]||"").split(";").map(x=>x.trim()).filter(Boolean),n:(pp[2]||"").trim()}}).filter(s=>s.t);
+      if(slides.length){
+        const sbox=document.createElement("div");sbox.className="slides-box";
+        const closeB=document.createElement("button");closeB.className="sv-close";closeB.textContent="\u2715";closeB.title="Close";sbox.appendChild(closeB);
+        const view=document.createElement("div");view.className="slide-view";
+        const eyebrow=document.createElement("div");eyebrow.className="eyebrow";eyebrow.textContent="SMART BOARD";
+        const st=document.createElement("div");st.className="slide-title";
+        const ul=document.createElement("div");ul.className="slide-list";
+        view.appendChild(eyebrow);view.appendChild(st);view.appendChild(ul);
+        const dots=document.createElement("div");dots.className="slide-dots";
+        slides.forEach(()=>{const d=document.createElement("div");d.className="slide-dot";dots.appendChild(d)});
+        const bar=document.createElement("div");bar.className="slide-bar";
+        const prevB=document.createElement("button");prevB.className="btn small soft";prevB.textContent="\u23EE";
+        const playB=document.createElement("button");playB.className="quiz-next";playB.textContent="\u25B6 Play lecture";
+        const nextB=document.createElement("button");nextB.className="btn small soft";nextB.textContent="\u23ED";
+        bar.appendChild(prevB);bar.appendChild(playB);bar.appendChild(nextB);
+        sbox.appendChild(view);sbox.appendChild(dots);sbox.appendChild(bar);
+        let si=0,playing=false;
+        const stopSpeak=()=>{playing=false;playB.textContent="\u25B6 Play lecture";try{speechSynthesis.cancel()}catch(e){};try{stopAiAudio()}catch(e){}};
+        closeB.onclick=stopSpeak;
+        const show=()=>{
+          si=Math.max(0,Math.min(slides.length-1,si));
+          const s=slides[si];
+          st.textContent=(si+1)+". "+s.t;
+          ul.innerHTML=s.b.map(b=>"<div><span>\u2022</span><span>"+escH(b)+"</span></div>").join("");
+          dots.querySelectorAll(".slide-dot").forEach((d,i)=>d.classList.toggle("on",i===si));
+        };
+        const speakBrowser=(txt,after)=>{
+          try{const u=new SpeechSynthesisUtterance(String(txt).slice(0,600));
+            u.lang=speechLangFor(getUiLang());
+            try{const voices=speechSynthesis.getVoices()||[];
+              const langP=speechLangFor(getUiLang()).slice(0,2).toLowerCase();
+              const pool=voices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(langP));
+              if(pool[0])u.voice=pool[0];}catch(e3){}
+            u.onend=after;u.onerror=after;applyTts(u);speechSynthesis.speak(u);
+          }catch(e){after()}
+        };
+        const speakSlide=()=>{
+          if(!playing)return;
+          if(si>=slides.length){stopSpeak();toast("Lecture finished \u2705");return}
+          show();
+          const s=slides[si];
+          const txt=s.n||((s.t+". ")+s.b.join(". "));
+          const goNext=()=>{if(!playing)return;si++;setTimeout(speakSlide,420)};
+          if(sarvamKeySet()){sarvamSpeak(txt,getSarvamVoice(),function(ok){if(ok)goNext();else speakBrowser(txt,goNext)},true)}
+          else if(aiVoicesOn()){aiSpeak(txt,getAiVoice(),function(ok){if(ok)goNext();else speakBrowser(txt,goNext)},true)}
+          else speakBrowser(txt,goNext);
+        };
+        playB.onclick=()=>{
+          if(playing){stopSpeak();return}
+          if(!window.speechSynthesis&&!aiVoicesOn())return;
+          playing=true;playB.textContent="\u23F8 Stop";try{speechSynthesis.cancel()}catch(e){}
+          speakSlide();
+        };
+        prevB.onclick=()=>{si--;show()};
+        nextB.onclick=()=>{si++;show()};
+        show();
+        md.appendChild(sbox);
+      }
+    }
+    const acts=
