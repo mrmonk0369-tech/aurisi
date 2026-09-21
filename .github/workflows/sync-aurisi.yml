@@ -1,4 +1,4 @@
-name: Build AURISI v60.2
+name: Build AURISI v60.3
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,13 +10,13 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.2"' AURISI.html; then echo "already v60.2 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1182783
-          python3 .github/scripts/build_v602.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1184213
+          if grep -q 'APP_VERSION="60.3"' AURISI.html; then echo "already v60.3 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1184213
+          python3 .github/scripts/build_v603.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1184254
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.2 (Controlled Reveal)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.3 (Institute scope)" || echo "no changes"
           git push
