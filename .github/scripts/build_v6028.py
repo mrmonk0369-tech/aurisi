@@ -78,7 +78,7 @@ assert h.count(F7) == 1, "P7 anchor not found"
 h = h.replace(F7, R7)
 
 # P8: frame() draws the diagram instead of bullets for diagram slides
-F8 = 'var by=Math.min(ty+40,200);\n              for(var bi=0;bi<sl2.b.length;bi++){ '
+F8 = 'var by=Math.min(ty+40,200);\n              for(var bi=0;bi<sl2.b.length;bi++){'
 R8 = Q('var by=Math.min(ty+40,200);\n              if(sl2.g&&svgs[cur.sl]){\n                var im3=svgs[cur.sl];\n                var zoneY=Math.min(by+16,170),zoneH=660-zoneY;\n                var sc2=Math.min(1040/im3.width,zoneH/im3.height,1.5);\n                var iw3=im3.width*sc2,ih3=im3.height*sc2;\n                cx.drawImage(im3,(1280-iw3)/2,zoneY+(zoneH-ih3)/2,iw3,ih3);\n              }else for(var bi=0;bi<sl2.b.length;bi++){')
 assert h.count(F8) == 1, "P8 anchor not found"
 h = h.replace(F8, R8)
