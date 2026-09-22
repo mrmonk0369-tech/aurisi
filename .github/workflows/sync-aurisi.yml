@@ -1,4 +1,4 @@
-name: Build AURISI v60.26
+name: Build AURISI v60.27
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,16 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.26"' AURISI.html; then echo "already v60.26 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1856279
-          python3 .github/scripts/build_v6026.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1856310
-          grep -q 'location.protocol==="file:")try' AURISI_new.html
-          grep -q '<link rel="manifest" href="manifest.json">' AURISI_new.html
-          grep -q 'href="apple-touch-icon.png"' AURISI_new.html
+          if grep -q 'APP_VERSION="60.27"' AURISI.html; then echo "already v60.27 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1856310
+          python3 .github/scripts/build_v6027.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1858397
+          grep -q 'AURISI_MARK_URL' AURISI_new.html
+          grep -q 'boot-splash::after' AURISI_new.html
+          grep -q '},2600);' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.26 (PWA Install Fix)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.27 (Cinematic Splash)" || echo "no changes"
           git push
