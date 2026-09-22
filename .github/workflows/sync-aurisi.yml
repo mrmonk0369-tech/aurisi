@@ -1,4 +1,4 @@
-name: Build AURISI v60.21
+name: Build AURISI v60.22
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,16 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.21"' AURISI.html; then echo "already v60.21 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1854677
-          python3 .github/scripts/build_v6021.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1855059
-          grep -q 'text-fill-color:transparent' AURISI_new.html
-          grep -q 'data-i18n="welcomeSub"' AURISI_new.html
-          ! grep -q '.welcome,.lock-pdf' AURISI_new.html
+          if grep -q 'APP_VERSION="60.22"' AURISI.html; then echo "already v60.22 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1855059
+          python3 .github/scripts/build_v6022.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1855992
+          grep -q 'class="vandana"' AURISI_new.html
+          grep -q 'Ram Ram' AURISI_new.html
+          grep -q 'vdGlow' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.21 (Gemini Welcome)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.22 (Ram Ram Welcome)" || echo "no changes"
           git push
