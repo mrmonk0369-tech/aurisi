@@ -294,6 +294,8 @@ button{font:inherit;cursor:pointer}
 .splash-tag{font-size:13px;letter-spacing:.6px}
 .splash-bar{width:210px}
 .splash-foot{font-size:10.5px}
+.slide-diagram{max-width:100%;margin:6px auto 2px;text-align:center}
+.slide-diagram svg{max-width:100%;height:auto;max-height:34vh}
 .splash-foot{position:absolute;bottom:26px;left:0;right:0;text-align:center;font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);opacity:0;animation:spFade .8s ease 1.5s forwards}
 @media (prefers-reduced-motion:reduce){.sp-aurora i,.sp-ring,.sp-dots i,.splash-bar i{animation:none}.sp-dots{display:none}}
 .acct-avatar{width:37px;height:37px;min-width:37px;border-radius:50%;background:var(--ai-user-bg);color:var(--ai-user-text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:800;font-size:15px;font-family:inherit;border:2px solid var(--text);box-shadow:2px 2px 0 var(--line);transition:transform .15s}
@@ -1902,7 +1904,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.27",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.28",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -2309,7 +2311,7 @@ function SYS_PROMPT(){
   "3D SHAPES: when a real 3D perspective helps \u2014 geometry solids, crystal structure, molecule feel \u2014 include [[3D|shape|short caption]] where shape is one of: cube, sphere, cone, cylinder, torus, pyramid, icosahedron. Use 3D sparingly. "+
    "GRAPH PLOTS: when a function graph makes the idea clearer (maths, physics relations) include [[GRAPH|expression in x|minX|maxX]] \u2014 expression uses only x, numbers and sin cos tan asin acos atan sqrt abs exp log pow pi. Example: [[GRAPH|sin(x)|-6.28|6.28]]. Max two per answer. "+
    "MIND MAPS: when the learner asks for a mind map, revision overview or chapter structure, output ONE token [[MAP|Central topic|Branch|Branch>Sub topic|Other branch|...]] \u2014 12-20 paths, every path starts at the central topic, > separates levels, 1-5 words per node, never | inside a node. "+
-   "VIDEO LESSONS: when asked for a video lesson, narrated slides or a lecture, output ONE token [[SLIDES|Slide title::bullet 1;bullet 2;bullet 3::narration sentences|Next title::...::...]] \u2014 8-16 slides for one topic, 25-40 slides when the student asks to complete a whole chapter, full book or paper end-to-end (a real 10-30 minute class), 3-5 bullets each where every bullet is a COMPLETE TEACHING SENTENCE with real content (facts, formulas, examples, dates - never short labels) - the teacher voice reads the slide title and every bullet aloud EXACTLY as written, so bullets must flow as spoken teaching; narration is optional and may be omitted, :: separates title/bullets/narration, ; between bullets, never | inside content. "+
+   "VIDEO LESSONS: when asked for a video lesson, narrated slides or a lecture, output ONE token [[SLIDES|Slide title::bullet 1;bullet 2;bullet 3::narration sentences|Next title::...::...]] \u2014 8-16 slides for one topic, 25-40 slides when the student asks to complete a whole chapter, full book or paper end-to-end (a real 10-30 minute class), 3-5 bullets each where every bullet is a COMPLETE TEACHING SENTENCE with real content (facts, formulas, examples, dates - never short labels) - the teacher voice reads the slide title and every bullet aloud EXACTLY as written, so bullets must flow as spoken teaching; narration is optional and may be omitted, :: separates title/bullets/narration, ; between bullets, never | inside content. A slide may end with a 4th :: segment holding a raw <svg>...</svg> diagram (same drawing rules as the DIAGRAMS token, viewBox 0 0 480 320, never any | character; use max 1-2 diagram slides per lesson and only for visual topics); for a diagram slide its narration must describe the diagram aloud. "+
   "DIAGRAMS: whenever a concept is better understood visually (geometry shapes, labeled anatomy, circuits, process flows, timelines, maps, forces, machinery, set theory), output a token [[SVG|short title|<svg viewBox=\"0 0 480 320\" xmlns=\"http://www.w3.org/2000/svg\">...</svg>]] containing a clean labeled educational diagram: simple shapes, strokes, arrows and <text> labels for every part, 2-3 colors max, readable at 480x320, no scripts, no external images, never the | character in the title - then explain the diagram in the same answer. "+
   "MOLECULES 3D: when the learner asks to SEE a molecule or its 3D shape \u2014 water, ammonia, methane, benzene, ethanol, CO2, NaCl, glucose, aspirin etc. \u2014 output [[MOL|short title|<xyz block>]] at the exact point in the explanation where it belongs. The xyz block: first line is the atom count, second line a comment (may be empty), then one line per atom \u2014 element x y z with approximate real angstrom coordinates, space separated, decimals allowed, up to 30 atoms, no commas. Example: [[MOL|Water|3\nwater\nO 0.000 0.000 0.000\nH 0.757 0.586 0.000\nH -0.757 0.586 0.000]]. For giant structures (proteins, DNA, viruses) use IMAGE instead. Never use | inside the coordinates. "+
   "PHYSICS SIMS: when the learner asks to see, play with, or experiment with a physics concept \u2014 projectile motion, bouncing and collisions, momentum (Newton's cradle), rolling down a ramp, toppling stacks \u2014 output [[PHYS|scenario|short caption]] where scenario is one of: projectile, bounce, pendulum, stack, ramp. The app turns it into a LIVE draggable simulation the learner can play with. Max one PHYS per answer. Use PHYS for motion, forces and collisions; keep [[3D|...]] for pure solids. "+
@@ -3659,7 +3661,7 @@ if(chData){
       }catch(e){}
     }
     if(slData&&slData.length){
-      const slides=slData.map(s=>{const pp=s.split("::");return{t:(pp[0]||"").trim(),b:(pp[1]||"").split(";").map(x=>x.trim()).filter(Boolean),n:(pp[2]||"").trim()}}).filter(s=>s.t);
+      const slides=slData.map(s=>{const pp=s.split("::");return{t:(pp[0]||"").trim(),b:(pp[1]||"").split(";").map(x=>x.trim()).filter(Boolean),n:(pp[2]||"").trim(),g:(typeof sanSvg==="function")?(sanSvg(pp[3]||"")||null):null}}).filter(s=>s.t);
       if(slides.length){
         const sbox=document.createElement("div");sbox.className="slides-box";
         const closeB=document.createElement("button");closeB.className="sv-close";closeB.textContent="\u2715";closeB.title="Close";sbox.appendChild(closeB);
@@ -3667,7 +3669,7 @@ if(chData){
         const eyebrow=document.createElement("div");eyebrow.className="eyebrow";eyebrow.textContent="SMART BOARD";
         const st=document.createElement("div");st.className="slide-title";
         const ul=document.createElement("div");ul.className="slide-list";
-        view.appendChild(eyebrow);view.appendChild(st);view.appendChild(ul);
+        const dg=document.createElement("div");dg.className="slide-diagram";dg.style.display="none";view.appendChild(eyebrow);view.appendChild(st);view.appendChild(dg);view.appendChild(ul);
         const dots=document.createElement("div");dots.className="slide-dots";
         slides.forEach(()=>{const d=document.createElement("div");d.className="slide-dot";dots.appendChild(d)});
         const bar=document.createElement("div");bar.className="slide-bar";
@@ -3708,6 +3710,7 @@ if(chData){
           si=Math.max(0,Math.min(slides.length-1,si));
           const s=slides[si];
           st.textContent=(si+1)+". "+(window.renderMathInElement?s.t:plainMath(s.t));
+          if(s.g){dg.style.display="block";dg.innerHTML=s.g}else{dg.style.display="none"}
           if(window.renderMathInElement){ul.innerHTML=s.b.map(b=>"<div><span>\u2022</span><span>"+escH(b)+"</span></div>").join("");try{renderMathIn(ul)}catch(e){}}
           else{ul.innerHTML=s.b.map(b=>"<div><span>\u2022</span><span>"+escH(plainMath(b))+"</span></div>").join("");}
           var items=[].slice.call(ul.children);
@@ -3772,6 +3775,7 @@ if(chData){
             slides.forEach(function(s){
               var cs=[cleanForSpeech(plainMath(s.t))];
               s.b.forEach(function(bb){cs.push(cleanForSpeech(plainMath(bb)))});
+              if(s.g&&s.n)cs.push(cleanForSpeech(plainMath(s.n)).slice(0,600));
               jobs.push(cs);
             });
             var totalChunks=0;
@@ -3801,6 +3805,14 @@ if(chData){
               bufs.push(row);
             }
             try{uploadDone(true)}catch(e3c){}
+            var svgs=[];
+            for(var si2=0;si2<slides.length;si2++){
+              var imA=null;
+              if(slides[si2].g){
+                imA=await new Promise(function(res2){var ii=new Image();ii.onload=function(){res2(ii)};ii.onerror=function(){res2(null)};ii.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(slides[si2].g.replace(/<svg/i,'<svg width="480" height="320"'))});
+              }
+              svgs.push(imA);
+            }
             var cv=document.createElement("canvas");cv.width=1280;cv.height=720;
             var cx=cv.getContext("2d");
             var st2=cv.captureStream(30);
@@ -3883,7 +3895,13 @@ if(chData){
               var ty=wrapText((cur.sl+1)+". "+plainMath(sl2.t),90,120,1100,52,1);
               cx.font="500 30px system-ui,-apple-system,Segoe UI,sans-serif";
               var by=Math.min(ty+40,200);
-              for(var bi=0;bi<sl2.b.length;bi++){
+              if(sl2.g&&svgs[cur.sl]){
+                var im3=svgs[cur.sl];
+                var zoneY=Math.min(by+16,170),zoneH=660-zoneY;
+                var sc2=Math.min(1040/im3.width,zoneH/im3.height,1.5);
+                var iw3=im3.width*sc2,ih3=im3.height*sc2;
+                cx.drawImage(im3,(1280-iw3)/2,zoneY+(zoneH-ih3)/2,iw3,ih3);
+              }else for(var bi=0;bi<sl2.b.length;bi++){
                 var txt3=plainMath(sl2.b[bi]);
                 var frac=bi<cur.bl?1:(bi===cur.bl?Math.min(1,Math.max(0,(el-cur.st)/cur.du)):0);
                 cx.fillStyle=bi===cur.bl?"#ffffff":(bi<cur.bl?"#e8e3da":"rgba(255,255,255,.25)");
@@ -6720,8 +6738,8 @@ function browserSpeakFallback(clean,onend){
   }catch(e){if(onend)onend()}
 }
 /* ===================== v18 DESI VOICES (Sarvam Bulbul TTS) ===================== */
-const SARVAM_VOICE_OPTIONS=[["shubh","Shubh · Male"],["aditya","Aditya · Male"],["rahul","Rahul · Male"],["ritu","Ritu · Female"],["priya","Priya · Female"],["neha","Neha · Female"],["pooja","Pooja · Female"],["shruti","Shruti · Female"]];
-const SARVAM_PAIR={shubh:"priya",aditya:"ritu",rahul:"neha",ritu:"aditya",priya:"shubh",neha:"rahul",pooja:"aditya",shruti:"shubh"};
+const SARVAM_VOICE_OPTIONS=[["mani","Mani · Male ★ best"],["priya","Priya · Female ★ best"],["ishita","Ishita · Female ★ best"],["varun","Varun · Male ★ best"],["ratan","Ratan · Male · English"],["roopa","Roopa · Female"],["shubh","Shubh · Male · Hindi"],["ashutosh","Ashutosh · Male"],["suhani","Suhani · Female"],["ritu","Ritu · Female"],["aditya","Aditya · Male"],["neha","Neha · Female"]];
+const SARVAM_PAIR={mani:"priya",priya:"varun",ishita:"ratan",varun:"ishita",ratan:"ishita",roopa:"shubh",shubh:"roopa",ashutosh:"suhani",suhani:"ashutosh",ritu:"ratan",aditya:"neha",neha:"aditya"};
 function sarvamKeySet(){return (localStorage.getItem(STORAGE+"sarvamKey")||"").trim().length>10}
 function getSarvamVoice(){var v=localStorage.getItem(STORAGE+"sarvamVoice")||"shubh";return SARVAM_PAIR[v]?v:"shubh"}
 function sarvamLang(){
@@ -6920,7 +6938,7 @@ function saveSettings(){
   var sk=$("sarvamKeyInput").value.trim();
   if(sk)localStorage.setItem(STORAGE+"sarvamKey",sk);
   else localStorage.removeItem(STORAGE+"sarvamKey");
-  localStorage.setItem(STORAGE+"sarvamVoice",$("sarvamVoiceSel").value||"anushka");
+  localStorage.setItem(STORAGE+"sarvamVoice",$("sarvamVoiceSel").value||"shubh");
   localStorage.setItem(STORAGE+"instName",($("instName").value||"").trim());
   const lf=$("instLogo");
   if(lf&&lf.files&&lf.files[0]){
