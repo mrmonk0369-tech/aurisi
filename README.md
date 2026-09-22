@@ -4,6 +4,8 @@
 
 A single-file AI teacher & exam-prep workspace for students. No install, no server, no build step — one HTML file that runs in any browser.
 
+ॐ जय श्री राम — every AURISI session opens with Hanuman Chalisa's most powerful chaupais (24–25).
+
 ## What it does
 
 - 💬 **AI Study Room** — streaming chat tutor (Gemini + free Puter fallback), voice mode, 12 languages
@@ -18,14 +20,3 @@ A single-file AI teacher & exam-prep workspace for students. No install, no serv
 ## How to use
 
 1. Open the live link above (or download `AURISI.html` and open it locally — works fully offline)
-2. Optional: add a free Gemini API key in Settings (aistudio.google.com) — otherwise it runs on the free Puter fallback
-3. On phone: use your browser's **Add to Home Screen** — AURISI will open like a real app, full-screen
-4. Everything (chats, books, progress) is stored only in your own browser
-
-## Tech
-
-Vanilla HTML/CSS/JS — one file, ~268KB, no dependencies, no build. KaTeX 0.16.8 for math. Browser Speech APIs for voice. localStorage for data.
-
----
-
-Made with ❤️ by **NTC** · v16 App Feel Edition
