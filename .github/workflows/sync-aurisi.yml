@@ -1,4 +1,4 @@
-name: Build AURISI v60.29
+name: Build AURISI v60.30
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,16 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.29"' AURISI.html; then echo "already v60.29 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1860216
-          python3 .github/scripts/build_v6029.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1862008
-          grep -q 'SITUATION MODE: when the user starts' AURISI_new.html
-          grep -q 'function situationRoom' AURISI_new.html
-          grep -q 'Mind Rating' AURISI_new.html
+          if grep -q 'APP_VERSION="60.30"' AURISI.html; then echo "already v60.30 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1862008
+          python3 .github/scripts/build_v6030.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1861934
+          grep -q 'minimal splash (clean style)' AURISI_new.html
+          grep -q '.sp-aurora{display:none}' AURISI_new.html
+          grep -q '.splash-bar{display:none}' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.29 (Situation Mode)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.30 (Clean Splash)" || echo "no changes"
           git push
