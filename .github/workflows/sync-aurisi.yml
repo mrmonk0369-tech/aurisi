@@ -1,4 +1,4 @@
-name: Build AURISI v60.37
+name: Build AURISI v60.38
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,15 +10,15 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.37"' AURISI.html; then echo "already v60.37 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1868723
-          python3 .github/scripts/build_v6037.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1869587
-          grep -q 'VISUAL DEEP-DIVE' AURISI_new.html
-          grep -q 'BEFORE (the simple everyday case), THE IDEA' AURISI_new.html
+          if grep -q 'APP_VERSION="60.38"' AURISI.html; then echo "already v60.38 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1869587
+          python3 .github/scripts/build_v6038.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1869686
+          grep -q 'body.room-on .bubble.ai{background:transparent;border:none;border-radius:0;box-shadow:none}' AURISI_new.html
+          grep -q 'MANDATORY, NO EXCEPTIONS' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.37 (Visual Deep-Dive Cards)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.38 (edge-to-edge chat + mandatory visuals)" || echo "no changes"
           git push
