@@ -1,4 +1,4 @@
-name: Build AURISI v60.35
+name: Build AURISI v60.36
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,16 +10,15 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.35"' AURISI.html; then echo "already v60.35 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1867950
-          python3 .github/scripts/build_v6035.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1868432
-          grep -q 'HIGHER MINDED person' AURISI_new.html
-          grep -q 'TRANSFER: after each concept' AURISI_new.html
-          grep -q 'a higher mind for your own field' AURISI_new.html
+          if grep -q 'APP_VERSION="60.36"' AURISI.html; then echo "already v60.36 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1868432
+          python3 .github/scripts/build_v6036.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1868723
+          grep -q 'FIELD PATH' AURISI_new.html
+          grep -q 'robotics engineering, mechanical, electrical, aerospace, nanotechnology' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.35 (Higher Mind)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.36 (Field Paths)" || echo "no changes"
           git push
