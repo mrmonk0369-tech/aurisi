@@ -1,4 +1,4 @@
-name: Build AURISI v60.31
+name: Build AURISI v60.32
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,15 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.31"' AURISI.html; then echo "already v60.31 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1861934
-          python3 .github/scripts/build_v6031.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1861948
-          grep -q 'AURISI_LOGO_DATA_URL;$("loginLogo").src=AURISI_LOGO_DATA_URL' AURISI_new.html
-          grep -q '.sp-logo img{width:104px' AURISI_new.html
+          if grep -q 'APP_VERSION="60.32"' AURISI.html; then echo "already v60.32 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1861948
+          python3 .github/scripts/build_v6032.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1864204
+          grep -q 'APPLIED SCIENCE MODE' AURISI_new.html
+          grep -q 'function scienceLab' AURISI_new.html
+          grep -q 'Science Lab</b><small>Physics, Chemistry & Math' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.31 (Original Logo Splash)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.32 (Science Lab)" || echo "no changes"
           git push
