@@ -1,4 +1,4 @@
-name: Build AURISI v60.33
+name: Build AURISI v60.34
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,16 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.33"' AURISI.html; then echo "already v60.33 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1864204
-          python3 .github/scripts/build_v6033.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1866589
-          grep -q 'ZERO TO PRO JOURNEY' AURISI_new.html
-          grep -q 'function sciMaster' AURISI_new.html
-          grep -q 'var SCI_LEVELS' AURISI_new.html
+          if grep -q 'APP_VERSION="60.34"' AURISI.html; then echo "already v60.34 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1866589
+          python3 .github/scripts/build_v6034.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1867950
+          grep -q 'CREATOR INTEGRATION' AURISI_new.html
+          grep -q 'BUILD PORTFOLIO' AURISI_new.html
+          grep -q '1000,"Creator"' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.33 (Zero to Pro Journey)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.34 (Creator Path)" || echo "no changes"
           git push
