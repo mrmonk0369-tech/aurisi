@@ -237,6 +237,11 @@ button{font:inherit;cursor:pointer}
 .wpop .wp-w{font-weight:800;font-size:14px;color:var(--accent);text-transform:lowercase}
 .wpop .wp-m{margin-top:3px}
 .wpop .wp-x{display:block;margin-top:6px;font-size:10.5px;opacity:.55}
+.word-card{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:12px 15px;margin:10px 0;background:var(--surface2)}
+.word-card .wc-word{display:block;font-size:17px;font-weight:800;color:var(--accent)}
+.word-card .wc-pron{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.word-card .wc-mean{display:block;font-size:14px;margin-top:5px}
+.word-card .wc-ex{display:block;font-size:13px;color:var(--muted);margin-top:5px;font-style:italic}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}}
 .msg-row.user{justify-content:flex-end}
 .bubble{max-width:82%;line-height:1.62;font-size:15px;word-wrap:break-word}
@@ -1911,7 +1916,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.40",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.41",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -3257,6 +3262,16 @@ function msgRow(m,isLast){
       });
       svData.forEach(function(d){txt=txt.replace(d[3],'<div data-svslot="'+d[2]+'"></div>')});
     }
+    const wRe=/\[\[\s*WORD\s*\|([^|\]]+)\|([^|\]]*)\|([^|\]]+)\|([^|\]]+)\]\]/gi;
+    txt=txt.replace(wRe,function(_aw,w,pr,mn,ex){
+      if(LANG_ON&&langAddWord(LANG_ON,w,mn)){try{toast("\u26A1 +1 word added to your "+(LANG_MODES[LANG_ON]?LANG_MODES[LANG_ON].name:"language")+" bank")}catch(e2){}}
+      return '<div class="word-card"><b class="wc-word">'+escH(w)+'</b>'+(pr?'<span class="wc-pron">'+escH(pr)+'</span>':'')+'<span class="wc-mean">'+escH(mn)+'</span>'+(ex?'<span class="wc-ex">'+escH(ex)+'</span>':'')+'</div>';
+    });
+    txt=txt.replace(/\[\[\s*BASE\s*\|([^|\]]+)\]\]/gi,function(_ab,b){
+      b=String(b||"").trim();
+      if(b&&LANG_ON){var _pb=langProf(LANG_ON);var _ch=_pb.base!==b;langSetBase(LANG_ON,b);if(_ch){try{toast("\u26A1 Meanings will be shown in "+b)}catch(e3){}}}
+      return "";
+    });
     let chData=null;
     const chRe=/\[\[CHART\|(bar|line|pie|doughnut)\|([^|\]]+)\|([^|\]]+)\|([^|\]]+)\]\]/g;
     const chAll=[];let cm;
@@ -5034,8 +5049,23 @@ const LANG_MODES={
 };
 var LANG_ON="";
 try{LANG_ON=localStorage.getItem(STORAGE+"langmode")||"";if(LANG_ON&&!LANG_MODES[LANG_ON])LANG_ON=""}catch(e){}
+function langProfs(){try{return JSON.parse(localStorage.getItem(STORAGE+"langJ")||"{}")}catch(e){return {}}}
+function langProf(k){var p=langProfs();if(!p[k])p[k]={base:"",words:[],streak:0,lastDay:""};return p[k]}
+function langSaveP(p){try{localStorage.setItem(STORAGE+"langJ",JSON.stringify(p))}catch(e){}}
+function langSetBase(k,b){var p=langProfs();if(!p[k])p[k]={base:"",words:[],streak:0,lastDay:""};p[k].base=b;langSaveP(p)}
+function langAddWord(k,w,m){
+  var p=langProfs();if(!p[k])p[k]={base:"",words:[],streak:0,lastDay:""};
+  w=String(w||"").trim();if(!w)return false;
+  for(var i=0;i<p[k].words.length;i++){if(String(p[k].words[i][0]).toLowerCase()===w.toLowerCase()){langSaveP(p);return false}}
+  p[k].words.push([w,String(m||"").trim()]);
+  var today=new Date().toDateString();
+  if(p[k].lastDay!==today){var y=new Date(Date.now()-86400000).toDateString();p[k].streak=(p[k].lastDay===y)?(p[k].streak+1):1;p[k].lastDay=today}
+  langSaveP(p);return true;
+}
 function langRules(){
   var L=LANG_MODES[LANG_ON];if(!L)return "";
+  var p=langProf(LANG_ON),prof="";
+  if(p.words.length){var rec=[];for(var i=p.words.length-1;i>=Math.max(0,p.words.length-12);i--)rec.push(String(p.words[i][0]));prof="LANGUAGE PROFILE: this student's saved word bank for "+L.name+" has "+p.words.length+" words (recent: "+rec.join(", ")+")"+(p.streak?(" and a "+p.streak+"-day streak"):"")+". "}
   return "===== "+L.name.toUpperCase()+" TEACHING MODE (ACTIVE FOR THIS WHOLE CONVERSATION) ===== "+
   "You are now Aurisi's dedicated "+L.name+" teacher. Follow these rules in EVERY reply: "+
   "(1) LEVEL TRACKING: find the learner's level first and remember it — BEGINNER (alphabet/pronunciation, greetings, simple words), INTERMEDIATE (sentences, everyday conversation, core grammar), ADVANCED (nuance, idioms, fluency, culture). Adapt depth. "+
@@ -5043,10 +5073,13 @@ function langRules(){
   "(3) TINY STEPS: teach ONE word, rule or pattern at a time. After each, give a micro-exercise (say this word / translate this sentence / fill the blank) and CHECK the answer before moving on. Never dump walls of text. "+
   "(4) SPEAKING & WRITING: encourage the learner to write replies in the target language; correct errors warmly and always explain WHY (the rule behind it). "+
   "(5) GRAMMAR FIRST PRINCIPLES: explain each rule with 2 clear examples, then drill. "+L.special+" "+
-  "(6) Explain in the learner's language (how they write to you), but all teaching content stays in the target language. "+
-  "(7) Weave in ONE cultural note occasionally (customs, etiquette, famous phrases) — max once every few turns. "+
-  "(8) End each section with a 1-line recap + one practice sentence to translate. "+
-  "(9) If asked how to exit: tap the \u2715 on the language badge at the top. "+
+  "(6) MEANING LANGUAGE: every new word and phrase gets its meaning in the student's chosen meaning language"+(p.base?(" — they chose: "+p.base+". Remember it for the whole conversation"):" — ask once which language they want meanings in (their own language, simple English, or any other language; if they pick the target language itself, give simple target-language definitions, like English-to-English), then output the token [[BASE|their choice]] alone on its own line so it is saved")+". "+
+  "(7) DAILY DOSE: in every session teach 5 new useful everyday words for their level, each as ONE token on its own line: [[WORD|the word|simple pronunciation|meaning in their meaning language|one short example sentence in the target language]] with no | character inside any part — these tokens build their saved word bank automatically. "+
+  "(8) REVIEW FIRST: if the LANGUAGE PROFILE shows saved words, begin the session with 3 quick [[Q]] recall questions on their old words before teaching the Daily Dose. "+prof+
+  "(9) Explain in the learner's language (how they write to you), but all teaching content stays in the target language. "+
+  "(10) Weave in ONE cultural note occasionally (customs, etiquette, famous phrases) — max once every few turns. "+
+  "(11) End each section with a 1-line recap + one practice sentence to translate. "+
+  "(12) If asked how to exit: tap the \u2715 on the language badge at the top. "+
   "Keep every other Aurisi rule (identity, safety).";
 }
 function renderLangChip(){
@@ -5061,7 +5094,7 @@ function openLangLab(){
   var h="";
   Object.keys(LANG_MODES).forEach(function(k){
     var L=LANG_MODES[k];
-    h+='<button class="lang-tile" onclick="closeLangLab();startLangMode(\''+k+'\')"><span class="lt-flag">'+L.emoji+'</span><b>'+escH(L.name)+'</b><small>'+(LANG_NATIVE[k]||L.name)+'</small></button>';
+    h+='<button class="lang-tile" onclick="closeLangLab();startLangMode(\''+k+'\')"><span class="lt-flag">'+L.emoji+'</span><b>'+escH(L.name)+'</b><small>'+(LANG_NATIVE[k]||L.name)+(langProf(k).words.length?(' \u00B7 '+langProf(k).words.length+' words'):'')+'</small></button>';
   });
   g.innerHTML=h;
   $("langBack").classList.add("open");
@@ -5078,7 +5111,10 @@ function startLangMode(k){
   LANG_ON=k;
   try{localStorage.setItem(STORAGE+"langmode",k)}catch(e){}
   var L=LANG_MODES[k];
-  state.chatHistory.push({role:"model",parts:[{text:L.emoji+" **"+L.name+" Mode ON!**\n\nFrom now on, I am your dedicated "+L.name+" teacher \u2014 reading, writing, speaking and real understanding, step by step.\n\n**First, tell me your level:**\n**1\uFE0F Complete beginner** \u2014 start from the basics\n**2\uFE0F Some knowledge** \u2014 build sentences & conversation\n**3\uFE0F Advanced** \u2014 fluency, nuance & culture\n\nOr just tell me what you want to learn first! \u{1F3AF}"}]});
+  var _pf=langProf(k),_ps="";
+  if(_pf.words.length)_ps="**Your word bank:** "+_pf.words.length+" "+L.name+" words"+(_pf.streak?("\u00B7 \u{1F525} "+_pf.streak+"-day streak"):"")+"\n";
+  if(_pf.base)_ps+="**Meanings in:** "+_pf.base+"\n";
+  state.chatHistory.push({role:"model",parts:[{text:L.emoji+" **"+L.name+" Mode ON!**\n\nI am your dedicated "+L.name+" teacher \u2014 reading, writing, speaking and real understanding, step by step.\n"+_ps+"\n**Quick setup \u2014 tell me:**\n**1\uFE0F Your level** \u2014 beginner / some knowledge / advanced\n**2\uFE0F Meaning language** \u2014 which language should word meanings be in? (your own language, simple English, or any language you like)\n\nOr just tell me what you want to learn first! \u{1F3AF}"}]});
   persist();renderChat();switchView("chat");
   toast(L.emoji+" "+L.name+" Mode ON");
 }
