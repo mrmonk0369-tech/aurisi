@@ -1,4 +1,4 @@
-name: Build AURISI v60.41
+name: Build AURISI v60.42
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,17 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.41"' AURISI.html; then echo "already v60.41 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1874490
-          python3 .github/scripts/build_v6041.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1878484
-          grep -q 'function langAddWord(' AURISI_new.html
-          grep -q 'DAILY DOSE: in every session teach 5 new useful everyday words' AURISI_new.html
-          grep -q 'function langRules(){' AURISI_new.html
-          grep -c 'function langRules(){' AURISI_new.html | grep -q '^1$'
+          if grep -q 'APP_VERSION="60.42"' AURISI.html; then echo "already v60.42 - nothing to do"; exit 0; fi
+          test "$(wc -c < AURISI.html)" -eq 1878484
+          python3 .github/scripts/build_v6042.py AURISI.html AURISI_new.html
+          test "$(wc -c < AURISI_new.html)" -eq 1879844
+          grep -q 'NATIVE IMMERSION: you are not a classroom teacher' AURISI_new.html
+          grep -q 'var IM_CITY=' AURISI_new.html
+          grep -q 'you do not just study "+L.name+", you LIVE it' AURISI_new.html
           mv AURISI_new.html AURISI.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AURISI.html
-          git commit -m "chore: build AURISI v60.41 (Language Hub Pro)" || echo "no changes"
+          git commit -m "chore: build AURISI v60.42 (Language Hub Native Immersion)" || echo "no changes"
           git push
