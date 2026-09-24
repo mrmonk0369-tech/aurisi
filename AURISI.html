@@ -1916,7 +1916,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.41",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.42",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -5049,6 +5049,7 @@ const LANG_MODES={
 };
 var LANG_ON="";
 try{LANG_ON=localStorage.getItem(STORAGE+"langmode")||"";if(LANG_ON&&!LANG_MODES[LANG_ON])LANG_ON=""}catch(e){}
+var IM_CITY={"global-english":"Singapore","american-english":"New York","spanish":"Madrid","mandarin":"Beijing","german":"Berlin","korean":"Seoul","japanese":"Tokyo","french":"Paris"};
 function langProfs(){try{return JSON.parse(localStorage.getItem(STORAGE+"langJ")||"{}")}catch(e){return {}}}
 function langProf(k){var p=langProfs();if(!p[k])p[k]={base:"",words:[],streak:0,lastDay:""};return p[k]}
 function langSaveP(p){try{localStorage.setItem(STORAGE+"langJ",JSON.stringify(p))}catch(e){}}
@@ -5066,8 +5067,10 @@ function langRules(){
   var L=LANG_MODES[LANG_ON];if(!L)return "";
   var p=langProf(LANG_ON),prof="";
   if(p.words.length){var rec=[];for(var i=p.words.length-1;i>=Math.max(0,p.words.length-12);i--)rec.push(String(p.words[i][0]));prof="LANGUAGE PROFILE: this student's saved word bank for "+L.name+" has "+p.words.length+" words (recent: "+rec.join(", ")+")"+(p.streak?(" and a "+p.streak+"-day streak"):"")+". "}
+  var city=IM_CITY[LANG_ON]||("a place where "+L.name+" is spoken every day");
   return "===== "+L.name.toUpperCase()+" TEACHING MODE (ACTIVE FOR THIS WHOLE CONVERSATION) ===== "+
   "You are now Aurisi's dedicated "+L.name+" teacher. Follow these rules in EVERY reply: "+
+  "(0) NATIVE IMMERSION: you are not a classroom teacher - you are a warm, fun LOCAL FRIEND who lives in "+city+". Give yourself a fitting local name and personality and keep both for the whole conversation. Teach as if the student has just moved there and you are showing them daily life: order street food together, ride the local metro, bargain at a market, visit a festival - set mini scenes in real streets, cafes and shops of "+city+", naturally using local names, foods, prices in the local currency, customs and daily habits. Open the FIRST reply of every session with a 1-2 line immersive scene that drops the student straight into "+city+" (arriving at the airport, stepping into a corner cafe, meeting at a metro station). The student should FEEL they are living in the country, not studying a language. Occasionally, when it helps the scene, include one simple [[SVG]] sketch such as a little street map or market stall. "+
   "(1) LEVEL TRACKING: find the learner's level first and remember it — BEGINNER (alphabet/pronunciation, greetings, simple words), INTERMEDIATE (sentences, everyday conversation, core grammar), ADVANCED (nuance, idioms, fluency, culture). Adapt depth. "+
   "(2) EVERY phrase in the target language appears in its native script, then a simple pronunciation guide in parentheses, then the meaning. Never only one of these. "+
   "(3) TINY STEPS: teach ONE word, rule or pattern at a time. After each, give a micro-exercise (say this word / translate this sentence / fill the blank) and CHECK the answer before moving on. Never dump walls of text. "+
@@ -5086,7 +5089,7 @@ function renderLangChip(){
   var c=$("langChip"),l=$("langChipLbl");
   var L=LANG_MODES[LANG_ON];
   if(c)c.style.display=L?"flex":"none";
-  if(l&&L)l.textContent=L.emoji+" "+L.name;
+  if(l&&L)l.textContent=L.emoji+" "+L.name+(IM_CITY[LANG_ON]?" \u00B7 "+IM_CITY[LANG_ON]:"");
 }
 var LANG_NATIVE={"global-english":"International","american-english":"United States","spanish":"Espa\u00f1ol","french":"Fran\u00e7ais","german":"Deutsch","korean":"\ud55c\uad6d\uc5b4","japanese":"\u65e5\u672c\u8a9e","mandarin":"\u666e\u901a\u8bdd"};
 function openLangLab(){
@@ -5114,7 +5117,7 @@ function startLangMode(k){
   var _pf=langProf(k),_ps="";
   if(_pf.words.length)_ps="**Your word bank:** "+_pf.words.length+" "+L.name+" words"+(_pf.streak?("\u00B7 \u{1F525} "+_pf.streak+"-day streak"):"")+"\n";
   if(_pf.base)_ps+="**Meanings in:** "+_pf.base+"\n";
-  state.chatHistory.push({role:"model",parts:[{text:L.emoji+" **"+L.name+" Mode ON!**\n\nI am your dedicated "+L.name+" teacher \u2014 reading, writing, speaking and real understanding, step by step.\n"+_ps+"\n**Quick setup \u2014 tell me:**\n**1\uFE0F Your level** \u2014 beginner / some knowledge / advanced\n**2\uFE0F Meaning language** \u2014 which language should word meanings be in? (your own language, simple English, or any language you like)\n\nOr just tell me what you want to learn first! \u{1F3AF}"}]});
+  state.chatHistory.push({role:"model",parts:[{text:L.emoji+" **"+L.name+" Mode ON!**\n\n\u2708\uFE0F Welcome to "+(IM_CITY[k]||("the land of "+L.name))+"! I am your local friend here \u2014 from today you do not just study "+L.name+", you LIVE it: real streets, real food, real conversations, exactly the way natives do.\n"+_ps+"\n**Quick setup \u2014 tell me:**\n**1\uFE0F Your level** \u2014 beginner / some knowledge / advanced\n**2\uFE0F Meaning language** \u2014 which language should word meanings be in? (your own language, simple English, or any language you like)\n\nOr just walk up to me and say hi! \u{1F3AF}"}]});
   persist();renderChat();switchView("chat");
   toast(L.emoji+" "+L.name+" Mode ON");
 }
