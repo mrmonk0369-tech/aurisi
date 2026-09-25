@@ -61,7 +61,7 @@ function stuInline(files){
   return h;
 }
 function stuRenderDoc(doc){
-  function esc(s){return String(s||'').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')}
+  function esc(s){return String(s||'').replace(/&/g,String.fromCharCode(38,97,109,112,59)).replace(/</g,String.fromCharCode(38,108,116,59)).replace(/>/g,String.fromCharCode(38,103,116,59))}
   function b(s){return esc(s).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")}
   var out=[];
   for(var i=0;i<doc.blocks.length;i++){
