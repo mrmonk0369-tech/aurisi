@@ -1916,7 +1916,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.49",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.50",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -6496,22 +6496,24 @@ function crsClose(){
   document.head.appendChild(st);
 })();
 
-var STU={code:"",busy:false,lastPrompt:"",iteration:false,fixes:0,rt:0,hist:[]};
-var STU_PROMPT="You are Aurisi Studio, an elite app builder. The user describes an app or website; you output ONE complete, ready-to-run single-file HTML5 app. STRICT RULES: (1) Output ONLY the code: a single HTML document starting with <!DOCTYPE html> and ending with </html>. No markdown fences, no commentary before or after. (2) Everything inline: CSS inside a style tag, JS inside a script tag. No external files; optional Google Fonts link allowed. (3) Mobile-first and responsive, works in a phone browser, touch-friendly. (4) Polished, modern, professional design: cards, gradients, smooth transitions. When in doubt use a dark theme with gold or amber accents. (5) Fully functional logic: every button works, no TODOs, no placeholder sections. (6) English UI. (7) Keep the total under 500 lines. If the user asks for changes, return the FULL updated app again, complete, in one file.";
+var STU={code:"",busy:false,lastPrompt:"",iteration:false,fixes:0,rt:0,hist:[],files:[],doc:null,projId:null};
+var STU_PROMPT="You are Aurisi Studio, an elite builder that makes whatever the user asks. Pick the right format: (A) APP/WEBSITE (default): ONE complete single-file HTML5 app. Output ONLY the code: a single HTML document starting with <!DOCTYPE html> and ending with </html>. No markdown fences, no commentary. Everything inline: CSS inside a style tag, JS inside a script tag; optional Google Fonts link allowed. Mobile-first, touch-friendly. Polished modern design; when in doubt dark theme with gold accents. Fully functional: every button works, no TODOs. English UI. Under 500 lines. (B) BIG PROJECT (only if it truly needs multiple files, e.g. the user asks for separate files or a large site): output multiple files, each wrapped exactly like ===FILE: index.html=== on its own line, then the full file content. First file must be index.html. No commentary outside files. Plain HTML/CSS/JS only, relative links only. (C) DOCUMENT (notes, summary, worksheet, report, resume, letter, assignment, PDF): output ONLY JSON, no fences, exactly {\"title\":\"...\",\"blocks\":[{\"t\":\"h1\",\"x\":\"...\"}]}. Use t values h1, h2, p, li, quote. h1 for the title, h2 for sections, li for bullets, quote for key lines. Text x is plain with **bold** for key terms - no markdown headings. Rich, thorough, well structured study material. If the user asks for changes, return the FULL updated output in the same format.";
 function openStudio(){
   var old=document.getElementById("stuBack");if(old)old.remove();
   var b=document.createElement("div");b.id="stuBack";b.className="crs-back";
   b.innerHTML='<div class="crs-top"><button class="crs-x" title="Close">✕</button><div class="crs-tt"><b>🏗️ Aurisi Studio</b><small>Describe it — Aurisi builds it</small></div></div>'
    +'<div class="stu-wrap">'
    +'<div class="stu-ideas">'
-   +'<span class="stu-chip">🧮 Calculator</span><span class="stu-chip">🧠 Quiz App</span><span class="stu-chip">🏫 School Website</span><span class="stu-chip">📋 To-Do App</span><span class="stu-chip">🎮 Snake Game</span><span class="stu-chip">📇 Portfolio</span>'
+   +'<span class="stu-chip">🧮 Calculator</span><span class="stu-chip">🧠 Quiz App</span><span class="stu-chip">🏫 School Website</span><span class="stu-chip">📋 To-Do App</span><span class="stu-chip">🎮 Snake Game</span><span class="stu-chip">📇 Portfolio</span><span class="stu-chip">📄 Study Notes PDF</span><span class="stu-chip">📝 Resume</span>'
    +'</div>'
    +'<textarea id="stuIn" class="stu-in" rows="4" placeholder="What should Aurisi build? Example: a billing app for my shop..."></textarea>'
    +'<div class="stu-row"><button class="crs-next" id="stuGo">🏗️ Build my app</button></div>'
+   +'<div class="stu-row"><button class="stu-ab" id="stuMyP" style="background:#141922;color:#e8ecf3">📁 My Projects</button></div>'
+   +'<div id="stuProjList" style="display:none;margin-top:12px"></div>'
    +'<div class="stu-note">Aurisi writes a complete working app — preview it right here, then download the file and open it anywhere, even offline.</div>'
    +'</div>'
    +'<div class="stu-prev" style="display:none"><iframe id="stuFrame" class="stu-frame" sandbox="allow-scripts allow-forms allow-popups"></iframe>'
-   +'<div class="stu-actions"><button class="stu-ab" id="stuDl">⬇ Download app</button><button class="stu-ab" id="stuIm">✏ Improve</button><button class="stu-ab" id="stuRe">🔄 Rebuild</button><button class="stu-ab" id="stuPub">🌐 Publish</button></div>'
+   +'<div class="stu-actions"><button class="stu-ab" id="stuDl">⬇ Download app</button><button class="stu-ab" id="stuIm">✏ Improve</button><button class="stu-ab" id="stuRe">🔄 Rebuild</button><button class="stu-ab" id="stuPub">🌐 Publish</button><button class="stu-ab" id="stuSv">💾 Save</button></div>'
    +'<div class="stu-note">Tap Improve to change anything — Aurisi rebuilds your app with the changes.</div>'
    +'</div>'
    +'<div class="stu-build" style="display:none"><div class="stu-spin"></div><div id="stuMsg" class="stu-msg">Designing your app…</div><div class="stu-note">First build takes 15–40 seconds — a real app is being written.</div></div>';
@@ -6530,6 +6532,8 @@ function openStudio(){
   document.getElementById("stuIm").onclick=stuImprove;
   document.getElementById("stuDl").onclick=stuDownload;
   document.getElementById("stuPub").onclick=stuPublish;
+  document.getElementById("stuSv").onclick=stuSaveProj;
+  document.getElementById("stuMyP").onclick=stuListProjs;
   b.scrollTop=0;
 }
 function stuClose(){var b=document.getElementById("stuBack");if(b)b.remove();document.body.style.overflow=""}
@@ -6553,7 +6557,7 @@ async function stuBuild(prompt){
     hist.push({role:"user",parts:[{text:prompt}]});
     if(STU.code&&STU.iteration){hist.push({role:"user",parts:[{text:STU.code}]})}
     var out=await callGeminiFast("",hist,false,STU_PROMPT);
-    var code=stuExtract(out);
+    var code=stuParse(out);
     if(!code||code.length<200){throw new Error("empty")}
     var ferr=stuCheck(code),fixes=0;
     while(ferr&&fixes<2){
@@ -6580,7 +6584,7 @@ async function stuBuild(prompt){
     document.getElementById("stuFrame").srcdoc=code;
     stuShow("prev");
     var sm=document.querySelector("#stuBack .crs-tt small");
-    if(sm)sm.textContent=(code.length/1024).toFixed(1)+" KB · self-check "+(ferr?"review":"OK")+(fixes?(" · "+fixes+" fix"):"")+" · run "+(rerr?"review":"OK")+(rt?(" · "+rt+" fix"):"");
+    if(sm)sm.textContent=(STU.files.length>1?(STU.files.length+" files · "):"")+(STU.doc?"document · ":"")+(code.length/1024).toFixed(1)+" KB · self-check "+(ferr?"review":"OK")+(fixes?(" · "+fixes+" fix"):"")+" · run "+(rerr?"review":"OK")+(rt?(" · "+rt+" fix"):"");
   }catch(e){stuShow("form");toast("Build failed — check internet and try again")}
   finally{clearInterval(iv);STU.busy=false}
 }
@@ -6601,15 +6605,32 @@ function stuExtract(t){
   if(i<0||j<0)return "";
   return t.slice(i,j+7);
 }
+function stuNonLatin(s){for(var i=0;i<s.length;i++){if(s.charCodeAt(i)>255)return true}return false}
 function stuDownload(){
   if(!STU.code){toast("Nothing to download yet");return}
   var n=(STU.lastPrompt||"aurisi-app").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,30);
   if(!n)n="aurisi-app";
-  var blob=new Blob([STU.code],{type:"text/html"});
-  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=n+".html";
+  var a=document.createElement("a");
+  if(STU.doc){
+    if(stuNonLatin(STU.code)){
+      var blob0=new Blob([STU.code],{type:"text/html"});
+      a.href=URL.createObjectURL(blob0);a.download=n+".html";
+      document.body.appendChild(a);a.click();
+      setTimeout(function(){try{URL.revokeObjectURL(a.href);a.remove()}catch(e){}},800);
+      toast("This document has Hindi/unicode text — downloaded as HTML (opens anywhere, print to PDF)");return
+    }
+    var pdf=stuPdf(STU.doc);
+    var blobp=new Blob([pdf],{type:"application/pdf"});
+    a.href=URL.createObjectURL(blobp);a.download=n+".pdf";
+  }else if(STU.files.length>1){
+    a.href=URL.createObjectURL(stuZip(STU.files));a.download=n+".zip";
+  }else{
+    var blob=new Blob([STU.code],{type:"text/html"});
+    a.href=URL.createObjectURL(blob);a.download=n+".html";
+  }
   document.body.appendChild(a);a.click();
   setTimeout(function(){try{URL.revokeObjectURL(a.href);a.remove()}catch(e){}},800);
-  toast("App downloaded — open it in any browser, works offline");
+  toast(STU.doc?"Document downloaded — ready to print or share":(STU.files.length>1?"Project ZIP downloaded — unzip and open index.html":"App downloaded — open it in any browser, works offline"));
 }
 (function(){
   var st=document.createElement("style");
@@ -6653,10 +6674,20 @@ async function stuPublish(){
     var slug=(prompt("Name for your live app link (a-z, 0-9, -):","my-app")||"").trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-");
     if(!slug)return;
     toast("Publishing your app…");
-    var b64=btoa(unescape(encodeURIComponent(STU.code)));
-    var pr=await fetch("https://api.github.com/repos/mrmonk0369-tech/aurisi-apps/contents/"+slug+".html",{method:"PUT",headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Aurisi Studio: publish "+slug,content:b64})});
-    if(!pr.ok){toast("Publish failed — try another name");return}
-    var url="https://mrmonk0369-tech.github.io/aurisi-apps/"+slug+".html";
+    var url;
+    if(STU.files.length>1){
+      for(var fi=0;fi<STU.files.length;fi++){
+        var fb=btoa(unescape(encodeURIComponent(STU.files[fi].content)));
+        var fp=await fetch("https://api.github.com/repos/mrmonk0369-tech/aurisi-apps/contents/"+slug+"/"+STU.files[fi].name,{method:"PUT",headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Aurisi Studio: publish "+slug,content:fb})});
+        if(!fp.ok){toast("Publish failed — try another name");return}
+      }
+      url="https://mrmonk0369-tech.github.io/aurisi-apps/"+slug+"/";
+    }else{
+      var b64=btoa(unescape(encodeURIComponent(STU.code)));
+      var pr=await fetch("https://api.github.com/repos/mrmonk0369-tech/aurisi-apps/contents/"+slug+".html",{method:"PUT",headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Aurisi Studio: publish "+slug,content:b64})});
+      if(!pr.ok){toast("Publish failed — try another name");return}
+      url="https://mrmonk0369-tech.github.io/aurisi-apps/"+slug+".html";
+    }
     prompt("LIVE! Your app is published. Copy this link:",url);
     toast("Published — share your link anywhere");
   }catch(e){toast("Could not reach publisher")}
@@ -6684,6 +6715,237 @@ function stuRunTest(code){
     document.body.appendChild(f);
     setTimeout(fin,6000);
   })
+}
+
+function stuParse(out){
+  STU.doc=null;STU.files=[];
+  var t=String(out||"");
+  if(t.indexOf("===FILE:")>=0){
+    var files=[],re=/===FILE:\s*([^\n=]+)===\s*\n?/g,m;
+    while((m=re.exec(t))!==null){
+      var nm=m[1].trim();
+      var st=m.index+m[0].length;
+      re.lastIndex=st;
+      var nx=re.exec(t);
+      var en=nx?nx.index:t.length;
+      re.lastIndex=st;
+      var ct=t.slice(st,en);
+      while(ct&&ct.charAt(ct.length-1)==="\n")ct=ct.slice(0,ct.length-1);
+      if(nm&&ct)files.push({name:nm,content:ct});
+    }
+    if(files.length){
+      var idx=0;
+      for(var q=0;q<files.length;q++){if(/index\.html?$/i.test(files[q].name)){idx=q;break}}
+      if(idx>0){var tmp=files[0];files[0]=files[idx];files[idx]=tmp}
+      STU.files=files;
+      return stuInline(files);
+    }
+  }
+  if(t.indexOf('"blocks"')>=0&&t.indexOf('"title"')>=0){
+    var a=t.indexOf("{"),b=t.lastIndexOf("}");
+    if(a>=0&&b>a){
+      try{
+        var d=JSON.parse(t.slice(a,b+1));
+        if(d&&d.title&&Array.isArray(d.blocks)&&d.blocks.length){
+          STU.doc={title:String(d.title),blocks:d.blocks};
+          return stuRenderDoc(STU.doc);
+        }
+      }catch(e){}
+    }
+  }
+  var code=stuExtract(t);
+  if(code){STU.files=[{name:"app.html",content:code}]}
+  return code;
+}
+function stuFindFile(files,p){
+  var n=String(p).split("?")[0].split("/").pop();
+  for(var i=0;i<files.length;i++){
+    if(files[i].name===n||files[i].name.endsWith("/"+n))return files[i].content;
+  }
+  return null;
+}
+function stuInline(files){
+  var idx=files[0].content;
+  for(var q=0;q<files.length;q++){if(/index\.html?$/i.test(files[q].name)){idx=files[q].content;break}}
+  var h=idx;
+  h=h.replace(/<link[^>]*href=["']([^"']+)["'][^>]*>/gi,function(tag,href){
+    var f=stuFindFile(files,href);
+    if(!f)return tag;
+    return "<style>\n"+f+"\n</style>";
+  });
+  h=h.replace(/<script[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi,function(tag,src){
+    var f=stuFindFile(files,src);
+    if(!f)return tag;
+    return "<script>\n"+f+"\n</scr"+"ipt>";
+  });
+  return h;
+}
+function stuRenderDoc(doc){
+  function esc(s){return String(s||'').replace(/&/g,String.fromCharCode(38,97,109,112,59)).replace(/</g,String.fromCharCode(38,108,116,59)).replace(/>/g,String.fromCharCode(38,103,116,59))}
+  function b(s){return esc(s).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")}
+  var out=[];
+  for(var i=0;i<doc.blocks.length;i++){
+    var bl=doc.blocks[i]||{},t=b(bl.x);
+    if(bl.t==="h1")out.push("<h1>"+t+"</h1>");
+    else if(bl.t==="h2")out.push("<h2>"+t+"</h2>");
+    else if(bl.t==="li")out.push("<li>"+t+"</li>");
+    else if(bl.t==="quote")out.push("<blockquote>"+t+"</blockquote>");
+    else out.push("<p>"+t+"</p>");
+  }
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(doc.title)+'</title><style>body{font:16px/1.75 Georgia,serif;color:#1f2933;background:#fff;max-width:720px;margin:0 auto;padding:48px 24px}h1{font-size:30px;border-bottom:3px solid #d4af37;padding-bottom:12px;line-height:1.25}h2{font-size:21px;color:#8a6d1a;margin-top:34px}li{margin:6px 0}blockquote{border-left:4px solid #d4af37;background:#faf7ec;padding:10px 16px;margin:14px 0;font-style:italic}@media print{body{padding:32px 0}}</style></head><body>'+out.join("\n")+'</body></html>';
+}
+var STU_CRC=null;
+function stuCrc32(u8){
+  if(!STU_CRC){
+    STU_CRC=[];
+    for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=(c&1)?(3988292384^(c>>>1)):(c>>>1);STU_CRC[n]=c>>>0}
+  }
+  var c=4294967295;
+  for(var i=0;i<u8.length;i++)c=STU_CRC[(c^u8[i])&255]^(c>>>8);
+  return (c^4294967295)>>>0;
+}
+function stuZip(files){
+  var enc=new TextEncoder();
+  var parts=[],central=[],off=0;
+  function u32(v){return [v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]}
+  function u16(v){return [v&255,(v>>>8)&255]}
+  for(var i=0;i<files.length;i++){
+    var name=files[i].name,data=enc.encode(files[i].content),crc=stuCrc32(data);
+    var nb=enc.encode(name);
+    var lh=[80,75,3,4].concat(u16(20),u16(2048),u16(0),u16(0),u16(33),u32(crc),u32(data.length),u32(data.length),u16(nb.length),u16(0));
+    parts.push(new Uint8Array(lh),nb,data);
+    central.push({name:nb,crc:crc,sz:data.length,off:off});
+    off+=lh.length+nb.length+data.length;
+  }
+  var cd=[],cdlen=0;
+  for(var c2=0;c2<central.length;c2++){
+    var e=central[c2];
+    var ch=[80,75,1,2].concat(u16(20),u16(20),u16(2048),u16(0),u16(0),u16(33),u32(e.crc),u32(e.sz),u32(e.sz),u16(e.name.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(e.off));
+    cd=cd.concat(ch,Array.prototype.slice.call(e.name));
+    cdlen+=ch.length+e.name.length;
+  }
+  var end=[80,75,5,6].concat(u16(0),u16(0),u16(central.length),u16(central.length),u32(cdlen),u32(off),u16(0));
+  var all=parts.concat([new Uint8Array(cd),new Uint8Array(end)]);
+  var total=0;
+  all.forEach(function(p){total+=p.length});
+  var outb=new Uint8Array(total);
+  var pos=0;
+  all.forEach(function(p){outb.set(p,pos);pos+=p.length});
+  return new Blob([outb],{type:"application/zip"});
+}
+function stuPdf(doc){
+  function esc(s){return String(s).replace(/\\/g,String.fromCharCode(92,92)).replace(/\(/g,String.fromCharCode(92,40)).replace(/\)/g,String.fromCharCode(92,41))}
+  function strip(s){return String(s||"").replace(/\*\*([^*]+)\*\*/g,"$1")}
+  var PW=595,PH=842,MX=56,MT=64,MB=64;
+  var maxw=PW-MX*2;
+  var lines=[];
+  function wrap(text,size,indent){
+    var cw=size*0.5;
+    var maxc=Math.max(10,Math.floor((maxw-indent)/cw));
+    var words=String(text).split(/\s+/),cur="";
+    for(var i=0;i<words.length;i++){
+      var t2=cur?cur+" "+words[i]:words[i];
+      if(t2.length>maxc&&cur){lines.push({t:cur,s:size,x:MX+indent});cur=words[i]}
+      else cur=t2;
+    }
+    if(cur)lines.push({t:cur,s:size,x:MX+indent});
+  }
+  wrap(doc.title,24,0);
+  lines[lines.length-1].gap=16;
+  for(var i=0;i<doc.blocks.length;i++){
+    var bl=doc.blocks[i]||{},txt=strip(bl.x||"");
+    if(bl.t==="h1")wrap(txt,19,0);
+    else if(bl.t==="h2"){wrap(txt,15,0);lines[lines.length-1].gap=10}
+    else if(bl.t==="li")wrap("- "+txt,11,16);
+    else if(bl.t==="quote")wrap(txt,11,28);
+    else wrap(txt,11,0);
+  }
+  var pages=[],cur=[],y=PH-MT;
+  for(var j=0;j<lines.length;j++){
+    var L=lines[j],h=(L.s*1.5)+(L.gap||0);
+    if(y-h<MB){pages.push(cur);cur=[];y=PH-MT}
+    cur.push("BT /FR "+L.s+" Tf 1 0 0 1 "+L.x+" "+(y-L.s)+" Tm ("+esc(L.t)+") Tj ET");
+    y-=h;
+  }
+  if(cur.length)pages.push(cur);
+  if(!pages.length)pages.push([]);
+  var objs=[];
+  objs.push("<< /Type /Catalog /Pages 2 0 R >>");
+  var kids=[];
+  for(var p=0;p<pages.length;p++)kids.push((5+p*2)+" 0 R");
+  objs.push("<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+pages.length+" >>");
+  objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+  objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+  for(var p2=0;p2<pages.length;p2++){
+    objs.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+PW+" "+PH+"] /Resources << /Font << /FR 3 0 R >> >> /Contents "+(6+p2*2)+" 0 R >>");
+    var st=pages[p2].join("\n");
+    objs.push("<< /Length "+st.length+" >>\nstream\n"+st+"\nendstream");
+  }
+  var pdf="%PDF-1.4\n",offs=[];
+  for(var o=0;o<objs.length;o++){offs.push(pdf.length);pdf+=(o+1)+" 0 obj\n"+objs[o]+"\nendobj\n"}
+  var xref=pdf.length;
+  pdf+="xref\n0 "+(objs.length+1)+"\n0000000000 65535 f \n";
+  for(var o2=0;o2<offs.length;o2++){
+    var s10="0000000000"+offs[o2];
+    pdf+=s10.slice(-10)+" 00000 n \n";
+  }
+  pdf+="trailer\n<< /Size "+(objs.length+1)+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";
+  return pdf;
+}
+async function stuSaveProj(){
+  if(!STU.code){toast("Build something first");return}
+  try{
+    var body={user_name:userName(),name:(STU.lastPrompt||"My project").slice(0,60),files:STU.files.length?STU.files:[{name:"app.html",content:STU.code}],code:STU.code,doc:STU.doc};
+    var hd={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"};
+    var r;
+    if(STU.projId){
+      body.updated_at=new Date().toISOString();
+      r=await fetch(SB_URL+"/studio_projects?id=eq."+STU.projId,{method:"PATCH",headers:hd,body:JSON.stringify(body)});
+    }else{
+      hd["Prefer"]="return=representation";
+      r=await fetch(SB_URL+"/studio_projects",{method:"POST",headers:hd,body:JSON.stringify(body)});
+    }
+    if(!r.ok){toast("Could not save — try again");return}
+    var rows=await r.json();
+    if(rows&&rows.length&&rows[0].id)STU.projId=rows[0].id;
+    toast("Project saved — find it in My Projects");
+  }catch(e){toast("Could not reach server")}
+}
+async function stuListProjs(){
+  var box=document.getElementById("stuProjList");
+  if(!box)return;
+  if(box.style.display!="none"){box.style.display="none";return}
+  box.style.display="block";
+  box.innerHTML='<div class="stu-note">Loading…</div>';
+  try{
+    var r=await fetch(SB_URL+"/studio_projects?select=id,name,updated_at&user_name=eq."+encodeURIComponent(userName())+"&order=updated_at.desc&limit=20",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var rows=await r.json();
+    if(!rows||!rows.length){box.innerHTML='<div class="stu-note">No saved projects yet — build something, then tap Save.</div>';return}
+    var h='<div class="stu-ideas">';
+    rows.forEach(function(p){h+='<span class="stu-chip" data-pid="'+p.id+'">'+escH(String(p.name||"project")).slice(0,26)+'</span>'});
+    box.innerHTML=h+'</div>';
+    Array.prototype.forEach.call(box.querySelectorAll(".stu-chip"),function(ch){
+      ch.onclick=function(){stuLoadProj(parseInt(ch.getAttribute("data-pid"),10))};
+    });
+  }catch(e){box.innerHTML='<div class="stu-note">Could not reach server</div>'}
+}
+async function stuLoadProj(id){
+  if(!id){toast("Project not found");return}
+  try{
+    var r=await fetch(SB_URL+"/studio_projects?select=*&id=eq."+id,{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var rows=await r.json();
+    if(!rows||!rows.length){toast("Project not found");return}
+    var p=rows[0];
+    STU.code=p.code||"";
+    STU.files=(p.files&&p.files.length)?p.files:[{name:"app.html",content:STU.code}];
+    STU.doc=p.doc||null;
+    STU.projId=p.id;
+    STU.lastPrompt=p.name||"my project";
+    STU.hist=[{role:"user",parts:[{text:String(p.name||"my project")}]}];
+    document.getElementById("stuFrame").srcdoc=STU.code;
+    stuShow("prev");
+    toast("Project loaded — Improve to continue");
+  }catch(e){toast("Could not reach server")}
 }
 
 function instCloseModals(){try{document.querySelectorAll(".modal-back.open").forEach(function(x){x.remove()})}catch(e){}}
