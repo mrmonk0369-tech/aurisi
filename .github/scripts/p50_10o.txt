@@ -1,0 +1,4 @@
+    var b64=btoa(unescape(encodeURIComponent(STU.code)));
+    var pr=await fetch("https://api.github.com/repos/mrmonk0369-tech/aurisi-apps/contents/"+slug+".html",{method:"PUT",headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Aurisi Studio: publish "+slug,content:b64})});
+    if(!pr.ok){toast("Publish failed — try another name");return}
+    var url="https://mrmonk0369-tech.github.io/aurisi-apps/"+slug+".html";
