@@ -1,4 +1,4 @@
-name: Build AURISI v60.45 + Institute Portal v2 + HQ
+name: Build AURISI v60.46 + Institute Portal v2 + HQ
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,12 +10,12 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if ! grep -q 'APP_VERSION="60.45"' AURISI.html; then
-            test "$(wc -c < AURISI.html)" -eq 1936649
-            python3 .github/scripts/build_v6045.py AURISI.html AURISI_new.html
-            test "$(wc -c < AURISI_new.html)" -eq 1947341
+          if ! grep -q 'APP_VERSION="60.46"' AURISI.html; then
+            test "$(wc -c < AURISI.html)" -eq 1947341
+            python3 .github/scripts/build_v6046.py AURISI.html AURISI_new.html
+            test "$(wc -c < AURISI_new.html)" -eq 1890536
             grep -q 'openInstCourses' AURISI_new.html
-            grep -q 'crs-back' AURISI_new.html
+            grep -q 'Aurisi Script' AURISI_new.html && exit 1 || true
             mv AURISI_new.html AURISI.html
           fi
           python3 .github/scripts/build_institute_v2.py institute_new.html
@@ -30,6 +30,6 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add AURISI.html institute.html admin.html
-            git commit -m "chore: build v60.45 + institute v2 + HQ"
+            git commit -m "chore: build v60.46 + institute v2 + HQ"
             git push
           fi
