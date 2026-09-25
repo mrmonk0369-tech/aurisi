@@ -1916,7 +1916,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.46",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.47",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -5724,6 +5724,7 @@ function renderDash(){
   html+='<button class="agent-card" onclick="switchView(\'chat\');scienceLab()"><span class="agent-ico">🔬</span><span><b>Science Lab</b><small>Real science, real builds — a higher mind for your own field</small></span></button>';
   html+='<button class="agent-card" onclick="switchView(\'chat\');roomStart(\'✨\',\'New Lesson\')"><span class="agent-ico">✨</span><span><b>New Lesson</b><small>Start a fresh chat on any subject or topic</small></span></button>';
   html+='<button class="agent-card" onclick="openVideoStudio()"><span class="agent-ico">🎬</span><span><b>PDF to Video</b><small>Upload any PDF or notes — learn it as a video lesson</small></span></button>';
+  html+='<button class="agent-card" onclick="openStudio()"><span class="agent-ico">🏗️</span><span><b>Aurisi Studio</b><small>Describe anything — get a working app or website you can download</small></span></button>';
   html+='<button class="agent-card" onclick="switchView(\'chat\');openExamHub()"><span class="agent-ico">🎯</span><span><b>Mock Exam</b><small>Full timed practice test — HSSC, SSC, UPSC style</small></span></button>';
   html+='<button class="agent-card" onclick="switchView(\'chat\');testWeak()"><span class="agent-ico">📕</span><span><b>Mistake Drill</b><small>Re-test quiz built from your past wrong answers</small></span></button>';html+='<button class="agent-card" onclick="srsStudyDue()"><span class="agent-ico">🧠</span><span><b>Spaced Review</b><small>Due flashcards \u2014 they come back right before you forget</small></span></button>';
   html+='<button class="agent-card" onclick="switchView(\'chat\');dailyBrief()"><span class="agent-ico">📋</span><span><b>Daily Brief</b><small>Today\'s plan + 5 current-affairs points for exams</small></span></button>';
@@ -6492,6 +6493,119 @@ function crsClose(){
    +".crs-ep-n{width:26px;height:26px;border-radius:8px;background:#1d2430;display:flex;align-items:center;justify-content:center;font-size:12px;color:#d4af37;flex-shrink:0}"
    +".crs-ep-t{flex:1;font-size:14px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
    +".crs-ep-b{color:#d4af37;font-size:12px;width:18px;text-align:center}";
+  document.head.appendChild(st);
+})();
+
+var STU={code:"",busy:false,lastPrompt:"",iteration:false};
+var STU_PROMPT="You are Aurisi Studio, an elite app builder. The user describes an app or website; you output ONE complete, ready-to-run single-file HTML5 app. STRICT RULES: (1) Output ONLY the code: a single HTML document starting with <!DOCTYPE html> and ending with </html>. No markdown fences, no commentary before or after. (2) Everything inline: CSS inside a style tag, JS inside a script tag. No external files; optional Google Fonts link allowed. (3) Mobile-first and responsive, works in a phone browser, touch-friendly. (4) Polished, modern, professional design: cards, gradients, smooth transitions. When in doubt use a dark theme with gold or amber accents. (5) Fully functional logic: every button works, no TODOs, no placeholder sections. (6) English UI. (7) Keep the total under 500 lines. If the user asks for changes, return the FULL updated app again, complete, in one file.";
+function openStudio(){
+  var old=document.getElementById("stuBack");if(old)old.remove();
+  var b=document.createElement("div");b.id="stuBack";b.className="crs-back";
+  b.innerHTML='<div class="crs-top"><button class="crs-x" title="Close">✕</button><div class="crs-tt"><b>🏗️ Aurisi Studio</b><small>Describe it — Aurisi builds it</small></div></div>'
+   +'<div class="stu-wrap">'
+   +'<div class="stu-ideas">'
+   +'<span class="stu-chip">🧮 Calculator</span><span class="stu-chip">🧠 Quiz App</span><span class="stu-chip">🏫 School Website</span><span class="stu-chip">📋 To-Do App</span><span class="stu-chip">🎮 Snake Game</span><span class="stu-chip">📇 Portfolio</span>'
+   +'</div>'
+   +'<textarea id="stuIn" class="stu-in" rows="4" placeholder="What should Aurisi build? Example: a billing app for my shop..."></textarea>'
+   +'<div class="stu-row"><button class="crs-next" id="stuGo">🏗️ Build my app</button></div>'
+   +'<div class="stu-note">Aurisi writes a complete working app — preview it right here, then download the file and open it anywhere, even offline.</div>'
+   +'</div>'
+   +'<div class="stu-prev" style="display:none"><iframe id="stuFrame" class="stu-frame" sandbox="allow-scripts allow-forms allow-popups"></iframe>'
+   +'<div class="stu-actions"><button class="stu-ab" id="stuDl">⬇ Download app</button><button class="stu-ab" id="stuIm">✏ Improve</button><button class="stu-ab" id="stuRe">🔄 Rebuild</button></div>'
+   +'<div class="stu-note">Tap Improve to change anything — Aurisi rebuilds your app with the changes.</div>'
+   +'</div>'
+   +'<div class="stu-build" style="display:none"><div class="stu-spin"></div><div id="stuMsg" class="stu-msg">Designing your app…</div><div class="stu-note">First build takes 15–40 seconds — a real app is being written.</div></div>';
+  document.body.appendChild(b);
+  document.body.style.overflow="hidden";
+  b.querySelector(".crs-x").onclick=stuClose;
+  var chips={ "🧮 Calculator":"A clean calculator app with big touch buttons and a running history",
+    "🧠 Quiz App":"A quiz app with 10 multiple-choice questions, score at the end and restart",
+    "🏫 School Website":"A beautiful website for a coaching institute: hero, courses, results, contact form",
+    "📋 To-Do App":"A to-do list app with add, complete, delete and a counter of pending items",
+    "🎮 Snake Game":"A snake game with keyboard and touch controls, score and game over screen",
+    "📇 Portfolio":"A personal portfolio website for a student with skills, projects and contact"};
+  b.querySelectorAll(".stu-chip").forEach(function(c){c.onclick=function(){document.getElementById("stuIn").value=chips[c.textContent]||c.textContent}});
+  document.getElementById("stuGo").onclick=function(){stuBuild("")};
+  document.getElementById("stuRe").onclick=function(){stuBuild("")};
+  document.getElementById("stuIm").onclick=stuImprove;
+  document.getElementById("stuDl").onclick=stuDownload;
+  b.scrollTop=0;
+}
+function stuClose(){var b=document.getElementById("stuBack");if(b)b.remove();document.body.style.overflow=""}
+function stuShow(mode){
+  var b=document.getElementById("stuBack");if(!b)return;
+  b.querySelector(".stu-wrap").style.display=mode==="form"?"block":"none";
+  b.querySelector(".stu-build").style.display=mode==="build"?"block":"none";
+  b.querySelector(".stu-prev").style.display=mode==="prev"?"block":"none";
+  b.scrollTop=0;
+}
+var STU_STEPS=["Designing your app…","Writing the interface…","Building the logic…","Polishing the design…","Almost there…"];
+async function stuBuild(prompt){
+  if(typeof prompt!=="string"||!prompt){prompt=(document.getElementById("stuIn").value||"").trim()}
+  if(!prompt){toast("Describe what Aurisi should build first");return}
+  if(STU.busy){toast("Aurisi Studio is already building");return}
+  STU.lastPrompt=prompt;STU.busy=true;stuShow("build");
+  var si=0;var iv=setInterval(function(){var m=document.getElementById("stuMsg");if(m)m.textContent=STU_STEPS[(si++)%STU_STEPS.length]},4000);
+  try{
+    var hist=[];
+    if(STU.code&&STU.iteration){hist.push({role:"user",parts:[{text:"Here is the current app code. "+prompt}]},{role:"user",parts:[{text:STU.code}]})}
+    else{hist.push({role:"user",parts:[{text:prompt}]})}
+    var out=await callGeminiFast("",hist,false,STU_PROMPT);
+    var code=stuExtract(out);
+    if(!code||code.length<200){throw new Error("empty")}
+    STU.code=code;
+    document.getElementById("stuFrame").srcdoc=code;
+    stuShow("prev");
+    var sm=document.querySelector("#stuBack .crs-tt small");
+    if(sm)sm.textContent=(code.length/1024).toFixed(1)+" KB app — built by Aurisi";
+  }catch(e){stuShow("form");toast("Build failed — check internet and try again")}
+  finally{clearInterval(iv);STU.busy=false}
+}
+function stuImprove(){
+  if(!STU.code){toast("Build an app first");return}
+  var ch=(prompt("What should Aurisi change in your app?")||"").trim();
+  if(!ch)return;
+  STU.iteration=true;
+  stuBuild(STU.lastPrompt+" - CHANGE REQUEST: "+ch);
+  STU.iteration=false;
+}
+function stuExtract(t){
+  t=String(t||"");
+  var i=t.indexOf("<!DOCTYPE");
+  if(i<0)i=t.indexOf("<!doctype");
+  if(i<0)i=t.indexOf("<html");
+  var j=t.lastIndexOf("</html>");
+  if(i<0||j<0)return "";
+  return t.slice(i,j+7);
+}
+function stuDownload(){
+  if(!STU.code){toast("Nothing to download yet");return}
+  var n=(STU.lastPrompt||"aurisi-app").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,30);
+  if(!n)n="aurisi-app";
+  var blob=new Blob([STU.code],{type:"text/html"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=n+".html";
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){try{URL.revokeObjectURL(a.href);a.remove()}catch(e){}},800);
+  toast("App downloaded — open it in any browser, works offline");
+}
+(function(){
+  var st=document.createElement("style");
+  st.textContent=".stu-wrap{width:100%;max-width:920px;margin:0 auto;padding:18px 14px 30px}"
+   +".stu-ideas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}"
+   +".stu-chip{background:#141922;border:1px solid #232b38;color:#e8ecf3;border-radius:99px;padding:8px 14px;font-size:13px;cursor:pointer}"
+   +".stu-chip:active{border-color:#d4af37}"
+   +".stu-in{width:100%;background:#0d1118;border:1px solid #2a3342;color:#e8ecf3;border-radius:14px;padding:14px;font:inherit;font-size:15px;resize:vertical;min-height:96px}"
+   +".stu-in:focus{outline:none;border-color:#d4af37}"
+   +".stu-row{margin-top:12px}"
+   +".stu-note{color:#8b95a7;font-size:12px;margin-top:12px;line-height:1.5}"
+   +".stu-prev{width:100%;max-width:920px;margin:0 auto;padding:10px 12px 30px}"
+   +".stu-frame{width:100%;height:70vh;background:#fff;border:1px solid #2a3342;border-radius:14px}"
+   +".stu-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}"
+   +".stu-ab{background:linear-gradient(135deg,#d4af37,#f5d97a);color:#1a1405;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer}"
+   +".stu-build{width:100%;max-width:920px;margin:0 auto;padding:60px 14px;text-align:center}"
+   +".stu-spin{width:54px;height:54px;margin:0 auto 18px;border-radius:50%;border:3px solid #232b38;border-top-color:#d4af37;animation:stuSpin 1s linear infinite}"
+   +"@keyframes stuSpin{to{transform:rotate(360deg)}}"
+   +".stu-msg{font-size:16px;font-weight:600}";
   document.head.appendChild(st);
 })();
 
