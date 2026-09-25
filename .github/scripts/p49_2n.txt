@@ -1,0 +1,4 @@
+    if(!STU.iteration)STU.hist=[];
+    var hist=STU.hist.slice(-6);
+    hist.push({role:"user",parts:[{text:prompt}]});
+    if(STU.code&&STU.iteration){hist.push({role:"user",parts:[{text:STU.code}]})}
