@@ -1,0 +1,1 @@
+<span class="stu-chip">📇 Portfolio</span><span class="stu-chip">📄 Study Notes PDF</span><span class="stu-chip">📝 Resume</span>
