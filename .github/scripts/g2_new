@@ -1,0 +1,7 @@
+<div class="panel" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:22px;padding:16px 18px">
+    <div><label class="fl" style="margin:0">Total sales</label><b style="font-size:19px" id="eGross">Rs 0</b></div>
+    <div><label class="fl" style="margin:0">Aurisi platform fee (<span id="ePct">10</span>%)</label><b style="font-size:19px;color:var(--bad)" id="eFee">Rs 0</b></div>
+    <div><label class="fl" style="margin:0">Your earnings</label><b style="font-size:19px;color:var(--ok)" id="eNet">Rs 0</b></div>
+  </div>
+
+  <div class="sec-head">
