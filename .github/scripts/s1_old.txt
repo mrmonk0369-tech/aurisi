@@ -1,0 +1,1 @@
+<div class="splash-name"><span>Aurisi</span></div>
