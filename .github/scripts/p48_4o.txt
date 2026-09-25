@@ -1,0 +1,4 @@
+    var out=await callGeminiFast("",hist,false,STU_PROMPT);
+    var code=stuExtract(out);
+    if(!code||code.length<200){throw new Error("empty")}
+    STU.code=code;
