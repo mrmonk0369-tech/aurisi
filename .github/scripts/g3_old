@@ -1,0 +1,2 @@
+function loadDash(){
+  sb('inst_courses?inst_code=eq.'+encodeURIComponent(S.code)+'&select=*&order=id.desc').then(function(cs){
