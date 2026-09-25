@@ -1,0 +1,29 @@
+function stuCheck(code){
+  try{
+    var re=/<script\b[^>]*>([\s\S]*?)<\/script>/gim,m,err=null;
+    while((m=re.exec(code))!==null){
+      if(/src\s*=/i.test(m[0]))continue;
+      try{new Function(m[1])}catch(e){err=(e&&e.message)||String(e);break}
+    }
+    return err;
+  }catch(e){return null}
+}
+async function stuPublish(){
+  if(!STU.code){toast("Build an app first");return}
+  toast("Connecting to publisher…");
+  try{
+    var r=await fetch(SB_URL+"/app_config?select=value&key=eq.github_publish_token",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var rows=await r.json();
+    var tok=(rows&&rows.length)?(rows[0].value||"").trim():"";
+    if(!tok){toast("Publishing is not connected yet — the Aurisi admin can turn it ON in HQ");return}
+    var slug=(prompt("Name for your live app link (a-z, 0-9, -):","my-app")||"").trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-");
+    if(!slug)return;
+    toast("Publishing your app…");
+    var b64=btoa(unescape(encodeURIComponent(STU.code)));
+    var pr=await fetch("https://api.github.com/repos/mrmonk0369-tech/aurisi-apps/contents/"+slug+".html",{method:"PUT",headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Aurisi Studio: publish "+slug,content:b64})});
+    if(!pr.ok){toast("Publish failed — try another name");return}
+    var url="https://mrmonk0369-tech.github.io/aurisi-apps/"+slug+".html";
+    prompt("LIVE! Your app is published. Copy this link:",url);
+    toast("Published — share your link anywhere");
+  }catch(e){toast("Could not reach publisher")}
+}
