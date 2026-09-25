@@ -1,0 +1,14 @@
+    var out=await callGeminiFast("",hist,false,STU_PROMPT);
+    var code=stuExtract(out);
+    if(!code||code.length<200){throw new Error("empty")}
+    var ferr=stuCheck(code),fixes=0;
+    while(ferr&&fixes<2){
+      fixes++;
+      var fh=[{role:"user",parts:[{text:"Your previous app has this JavaScript error: "+ferr+" - return the FULL corrected complete app (single HTML file) with this error fixed."}]},{role:"user",parts:[{text:code}]}];
+      out=await callGeminiFast("",fh,false,STU_PROMPT);
+      var c2=stuExtract(out);
+      if(!c2)break;
+      code=c2;ferr=stuCheck(code);
+    }
+    STU.fixes=fixes;
+    STU.code=code;
