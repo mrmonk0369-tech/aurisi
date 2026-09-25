@@ -1,4 +1,4 @@
-name: Build AURISI v60.44 + Institute Portal
+name: Build AURISI v60.45 + Institute Portal v2
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,21 +10,22 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if ! grep -q 'APP_VERSION="60.44"' AURISI.html; then
+          if ! grep -q 'APP_VERSION="60.45"' AURISI.html; then
             test "$(wc -c < AURISI.html)" -eq 1936649
-            python3 .github/scripts/build_v6044.py AURISI.html AURISI_new.html
-            test "$(wc -c < AURISI_new.html)" -eq 1936649
+            python3 .github/scripts/build_v6045.py AURISI.html AURISI_new.html
+            test "$(wc -c < AURISI_new.html)" -eq 1947341
+            grep -q 'openInstCourses' AURISI_new.html
+            grep -q 'crs-back' AURISI_new.html
             mv AURISI_new.html AURISI.html
           fi
-          python3 .github/scripts/build_institute_v1.py institute_new.html
-          test "$(wc -c < institute_new.html)" -eq 18335
-          grep -q 'Aurisi Institute Portal' institute_new.html
-          grep -q 'inst_login?email=eq' institute_new.html
+          python3 .github/scripts/build_institute_v2.py institute_new.html
+          test "$(wc -c < institute_new.html)" -eq 19629
+          grep -q 'Aurisi platform fee' institute_new.html
           mv institute_new.html institute.html
           if [ -n "$(git status --porcelain)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add AURISI.html institute.html
-            git commit -m "chore: build institute portal v1"
+            git commit -m "chore: build v60.45 + institute portal v2"
             git push
           fi
