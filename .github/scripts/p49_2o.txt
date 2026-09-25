@@ -1,0 +1,3 @@
+    var hist=[];
+    if(STU.code&&STU.iteration){hist.push({role:"user",parts:[{text:"Here is the current app code. "+prompt}]},{role:"user",parts:[{text:STU.code}]})}
+    else{hist.push({role:"user",parts:[{text:prompt}]})}
