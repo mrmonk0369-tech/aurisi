@@ -1,0 +1,1 @@
+var STU_STEPS=["Designing your app…","Writing the interface…","Building the logic…","🧪 Testing it in a real browser…","Polishing the design…","Almost there…”];
