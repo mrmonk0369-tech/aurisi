@@ -1,0 +1,3 @@
+  document.getElementById("stuPub").onclick=stuPublish;
+  document.getElementById("stuSv").onclick=stuSaveProj;
+  document.getElementById("stuMyP").onclick=stuListProjs;
