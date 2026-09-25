@@ -1,0 +1,23 @@
+function stuRunTest(code){
+  return new Promise(function(res){
+    var errs=[],done=false,f=null;
+    function fin(){
+      if(done)return;done=true;
+      try{window.removeEventListener("message",onmsg)}catch(e){}
+      try{f.remove()}catch(e){}
+      res(errs.length?errs[0]:null)
+    }
+    function onmsg(ev){try{if(ev&&ev.data&&ev.data.__stuErr)errs.push(String(ev.data.__stuErr).slice(0,300))}catch(e){}}
+    var m=code.match(/<head[^>]*>/i);
+    if(!m){fin();return}
+    var inj='<script>window.onerror=function(e){try{parent.postMessage({__stuErr:String(e)},"*")}catch(x){}return false};window.addEventListener("unhandledrejection",function(e){try{parent.postMessage({__stuErr:"Unhandled promise: "+String(e.reason)},"*")}catch(x){}});<'+'/script>';
+    window.addEventListener("message",onmsg);
+    f=document.createElement("iframe");
+    f.setAttribute("sandbox","allow-scripts");
+    f.style.cssText="position:fixed;left:-9999px;top:0;width:380px;height:720px;border:0";
+    f.srcdoc=code.replace(m[0],m[0]+inj);
+    f.onload=function(){setTimeout(fin,2600)};
+    document.body.appendChild(f);
+    setTimeout(fin,6000);
+  })
+}
