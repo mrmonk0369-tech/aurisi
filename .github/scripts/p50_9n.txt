@@ -1,10 +1,11 @@
+function stuNonLatin(s){for(var i=0;i<s.length;i++){if(s.charCodeAt(i)>255)return true}return false}
 function stuDownload(){
   if(!STU.code){toast("Nothing to download yet");return}
   var n=(STU.lastPrompt||"aurisi-app").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,30);
   if(!n)n="aurisi-app";
   var a=document.createElement("a");
   if(STU.doc){
-    if(/[^\x00-\xFF]/.test(STU.code)){
+    if(stuNonLatin(STU.code)){
       var blob0=new Blob([STU.code],{type:"text/html"});
       a.href=URL.createObjectURL(blob0);a.download=n+".html";
       document.body.appendChild(a);a.click();
