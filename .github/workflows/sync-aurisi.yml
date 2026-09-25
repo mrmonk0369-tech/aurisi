@@ -1,4 +1,4 @@
-name: Build AURISI v60.44
+name: Build AURISI v60.44 + Institute Portal
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,15 +10,21 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if grep -q 'APP_VERSION="60.44"' AURISI.html; then echo "already v60.44 - nothing to do"; exit 0; fi
-          test "$(wc -c < AURISI.html)" -eq 1879844
-          python3 .github/scripts/build_v6044.py AURISI.html AURISI_new.html
-          test "$(wc -c < AURISI_new.html)" -eq 1936649
-          grep -q 'Aurisi Script' AURISI_new.html
-          grep -q '<div class="splash-name"><span>Aurisi</span></div>' AURISI_new.html
-          mv AURISI_new.html AURISI.html
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add AURISI.html
-          git commit -m "chore: build AURISI v60.44 (script font splash)" || echo "no changes"
-          git push
+          if ! grep -q 'APP_VERSION="60.44"' AURISI.html; then
+            test "$(wc -c < AURISI.html)" -eq 1936649
+            python3 .github/scripts/build_v6044.py AURISI.html AURISI_new.html
+            test "$(wc -c < AURISI_new.html)" -eq 1936649
+            mv AURISI_new.html AURISI.html
+          fi
+          python3 .github/scripts/build_institute_v1.py institute_new.html
+          test "$(wc -c < institute_new.html)" -eq 18335
+          grep -q 'Aurisi Institute Portal' institute_new.html
+          grep -q 'inst_login?email=eq' institute_new.html
+          mv institute_new.html institute.html
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add AURISI.html institute.html
+            git commit -m "chore: build institute portal v1"
+            git push
+          fi
