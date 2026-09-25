@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Aurisi Institute Portal</title>
+<style>
+:root{--bg:#0e1116;--card:#171c24;--card2:#1d2430;--text:#e8ecf3;--muted:#8b95a7;--accent:#d4af37;--accent2:#f5d97a;--ok:#3ecf8e;--bad:#e06c5f;--line:#2a3342}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent)}
+.hidden{display:none!important}
+#login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px 28px;width:100%;max-width:380px;text-align:center}
+.login-box .logo{width:56px;height:56px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#1a1405;background:linear-gradient(135deg,var(--accent),var(--accent2));margin-bottom:14px}
+.login-box h1{font-size:20px;font-weight:700;letter-spacing:.3px}
+.login-box h1 em{font-style:italic;font-weight:600;color:var(--accent)}
+.login-box p.sub{color:var(--muted);font-size:13px;margin:6px 0 22px}
+.login-box input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:15px;margin-bottom:12px;outline:none}
+.login-box input:focus{border-color:var(--accent)}
+.btn{display:inline-block;padding:12px 20px;border-radius:10px;border:none;font-size:15px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1405;width:100%}
+.btn:active{opacity:.85}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text);width:auto;padding:9px 16px;font-size:13.5px}
+.btn.small{width:auto;padding:7px 13px;font-size:13px}
+#loginErr{color:var(--bad);font-size:13px;min-height:18px;margin-bottom:6px}
+.foot{margin-top:18px;font-size:12px;color:var(--muted)}
+#app{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#1a1405;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.brand b{font-size:16px}
+.brand b em{font-style:italic;color:var(--accent)}
+.inst-name{font-size:12.5px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat b{font-size:22px;display:block;color:var(--accent)}
+.stat span{font-size:11.5px;color:var(--muted)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin:6px 0 14px}
+.sec-head h2{font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.course{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;transition:border-color .15s}
+.course:hover{border-color:var(--accent)}
+.course h3{font-size:15.5px;margin-bottom:6px}
+.course .desc{color:var(--muted);font-size:13px;min-height:34px;margin-bottom:10px}
+.course .meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+.course .meta span{background:var(--card2);border-radius:20px;padding:3px 10px}
+.course .meta .price{color:var(--accent);font-weight:700;background:rgba(212,175,55,.1)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;font-size:14px}
+.back{color:var(--muted);font-size:13.5px;cursor:pointer;margin-bottom:14px;display:inline-block}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.panel h3{font-size:15px;margin-bottom:12px}
+.panel input,.panel textarea{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:14px;margin-bottom:10px;outline:none;font-family:inherit}
+.panel input:focus,.panel textarea:focus{border-color:var(--accent)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.fl{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.vid{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.vid:last-child{border-bottom:none}
+.vid .num{width:26px;height:26px;border-radius:7px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);flex-shrink:0}
+.vid .vi{flex:1;font-size:14px}
+.vid .vi small{display:block;color:var(--muted);font-size:11px}
+.vid .del{color:var(--bad);cursor:pointer;font-size:18px;padding:4px 8px}
+.codes-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.code-chip{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:12.5px;font-family:monospace;letter-spacing:.5px}
+.code-chip.used{opacity:.45;text-decoration:line-through}
+.code-chip.free{border-color:var(--ok)}
+.guide{background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(212,175,55,.02));border:1px dashed rgba(212,175,55,.4);border-radius:12px;padding:16px;font-size:13px;color:var(--muted);line-height:1.65}
+.guide b{color:var(--text)}
+.guide .upi-tag{display:inline-block;background:var(--card2);border:1px solid var(--line);padding:3px 10px;border-radius:6px;font-family:monospace;color:var(--accent2);font-size:12.5px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--accent);color:var(--text);padding:11px 20px;border-radius:10px;font-size:13.5px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
+.toast.show{opacity:1}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-box">
+    <div class="logo">A</div>
+    <h1><em>Aurisi</em> Institute Portal</h1>
+    <p class="sub">Manage your courses, videos and student access</p>
+    <input id="liEmail" type="email" placeholder="Email" autocomplete="username">
+    <input id="liPass" type="password" placeholder="Password" autocomplete="current-password">
+    <div id="loginErr"></div>
+    <button class="btn" onclick="doLogin()">Sign in</button>
+    <div class="foot">Access is provided by Aurisi when your institute license is activated.</div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">A</div>
+      <div>
+        <b><em>Aurisi</em> Institute Portal</b>
+        <div class="inst-name" id="hInst"></div>
+      </div>
+    </div>
+    <button class="btn ghost" onclick="logout()">Sign out</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="stCourses">0</b><span>Courses</span></div>
+    <div class="stat"><b id="stVideos">0</b><span>Videos</span></div>
+    <div class="stat"><b id="stCodes">0</b><span>Codes issued</span></div>
+    <div class="stat"><b id="stUsed">0</b><span>Courses sold</span></div>
+  </div>
+
+  <div class="sec-head">
+    <h2>Your Courses</h2>
+    <button class="btn small" onclick="newCourse()">+ New Course</button>
+  </div>
+  <div class="grid" id="courseGrid"></div>
+</div>
+
+<div id="coursePage" class="hidden">
+  <span class="back" onclick="showDash()">&larr; All courses</span>
+  <div class="panel">
+    <h3>Course details</h3>
+    <label class="fl">Title</label>
+    <input id="cTitle" placeholder="e.g. Class 10 Physics - Complete Course">
+    <label class="fl">Description</label>
+    <textarea id="cDesc" rows="3" placeholder="What will students learn?"></textarea>
+    <div class="row2">
+      <div>
+        <label class="fl">Price (INR, 0 = free)</label>
+        <input id="cPrice" type="number" min="0" value="0">
+      </div>
+      <div>
+        <label class="fl">Your UPI ID (students pay here)</label>
+        <input id="cUpi" placeholder="name@upi">
+      </div>
+    </div>
+    <button class="btn small" onclick="saveCourse()">Save course</button>
+  </div>
+
+  <div class="panel">
+    <h3>Videos</h3>
+    <label class="fl">Video title</label>
+    <input id="vTitle" placeholder="e.g. Chapter 1 - Motion (Lecture 1)">
+    <label class="fl">YouTube link (upload as <b>Unlisted</b> on your channel, paste link here)</label>
+    <input id="vUrl" placeholder="https://youtu.be/xxxxxxxxxxx">
+    <button class="btn small" onclick="addVideo()">+ Add video</button>
+    <div id="vidList" style="margin-top:14px"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Student access codes</h3>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input id="genN" type="number" min="1" max="50" value="10" style="width:90px;margin-bottom:0">
+      <button class="btn small" onclick="genCodes()">Generate codes</button>
+      <button class="btn ghost" onclick="copyCodes()">Copy all</button>
+    </div>
+    <div class="codes-list" id="codeList"></div>
+  </div>
+
+  <div class="panel">
+    <div class="guide">
+      <b>How selling works</b><br>
+      1. Upload your lecture videos to your YouTube channel as <b>Unlisted</b> and add the links above - students only ever see them inside the Aurisi app.<br>
+      2. Generate access codes above. Each code unlocks this course for one student.<br>
+      3. Share your UPI ID with students: <span class="upi-tag" id="gUpi">not set</span> - after a student pays you directly, send them one code.<br>
+      4. Students open the <b>Aurisi app, enter the code, and your course unlocks</b> with all videos - branded, clean, inside your institute's Aurisi experience.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SB='https://ehbdvjkguungjccaaqsm.supabase.co/rest/v1/';
+var KEY='sb_publishable_ip0uOdOcSplrTkOIw5MDnA_jwSe6jDa';
+var SKEY='aurisi_inst_session';
+var S={email:'',code:'',name:''};
+var CUR=null;
+
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&'+'amp;').replace(/</g,'&'+'lt;').replace(/>/g,'&'+'gt;')}
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)}
+function sb(path,opts){
+  opts=opts||{};
+  opts.headers={apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'};
+  if(opts.method==='POST'||opts.method==='PATCH')opts.headers.Prefer='return=representation';
+  return fetch(SB+path,opts).then(function(r){
+    if(r.status===204)return [];
+    if(!r.ok)return r.text().then(function(t){throw new Error(String(t||('HTTP '+r.status)).substring(0,140))});
+    return r.json();
+  });
+}
+function sha256(txt){
+  var buf=new TextEncoder().encode(txt);
+  return crypto.subtle.digest('SHA-256',buf).then(function(h){
+    var a=new Uint8Array(h),s='';
+    for(var i=0;i<a.length;i++){var x=a[i].toString(16);if(x.length<2)x='0'+x;s+=x}
+    return s;
+  });
+}
+function ytId(u){
+  u=String(u||'').trim();
+  var m=u.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([A-Za-z0-9_-]{11})/);
+  if(m)return m[1];
+  if(/^[A-Za-z0-9_-]{11}$/.test(u))return u;
+  return '';
+}
+
+function loadSess(){
+  try{S=JSON.parse(localStorage.getItem(SKEY)||'{}')}catch(e){S={}}
+  return !!(S.email&&S.code);
+}
+function logout(){localStorage.removeItem(SKEY);location.reload()}
+
+function doLogin(){
+  var em=$('liEmail').value.trim().toLowerCase(),pw=$('liPass').value;
+  $('loginErr').textContent='';
+  if(!em||!pw){$('loginErr').textContent='Enter email and password';return}
+  $('loginErr').textContent='Signing in...';
+  sha256(pw).then(function(h){
+    return sb('inst_login?email=eq.'+encodeURIComponent(em)+'&select=email,pass,inst_code')
+      .then(function(rows){
+        if(!rows.length||rows[0].pass!==h)throw new Error('bad');
+        S={email:em,code:rows[0].inst_code,name:''};
+        return sb('institutes?code=eq.'+encodeURIComponent(S.code)+'&select=name,active');
+      });
+  }).then(function(ins){
+    if(!ins.length||!ins[0].active)throw new Error('bad');
+    S.name=ins[0].name||S.code;
+    localStorage.setItem(SKEY,JSON.stringify(S));
+    enterApp();
+  }).catch(function(){
+    $('loginErr').textContent='Wrong email or password, or license inactive.';
+  });
+}
+
+function enterApp(){
+  $('login').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('hInst').textContent=S.name+(S.code?' ('+S.code+')':'');
+  loadDash();
+}
+function showDash(){
+  $('coursePage').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  loadDash();
+}
+
+function loadDash(){
+  sb('inst_courses?inst_code=eq.'+encodeURIComponent(S.code)+'&select=*&order=id.desc').then(function(cs){
+    var ids=cs.map(function(c){return c.id});
+    if(!ids.length){renderDash(cs,{},{});return []}
+    var q='course_id=in.('+ids.join(',')+')';
+    return Promise.all([
+      sb('course_videos?'+q+'&select=id,course_id'),
+      sb('course_codes?'+q+'&select=code,course_id,used')
+    ]).then(function(v){
+      renderDash(cs,v[0],v[1]);
+    });
+  }).catch(function(e){toast('Load failed: '+e.message)});
+}
+function renderDash(cs,vs,cds){
+  var nv=0,nc=0,nu=0,g=$('courseGrid');
+  g.innerHTML='';
+  cs.forEach(function(c){
+    var vc=0,cc=0;
+    for(var i=0;i<vs.length;i++){if(vs[i].course_id===c.id)vc++}
+    for(var j=0;j<cds.length;j++){if(cds[j].course_id===c.id){cc++;if(cds[j].used)nu++}}
+    nv+=vc;nc+=cc;
+    var d=document.createElement('div');
+    d.className='course';
+    d.innerHTML='<h3>'+esc(c.title)+'</h3><div class="desc">'+esc(c.description||'No description yet.')+'</div>'
+      +'<div class="meta"><span class="price">'+(c.price>0?('Rs '+c.price):'FREE')+'</span>'
+      +'<span>'+vc+' videos</span><span>'+cc+' codes</span></div>';
+    d.onclick=function(){openCourse(c.id)};
+    g.appendChild(d);
+  });
+  if(!cs.length)g.innerHTML='<div class="empty">No courses yet - tap New Course to create your first one.</div>';
+  $('stCourses').textContent=cs.length;
+  $('stVideos').textContent=nv;
+  $('stCodes').textContent=nc;
+  $('stUsed').textContent=nu;
+}
+
+function newCourse(){
+  sb('inst_courses',{method:'POST',body:JSON.stringify({inst_code:S.code,title:'Untitled course',description:'',price:0,upi:''})})
+    .then(function(r){openCourse(r[0].id)})
+    .catch(function(e){toast('Create failed: '+e.message)});
+}
+function openCourse(id){
+  sb('inst_courses?id=eq.'+id+'&select=*').then(function(r){
+    if(!r.length)throw new Error('gone');
+    CUR=r[0];
+    $('app').classList.add('hidden');
+    $('coursePage').classList.remove('hidden');
+    $('cTitle').value=CUR.title||'';
+    $('cDesc').value=CUR.description||'';
+    $('cPrice').value=CUR.price||0;
+    $('cUpi').value=CUR.upi||'';
+    $('gUpi').textContent=CUR.upi||'not set';
+    return Promise.all([
+      sb('course_videos?course_id=eq.'+id+'&select=*&order=sort.asc,id.asc'),
+      sb('course_codes?course_id=eq.'+id+'&select=*&order=created_at.desc')
+    ]);
+  }).then(function(v){
+    renderVids(v[0]);renderCodes(v[1]);
+  }).catch(function(e){toast('Open failed: '+e.message)});
+}
+function renderVids(vs){
+  var w=$('vidList');
+  w.innerHTML='';
+  if(!vs.length){w.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0">No videos yet.</div>';return}
+  vs.forEach(function(v,i){
+    var d=document.createElement('div');
+    d.className='vid';
+    d.innerHTML='<div class="num">'+(i+1)+'</div><div class="vi">'+esc(v.title)+'<small>youtu.be/'+esc(v.yt)+'</small></div><div class="del" title="Remove">&times;</div>';
+    d.querySelector('.del').onclick=function(){
+      sb('course_videos?id=eq.'+v.id,{method:'DELETE'}).then(function(){openCourse(CUR.id)});
+    };
+    w.appendChild(d);
+  });
+}
+function renderCodes(cs){
+  var w=$('codeList');
+  w.innerHTML='';
+  if(!cs.length){w.innerHTML='<div style="color:var(--muted);font-size:13px;padding:6px 0">No codes yet - generate some to start selling.</div>';return}
+  cs.forEach(function(c){
+    var s=document.createElement('span');
+    s.className='code-chip '+(c.used?'used':'free');
+    s.textContent=c.code+(c.used?' (used)':'');
+    w.appendChild(s);
+  });
+  w.dataset.count=cs.length;
+}
+function saveCourse(){
+  if(!CUR)return;
+  var t=$('cTitle').value.trim();
+  if(!t){toast('Give the course a title');return}
+  sb('inst_courses?id=eq.'+CUR.id,{method:'PATCH',body:JSON.stringify({
+    title:t,description:$('cDesc').value.trim(),price:Math.max(0,parseInt($('cPrice').value||'0',10)||0),upi:$('cUpi').value.trim()
+  })}).then(function(){toast('Course saved');$('gUpi').textContent=$('cUpi').value.trim()||'not set'})
+    .catch(function(e){toast('Save failed: '+e.message)});
+}
+function addVideo(){
+  if(!CUR)return;
+  var t=$('vTitle').value.trim(),u=$('vUrl').value.trim();
+  if(!t){toast('Give the video a title');return}
+  var y=ytId(u);
+  if(!y){toast('Paste a valid YouTube link');return}
+  sb('course_videos',{method:'POST',body:JSON.stringify({course_id:CUR.id,title:t,yt:y,sort:Date.now()})})
+    .then(function(){$('vTitle').value='';$('vUrl').value='';toast('Video added');openCourse(CUR.id)})
+    .catch(function(e){toast('Add failed: '+e.message)});
+}
+function randCode(){
+  var chars='ABCDEFGHJKMNPQRSTUVWXYZ23456789',s='AUR-C-';
+  for(var i=0;i<8;i++)s+=chars.charAt(Math.floor(Math.random()*chars.length));
+  return s;
+}
+function genCodes(){
+  if(!CUR)return;
+  var n=Math.min(50,Math.max(1,parseInt($('genN').value||'10',10)||10));
+  var rows=[];
+  for(var i=0;i<n;i++)rows.push({code:randCode(),course_id:CUR.id});
+  sb('course_codes?on_conflict=code&resolution=ignore-duplicates',{method:'POST',body:JSON.stringify(rows)})
+    .then(function(){toast(n+' codes generated');openCourse(CUR.id)})
+    .catch(function(e){toast('Generate failed: '+e.message)});
+}
+function copyCodes(){
+  var chips=$('codeList').querySelectorAll('.code-chip.free');
+  if(!chips.length){toast('No unused codes to copy');return}
+  var txt=[];
+  for(var i=0;i<chips.length;i++)txt.push(chips[i].textContent.replace(' (used)',''));
+  navigator.clipboard.writeText(txt.join('\n')).then(function(){toast('Copied '+txt.length+' codes')});
+}
+
+if(loadSess()){enterApp()}
+</script>
+</body>
+</html>
