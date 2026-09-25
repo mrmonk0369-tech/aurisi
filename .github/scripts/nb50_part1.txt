@@ -10,7 +10,8 @@ function stuParse(out){
       var nx=re.exec(t);
       var en=nx?nx.index:t.length;
       re.lastIndex=st;
-      var ct=t.slice(st,en).replace(/\n+$/","");
+      var ct=t.slice(st,en);
+      while(ct&&ct.charAt(ct.length-1)==="\n")ct=ct.slice(0,ct.length-1);
       if(nm&&ct)files.push({name:nm,content:ct});
     }
     if(files.length){
