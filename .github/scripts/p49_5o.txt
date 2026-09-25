@@ -1,0 +1,1 @@
+var STU={code:"",busy:false,lastPrompt:"",iteration:false,fixes:0};
