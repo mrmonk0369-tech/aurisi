@@ -133,9 +133,10 @@ code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padd
       <div class="row">
         <div style="flex:1;min-width:140px"><label class="mut">Your commission %</label><input id="commIn" type="number" min="0" max="50" step="0.5"></div>
         <div style="flex:2;min-width:180px"><label class="mut">Your UPI (fee settlement)</label><input id="upiIn" placeholder="yourname@upi"></div>
+        <div style="flex:2;min-width:180px"><label class="mut">Publish token (Aurisi Studio)</label><input id="ghTok" type="password" placeholder="Fine-grained PAT (aurisi-apps repo, Contents read/write)"></div>
         <div style="flex:0"><button style="margin-top:18px" onclick="saveMoney()">Save</button></div>
       </div>
-      <div class="mut" style="margin-top:8px">Commission % applies to every institute sale. UPI shows in the institute portal for monthly settlement.</div>
+      <div class="mut" style="margin-top:8px">Commission % applies to every institute sale. UPI shows in the institute portal for monthly settlement. The publish token lets Aurisi Studio publish user apps online (aurisi-apps repo).</div>
     </div>
     <div class="card">
       <h2>🎛️ Live switches</h2>
@@ -194,6 +195,7 @@ async function loadSwitches(){
     $("pctNote").textContent="Commission: "+PCT+"% per sale";
     $("commIn").value=String(PCT);
     if(m.aurisi_fee_upi)$("upiIn").value=m.aurisi_fee_upi;
+    if(m.github_publish_token)$("ghTok").value=m.github_publish_token;
     var b1=$("swPro"),b2=$("swBiz");
     b1.textContent=m.student_pro_enabled==="true"?"ON":"OFF";
     b1.className="sm "+(m.student_pro_enabled==="true"?"on":"off");
@@ -217,6 +219,7 @@ async function saveMoney(){
   var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"commission_pct",p_value:String(pct)});
   if(ok!==true){toast("Failed to save commission");return}
   if(upi){await rpc("admin_set_config",{p_key:AK,p_cfg:"aurisi_fee_upi",p_value:upi})}
+  var tk=$("ghTok").value.trim();if(tk){await rpc("admin_set_config",{p_key:AK,p_cfg:"github_publish_token",p_value:tk})}
   toast("Money settings saved");loadSwitches();loadKpis();
 }
 
