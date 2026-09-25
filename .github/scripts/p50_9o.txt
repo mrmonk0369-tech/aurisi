@@ -1,0 +1,10 @@
+function stuDownload(){
+  if(!STU.code){toast("Nothing to download yet");return}
+  var n=(STU.lastPrompt||"aurisi-app").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,30);
+  if(!n)n="aurisi-app";
+  var blob=new Blob([STU.code],{type:"text/html"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=n+".html";
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){try{URL.revokeObjectURL(a.href);a.remove()}catch(e){}},800);
+  toast("App downloaded — open it in any browser, works offline");
+}
