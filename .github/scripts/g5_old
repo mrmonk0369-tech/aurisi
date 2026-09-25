@@ -1,0 +1,2 @@
+  $('stUsed').textContent=nu;
+}
