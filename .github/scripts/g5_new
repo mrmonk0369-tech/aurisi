@@ -1,0 +1,9 @@
+  $('stUsed').textContent=nu;
+  var gross=0;
+  for(var k=0;k<cds.length;k++){if(cds[k].used)gross+=(cds[k].price_at_sale||0)}
+  var fee=Math.round(gross*PCT/100);
+  var pe=$('ePct');if(pe)pe.textContent=String(PCT);
+  var e1=$('eGross');if(e1)e1.textContent='Rs '+gross;
+  var e2=$('eFee');if(e2)e2.textContent='Rs '+fee;
+  var e3=$('eNet');if(e3)e3.textContent='Rs '+(gross-fee);
+}
