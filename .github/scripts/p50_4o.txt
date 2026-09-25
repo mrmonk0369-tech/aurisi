@@ -1,0 +1,1 @@
+if(sm)sm.textContent=(code.length/1024).toFixed(1)+" KB · self-check "+(ferr?"review":"OK")+(fixes?(" · "+fixes+" fix"):"")+" · run "+(rerr?"review":"OK")+(rt?(" · "+rt+" fix"):"");
