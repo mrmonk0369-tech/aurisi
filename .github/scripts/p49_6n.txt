@@ -1,0 +1,3 @@
+  STU.iteration=true;
+  stuBuild("CHANGE REQUEST: "+ch);
+  STU.iteration=false;
