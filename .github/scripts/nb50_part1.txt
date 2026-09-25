@@ -1,0 +1,76 @@
+function stuParse(out){
+  STU.doc=null;STU.files=[];
+  var t=String(out||"");
+  if(t.indexOf("===FILE:")>=0){
+    var files=[],re=/===FILE:\s*([^\n=]+)===\s*\n?/g,m;
+    while((m=re.exec(t))!==null){
+      var nm=m[1].trim();
+      var st=m.index+m[0].length;
+      re.lastIndex=st;
+      var nx=re.exec(t);
+      var en=nx?nx.index:t.length;
+      re.lastIndex=st;
+      var ct=t.slice(st,en).replace(/\n+$/","");
+      if(nm&&ct)files.push({name:nm,content:ct});
+    }
+    if(files.length){
+      var idx=0;
+      for(var q=0;q<files.length;q++){if(/index\.html?$/i.test(files[q].name)){idx=q;break}}
+      if(idx>0){var tmp=files[0];files[0]=files[idx];files[idx]=tmp}
+      STU.files=files;
+      return stuInline(files);
+    }
+  }
+  if(t.indexOf('"blocks"')>=0&&t.indexOf('"title"')>=0){
+    var a=t.indexOf("{"),b=t.lastIndexOf("}");
+    if(a>=0&&b>a){
+      try{
+        var d=JSON.parse(t.slice(a,b+1));
+        if(d&&d.title&&Array.isArray(d.blocks)&&d.blocks.length){
+          STU.doc={title:String(d.title),blocks:d.blocks};
+          return stuRenderDoc(STU.doc);
+        }
+      }catch(e){}
+    }
+  }
+  var code=stuExtract(t);
+  if(code){STU.files=[{name:"app.html",content:code}]}
+  return code;
+}
+function stuFindFile(files,p){
+  var n=String(p).split("?")[0].split("/").pop();
+  for(var i=0;i<files.length;i++){
+    if(files[i].name===n||files[i].name.endsWith("/"+n))return files[i].content;
+  }
+  return null;
+}
+function stuInline(files){
+  var idx=files[0].content;
+  for(var q=0;q<files.length;q++){if(/index\.html?$/i.test(files[q].name)){idx=files[q].content;break}}
+  var h=idx;
+  h=h.replace(/<link[^>]*href=["']([^"']+)["'][^>]*>/gi,function(tag,href){
+    var f=stuFindFile(files,href);
+    if(!f)return tag;
+    return "<style>\n"+f+"\n</style>";
+  });
+  h=h.replace(/<script[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi,function(tag,src){
+    var f=stuFindFile(files,src);
+    if(!f)return tag;
+    return "<script>\n"+f+"\n</scr"+"ipt>";
+  });
+  return h;
+}
+function stuRenderDoc(doc){
+  function esc(s){return String(s||'').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')}
+  function b(s){return esc(s).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")}
+  var out=[];
+  for(var i=0;i<doc.blocks.length;i++){
+    var bl=doc.blocks[i]||{},t=b(bl.x);
+    if(bl.t==="h1")out.push("<h1>"+t+"</h1>");
+    else if(bl.t==="h2")out.push("<h2>"+t+"</h2>");
+    else if(bl.t==="li")out.push("<li>"+t+"</li>");
+    else if(bl.t==="quote")out.push("<blockquote>"+t+"</blockquote>");
+    else out.push("<p>"+t+"</p>");
+  }
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(doc.title)+'</title><style>body{font:16px/1.75 Georgia,serif;color:#1f2933;background:#fff;max-width:720px;margin:0 auto;padding:48px 24px}h1{font-size:30px;border-bottom:3px solid #d4af37;padding-bottom:12px;line-height:1.25}h2{font-size:21px;color:#8a6d1a;margin-top:34px}li{margin:6px 0}blockquote{border-left:4px solid #d4af37;background:#faf7ec;padding:10px 16px;margin:14px 0;font-style:italic}@media print{body{padding:32px 0}}</style></head><body>'+out.join("\n")+'</body></html>';
+}
