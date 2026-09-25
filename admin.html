@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AURISI Admin</title>
+<title>AURISI HQ</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
 :root{--cream:#F7F0E3;--cream2:#FFFBF3;--dark:#2A2118;--muted:#78682F;--orange:#FF6A3D;--gold:#D4A03F;--line:#E4D9C4;--green:#2E9E5B;--red:#D64545}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;padding:16px;max-width:860px;margin:0 auto}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;padding:16px;max-width:1020px;margin:0 auto}
 h1{font-size:22px;display:flex;align-items:center;gap:8px}
 .sub{color:var(--muted);font-size:13px;margin-top:3px}
 .card{background:var(--cream2);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 4px 14px -8px rgba(42,33,24,.15)}
@@ -16,85 +16,142 @@ h1{font-size:22px;display:flex;align-items:center;gap:8px}
 button{font:inherit;cursor:pointer;border:none;border-radius:12px;padding:9px 14px;background:var(--orange);color:#fff;font-weight:600;font-size:13px}
 button.sec{background:var(--cream);color:var(--dark);border:1px solid var(--line)}
 button.sm{padding:6px 10px;font-size:12px;border-radius:9px}
-button.on{background:var(--green)}
-button.off{background:var(--red)}
+button.on{background:var(--green)}button.off{background:var(--red)}
 input,select{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--dark);font-size:13px;width:100%}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .inst{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:10px;background:#fff}
 .inst .nm{font-weight:700;font-size:14px}
 .inst .meta{color:var(--muted);font-size:12px;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
 .pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700}
-.pill.ok{background:#E3F3E9;color:var(--green)}
-.pill.no{background:#FBE7E7;color:var(--red)}
-.pill.pro{background:#FDEEDB;color:var(--orange)}
+.pill.ok{background:#E3F3E9;color:var(--green)}.pill.no{background:#FBE7E7;color:var(--red)}.pill.pro{background:#FDEEDB;color:var(--orange)}
 code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-weight:700;letter-spacing:1px;font-size:13px}
 .tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
 .tbl th,.tbl td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
 .tbl th{color:var(--muted);font-size:11px;text-transform:uppercase}
 .newcode{background:#E3F3E9;border:1px solid var(--green);border-radius:13px;padding:12px;margin-top:10px;font-size:15px;text-align:center}
 .hide{display:none}
-#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;z-index:99}
 #toast.show{opacity:.95}
 .mut{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.tab{flex:1;min-width:110px;padding:10px 12px;border-radius:12px;background:var(--cream2);border:1px solid var(--line);text-align:center;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted)}
+.tab.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:6px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px}
+.kpi b{font-size:20px;display:block;margin-top:2px}
+.kpi small{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.kpi.gold{border-color:var(--gold);background:#FDF6E7}
+.kpi .cur{color:var(--orange)}
+.lg{border:1px solid var(--line);border-radius:13px;padding:10px 12px;margin-top:8px;background:#fff;font-size:12.5px}
+.lg .row{margin-top:4px}
+@media(max-width:560px){.kpis{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<h1>💼 AURISI <span style="color:var(--orange)">Admin</span></h1>
-<div class="sub">The control room — everything in your hands.</div>
+<h1>👑 AURISI <span style="color:var(--orange)">HQ</span></h1>
+<div class="sub">The command center — your software, your rules, your money.</div>
 
 <div id="loginCard" class="card">
-  <h2>🔐 Admin login</h2>
-  <input id="keyIn" placeholder="Admin key" type="password">
-  <div style="margin-top:10px"><button onclick="doLogin()">Enter control room</button></div>
-  <div class="mut" style="margin-top:8px">Only the Aurisi owner has this key.</div>
+  <h2>🔐 HQ login</h2>
+  <input id="keyIn" placeholder="HQ master key" type="password">
+  <div style="margin-top:10px"><button onclick="doLogin()">Enter HQ</button></div>
+  <div class="mut" style="margin-top:8px">Only the Aurisi owner has this key. This page is separate from the student app and institute portal.</div>
 </div>
 
 <div id="dash" class="hide">
   <div class="row" style="margin-top:14px">
     <button onclick="refreshAll()">🔄 Refresh</button>
     <button class="sec" onclick="logout()">Log out</button>
+    <span class="mut" id="pctNote"></span>
   </div>
 
-  <div class="card">
-    <h2>🎛️ Live switches</h2>
-    <div class="row">
-      <span>Students Pro (paid mode):</span><button id="swPro" class="sm" onclick="togglePro()">…</button>
+  <div class="tabs">
+    <div class="tab on" id="tabDash" onclick="go('Dash')">📊 Dashboard</div>
+    <div class="tab" id="tabInst" onclick="go('Inst')">🏫 Institutes</div>
+    <div class="tab" id="tabSales" onclick="go('Sales')">🎓 Sales</div>
+    <div class="tab" id="tabCodes" onclick="go('Codes')">🔑 Codes</div>
+    <div class="tab" id="tabSet" onclick="go('Set')">⚙️ Settings</div>
+  </div>
+
+  <div id="pgDash">
+    <div class="card">
+      <h2>📊 Business overview</h2>
+      <div class="kpis" id="kpiBox"><span class="mut">Loading…</span></div>
     </div>
-    <div class="row" style="margin-top:8px">
-      <span>Business section visible:</span><button id="swBiz" class="sm" onclick="toggleBiz()">…</button>
+    <div class="card">
+      <h2>🧾 Recent sales</h2>
+      <div id="recentBox"><span class="mut">Loading…</span></div>
     </div>
-    <div class="mut" style="margin-top:8px">Pro ON → students need a Pro code to use the app. Business visible → full Business & Institute section shows in Settings for pitch/demo.</div>
   </div>
 
-  <div class="card">
-    <h2>🤖 House AI key (Gemini)</h2>
-    <input id="hkIn" placeholder="Paste Gemini API key (aistudio.google.com)">
-    <div class="row" style="margin-top:10px">
-      <button onclick="saveHK()">Save key</button>
-      <button class="sec" onclick="clearHK()">Remove</button>
+  <div id="pgInst" class="hide">
+    <div class="card">
+      <h2>🏫 All institutes</h2>
+      <div id="instList"><span class="mut">Loading…</span></div>
     </div>
-    <div class="mut" style="margin-top:8px">Ye key sab users ke liye default AI ban jati hai — students ko koi setup nahi karna padta, chat apne aap chalta hai. User apni key daale to wahi chalegi.</div>
-  </div>
-
-  <div class="card">
-    <h2>🪙 Generate code (pay as you go)</h2>
-    <div class="row">
-      <div style="flex:1;min-width:110px"><input id="daysIn" type="number" value="365" placeholder="Days"></div>
-      <div style="flex:1;min-width:140px"><select id="kindIn"><option value="institute">🏫 Institute license</option><option value="pro">✨ Student Pro</option></select></div>
+    <div class="card">
+      <h2>👤 Create institute login</h2>
+      <div class="mut" style="margin-bottom:8px">Gives an institute their portal access (institute.html) — email + password you choose. They log in at /aurisi/institute.html.</div>
+      <div class="row">
+        <div style="flex:2;min-width:160px"><select id="liInst"><option value="">Select institute…</option></select></div>
+        <div style="flex:2;min-width:160px"><input id="liEmail" placeholder="Email (login id)"></div>
+        <div style="flex:1;min-width:120px"><input id="liPass" placeholder="Password" type="password"></div>
+      </div>
+      <div style="margin-top:10px"><button onclick="createLogin()">Create login</button></div>
+      <div id="loginsBox" style="margin-top:14px"></div>
     </div>
-    <div style="margin-top:8px"><input id="noteIn" placeholder="Note (customer name, price…)"></div>
-    <div style="margin-top:10px"><button onclick="makeCode()">Generate code</button></div>
-    <div id="newCodeBox"></div>
   </div>
 
-  <div class="card">
-    <h2>🏫 Institutes</h2>
-    <div id="instList"><span class="mut">Loading…</span></div>
+  <div id="pgSales" class="hide">
+    <div class="card">
+      <h2>🎓 Courses & sales — every institute</h2>
+      <div id="salesBox"><span class="mut">Loading…</span></div>
+      <div class="mut" style="margin-top:8px">Your fee = commission% of every sale. Institutes settle monthly via your UPI (Settings tab).</div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>🔑 Activation codes</h2>
-    <div id="codeList"><span class="mut">Loading…</span></div>
+  <div id="pgCodes" class="hide">
+    <div class="card">
+      <h2>🪙 Generate access code (sell it)</h2>
+      <div class="row">
+        <div style="flex:1;min-width:110px"><input id="daysIn" type="number" value="365" placeholder="Days"></div>
+        <div style="flex:1;min-width:140px"><select id="kindIn"><option value="institute">🏫 Institute license</option><option value="pro">✨ Student Pro</option></select></div>
+      </div>
+      <div style="margin-top:8px"><input id="noteIn" placeholder="Note (customer name, price…)"></div>
+      <div style="margin-top:10px"><button onclick="makeCode()">Generate code</button></div>
+      <div id="newCodeBox"></div>
+    </div>
+    <div class="card">
+      <h2>🔑 All access codes</h2>
+      <div id="codeList"><span class="mut">Loading…</span></div>
+    </div>
+  </div>
+
+  <div id="pgSet" class="hide">
+    <div class="card">
+      <h2>💰 Money settings</h2>
+      <div class="row">
+        <div style="flex:1;min-width:140px"><label class="mut">Your commission %</label><input id="commIn" type="number" min="0" max="50" step="0.5"></div>
+        <div style="flex:2;min-width:180px"><label class="mut">Your UPI (fee settlement)</label><input id="upiIn" placeholder="yourname@upi"></div>
+        <div style="flex:0"><button style="margin-top:18px" onclick="saveMoney()">Save</button></div>
+      </div>
+      <div class="mut" style="margin-top:8px">Commission % applies to every institute sale. UPI shows in the institute portal for monthly settlement.</div>
+    </div>
+    <div class="card">
+      <h2>🎛️ Live switches</h2>
+      <div class="row"><span>Students Pro (paid mode):</span><button id="swPro" class="sm" onclick="togglePro()">…</button></div>
+      <div class="row" style="margin-top:8px"><span>Business section visible:</span><button id="swBiz" class="sm" onclick="toggleBiz()">…</button></div>
+      <div class="mut" style="margin-top:8px">Pro ON → students need a Pro code to use the app. Business visible → full Business & Institute section shows in Settings.</div>
+    </div>
+    <div class="card">
+      <h2>🤖 House AI key (Gemini)</h2>
+      <input id="hkIn" placeholder="Paste Gemini API key (aistudio.google.com)">
+      <div class="row" style="margin-top:10px">
+        <button onclick="saveHK()">Save key</button>
+        <button class="sec" onclick="clearHK()">Remove</button>
+      </div>
+      <div class="mut" style="margin-top:8px">Default AI for all users — students need zero setup.</div>
+    </div>
   </div>
 </div>
 
@@ -102,93 +159,215 @@ code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padd
 <script>
 var SB="https://ehbdvjkguungjccaaqsm.supabase.co/rest/v1",KEY="sb_publishable_ip0uOdOcSplrTkOIw5MDnA_jwSe6jDa";
 var AK=localStorage.getItem("aurisi_admin_key")||"";
+var PCT=10,SALES=[],COURSES=[],INSTS=[];
 function H(){return{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"}}
 function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2400)}
 async function rpc(fn,body){var r=await fetch(SB+"/rpc/"+fn,{method:"POST",headers:H(),body:JSON.stringify(body)});return await r.json()}
 function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})}
+function $(id){return document.getElementById(id)}
+function go(p){
+  ["Dash","Inst","Sales","Codes","Set"].forEach(function(x){
+    $("pg"+x).classList.toggle("hide",x!==p);
+    $("tab"+x).classList.toggle("on",x===p);
+  });
+  if(p==="Sales")renderSales();
+}
 
 async function doLogin(){
-  var k=document.getElementById("keyIn").value.trim();
+  var k=$("keyIn").value.trim();
   if(!k)return;
   var ok=await rpc("admin_login",{p_key:k});
-  if(ok!==true){toast("Wrong admin key");return}
+  if(ok!==true){toast("Wrong HQ key");return}
   AK=k;localStorage.setItem("aurisi_admin_key",k);showDash();
 }
 function logout(){localStorage.removeItem("aurisi_admin_key");location.reload()}
-function showDash(){document.getElementById("loginCard").classList.add("hide");document.getElementById("dash").classList.remove("hide");refreshAll()}
+function showDash(){$("loginCard").classList.add("hide");$("dash").classList.remove("hide");refreshAll()}
 
-async function refreshAll(){await loadSwitches();loadInsts();loadCodes()}
+async function refreshAll(){await loadSwitches();loadKpis();loadInsts();loadCodes();loadLogins()}
+
 async function loadSwitches(){
   try{
     var r=await fetch(SB+"/app_config?select=key,value",{headers:H()});
     var rows=await r.json();
     var m={};rows.forEach(function(x){m[x.key]=x.value});
-    var p=document.getElementById("swPro"),b=document.getElementById("swBiz");
-    p.textContent=m.student_pro_enabled==="true"?"ON":"OFF";
-    p.className="sm "+(m.student_pro_enabled==="true"?"on":"off");
-    b.textContent=m.biz_mode==="visible"?"VISIBLE":"HIDDEN";
-    b.className="sm "+(m.biz_mode==="visible"?"on":"off");
+    var p=parseFloat(m.commission_pct);if(p>=0&&p<=50)PCT=p;
+    $("pctNote").textContent="Commission: "+PCT+"% per sale";
+    $("commIn").value=String(PCT);
+    if(m.aurisi_fee_upi)$("upiIn").value=m.aurisi_fee_upi;
+    var b1=$("swPro"),b2=$("swBiz");
+    b1.textContent=m.student_pro_enabled==="true"?"ON":"OFF";
+    b1.className="sm "+(m.student_pro_enabled==="true"?"on":"off");
+    b2.textContent=m.biz_mode==="visible"?"VISIBLE":"HIDDEN";
+    b2.className="sm "+(m.biz_mode==="visible"?"on":"off");
     var hk=m.ai_house_key||"";
-    document.getElementById("hkIn").placeholder=hk?("Current: "+hk.slice(0,4)+"..."+hk.slice(-4)):"Paste Gemini API key (aistudio.google.com)";
+    $("hkIn").placeholder=hk?("Current: "+hk.slice(0,4)+"..."+hk.slice(-4)):"Paste Gemini API key (aistudio.google.com)";
   }catch(e){toast("Could not reach server")}
 }
-async function togglePro(){var on=document.getElementById("swPro").textContent==="ON";await rpc("admin_set_config",{p_key:AK,p_cfg:"student_pro_enabled",p_value:on?"false":"true"});toast(on?"Students Pro OFF — app is free":"Students Pro ON — Pro code required");loadSwitches()}
-async function toggleBiz(){var on=document.getElementById("swBiz").textContent==="VISIBLE";await rpc("admin_set_config",{p_key:AK,p_cfg:"biz_mode",p_value:on?"hidden":"visible"});toast(on?"Business section HIDDEN":"Business section VISIBLE");loadSwitches()}
-
-async function saveHK(){var k=document.getElementById("hkIn").value.trim();if(!k){toast("Paste the key first");return}
+async function togglePro(){var on=$("swPro").textContent==="ON";await rpc("admin_set_config",{p_key:AK,p_cfg:"student_pro_enabled",p_value:on?"false":"true"});toast(on?"Students Pro OFF — app is free":"Students Pro ON — Pro code required");loadSwitches()}
+async function toggleBiz(){var on=$("swBiz").textContent==="VISIBLE";await rpc("admin_set_config",{p_key:AK,p_cfg:"biz_mode",p_value:on?"hidden":"visible"});toast(on?"Business section HIDDEN":"Business section VISIBLE");loadSwitches()}
+async function saveHK(){var k=$("hkIn").value.trim();if(!k){toast("Paste the key first");return}
   var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"ai_house_key",p_value:k});
-  toast(ok===true?"House AI key saved — chat now works for everyone":"Failed");loadSwitches()}
+  toast(ok===true?"House AI key saved — chat works for everyone":"Failed");loadSwitches()}
 async function clearHK(){var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"ai_house_key",p_value:""});
-  toast(ok===true?"House AI key removed":"Failed");document.getElementById("hkIn").value="";loadSwitches()}
+  toast(ok===true?"House AI key removed":"Failed");$("hkIn").value="";loadSwitches()}
+async function saveMoney(){
+  var pct=parseFloat($("commIn").value);
+  if(isNaN(pct)||pct<0||pct>50){toast("Commission must be 0-50%");return}
+  var upi=$("upiIn").value.trim();
+  var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"commission_pct",p_value:String(pct)});
+  if(ok!==true){toast("Failed to save commission");return}
+  if(upi){await rpc("admin_set_config",{p_key:AK,p_cfg:"aurisi_fee_upi",p_value:upi})}
+  toast("Money settings saved");loadSwitches();loadKpis();
+}
+
 async function makeCode(){
-  var days=parseInt(document.getElementById("daysIn").value,10);
-  var kind=document.getElementById("kindIn").value;
-  var note=document.getElementById("noteIn").value.trim();
+  var days=parseInt($("daysIn").value,10);
+  var kind=$("kindIn").value;
+  var note=$("noteIn").value.trim();
   var code=await rpc("admin_make_code",{p_key:AK,p_days:days,p_kind:kind,p_note:note});
-  var box=document.getElementById("newCodeBox");
+  var box=$("newCodeBox");
   if(typeof code!=="string"||code.indexOf("ERR:")===0){toast(code||"Failed");box.innerHTML="";return}
   box.innerHTML='<div class="newcode">New '+escH(kind)+' code — <code>'+code+'</code> ('+days+' days)<br><small>'+escH(note||"")+'</small></div>';
-  toast("Code generated — copy & send it");
+  toast("Code generated — copy and send it");
   loadCodes();
 }
 
-function fmtDate(s){try{return new Date(s).toLocaleDateString()}catch(e){return s}}
-function daysLeft(s){try{var d=Math.ceil((new Date(s)-Date.now())/86400000);return d} catch(e){return "?"}}
+async function loadKpis(){
+  try{
+    var cfg=await fetch(SB+"/app_config?select=key,value&key=eq.commission_pct",{headers:H()});var cr=await cfg.json();
+    if(cr&&cr.length){var p=parseFloat(cr[0].value);if(p>=0&&p<=50)PCT=p}
+    var rc=await fetch(SB+"/inst_courses?select=id,inst_code,price",{headers:H()});COURSES=await rc.json();
+    var rk=await fetch(SB+"/course_codes?select=course_id,used,price_at_sale",{headers:H()});SALES=await rk.json();
+    var gross=0,sold=0;
+    SALES.forEach(function(s){if(s.used){gross+=(s.price_at_sale||0);sold++}});
+    var fee=Math.round(gross*PCT/100);
+    var ri=await rpc("admin_list_institutes",{p_key:AK});INSTS=(ri&&ri.length)?ri:[];
+    var act=INSTS.filter(function(x){return x.active}).length;
+    var rl=await fetch(SB+"/inst_login?select=email",{headers:H()});var lg=await rl.json();
+    $("kpiBox").innerHTML=
+      '<div class="kpi"><small>Institutes</small><b>'+INSTS.length+'</b><small class="mut">'+act+' active</small></div>'
+      +'<div class="kpi"><small>Courses live</small><b>'+COURSES.length+'</b><small class="mut">'+(lg?lg.length:0)+' portal logins</small></div>'
+      +'<div class="kpi"><small>Codes sold</small><b>'+sold+'</b><small class="mut">course access codes</small></div>'
+      +'<div class="kpi"><small>Total sales</small><b class="cur">Rs '+gross+'</b><small class="mut">money students paid</small></div>'
+      +'<div class="kpi gold"><small>Your commission ('+PCT+'%)</small><b class="cur">Rs '+fee+'</b><small class="mut">your income</small></div>'
+      +'<div class="kpi"><small>Institutes earned</small><b>Rs '+(gross-fee)+'</b><small class="mut">their share</small></div>';
+    var rr=await fetch(SB+"/course_codes?select=course_id,price_at_sale,used_by,used_at&used=eq.true&order=used_at.desc&limit=10",{headers:H()});
+    var recent=await rr.json();
+    var cmap={};COURSES.forEach(function(c){cmap[c.id]=c});
+    var ic={};INSTS.forEach(function(i){ic[i.code]=i});
+    if(!recent||!recent.length){$("recentBox").innerHTML='<span class="mut">No sales yet.</span>'}
+    else{
+      var h='<table class="tbl"><tr><th>When</th><th>Course</th><th>Institute</th><th>Paid</th><th>Your fee</th></tr>';
+      recent.forEach(function(s){
+        var c=cmap[s.course_id]||{};
+        var i=ic[c.inst_code]||{};
+        h+='<tr><td>'+fmtDate(s.used_at)+'</td><td>'+escH(c.title||("course #"+s.course_id))+'</td><td>'+escH(i.name||"-")+'</td><td>Rs '+(s.price_at_sale||0)+'</td><td>Rs '+Math.round((s.price_at_sale||0)*PCT/100)+'</td></tr>';
+      });
+      $("recentBox").innerHTML=h+'</table>';
+    }
+  }catch(e){$("kpiBox").innerHTML='<span class="mut">Could not load.</span>'}
+}
+
+function fmtDate(s){try{return new Date(s).toLocaleDateString()}catch(e){return s||"-"}}
+function daysLeft(s){try{return Math.ceil((new Date(s)-Date.now())/86400000)}catch(e){return "?"}}
+
 async function loadInsts(){
   try{
-    var rows=await rpc("admin_list_institutes",{p_key:AK});
-    var el=document.getElementById("instList");
-    if(!rows||!rows.length){el.innerHTML='<span class="mut">No institutes yet. Generate an institute code to sell your first license.</span>';return}
+    var rows=INSTS;
+    if(!rows.length){rows=await rpc("admin_list_institutes",{p_key:AK});INSTS=rows||[]}
+    var el=$("instList");
+    if(!rows||!rows.length){el.innerHTML='<span class="mut">No institutes yet. Generate an institute code to sell your first license.</span>';fillInstSel([]);return}
+    fillInstSel(rows);
+    var sc={};COURSES.forEach(function(c){sc[c.inst_code]=(sc[c.inst_code]||0)+1});
     var h="";
     rows.forEach(function(x){
       h+='<div class="inst"><div class="nm">🏫 '+escH(x.name)+' <span class="pill '+(x.active?'ok':'no')+'">'+(x.active?'ACTIVE':'OFF')+'</span></div>';
-      h+='<div class="meta"><span>Code <b>'+x.code+'</b></span><span>Classes '+escH(x.cls)+(x.exams?' · '+escH(x.exams):'')+'</span><span>Expires '+fmtDate(x.expires)+' ('+daysLeft(x.expires)+'d left)</span><span>'+x.material_count+' material</span></div>';
+      h+='<div class="meta"><span>Code <b>'+x.code+'</b></span><span>Classes '+escH(x.cls)+(x.exams?' · '+escH(x.exams):'')+'</span><span>Expires '+fmtDate(x.expires)+' ('+daysLeft(x.expires)+'d)</span><span>'+(sc[x.code]||0)+' courses</span></div>';
       h+='<div class="row" style="margin-top:8px">';
       h+=x.active?'<button class="sm off" onclick="setInst(\''+x.code+'\',false,0)">⛔ Turn OFF</button>':'<button class="sm on" onclick="setInst(\''+x.code+'\',true,0)">✅ Turn ON</button>';
-      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,30)">+30 days</button>';
-      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,365)">+365 days</button>';
+      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,30)">+30d</button>';
+      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,365)">+365d</button>';
       h+='<button class="sm sec" onclick="customExt(\''+x.code+'\')">Custom…</button>';
       h+='</div></div>';
     });
     el.innerHTML=h;
-  }catch(e){document.getElementById("instList").innerHTML='<span class="mut">Could not load.</span>'}
+  }catch(e){$("instList").innerHTML='<span class="mut">Could not load.</span>'}
+}
+function fillInstSel(rows){
+  var s=$("liInst"),h='<option value="">Select institute…</option>';
+  rows.forEach(function(x){h+='<option value="'+x.code+'">'+escH(x.name)+' ('+x.code+')</option>'});
+  s.innerHTML=h;
 }
 function customExt(code){var d=parseInt(prompt("How many days to add?","90"),10);if(d>0)setInst(code,null,d)}
 async function setInst(code,active,addDays){
   var ok=await rpc("admin_set_institute",{p_key:AK,p_code:code,p_active:active,p_add_days:addDays});
   toast(ok===true?"Done":"Failed");loadInsts();
 }
+async function sha256hex(s){
+  var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("");
+}
+async function createLogin(){
+  var inst=$("liInst").value,em=$("liEmail").value.trim().toLowerCase(),pw=$("liPass").value;
+  if(!inst){toast("Select an institute first");return}
+  if(!em||em.indexOf("@")<1){toast("Enter a valid email");return}
+  if(pw.length<4){toast("Password must be at least 4 characters");return}
+  toast("Creating…");
+  try{
+    var chk=await fetch(SB+"/inst_login?select=email&email=eq."+encodeURIComponent(em),{headers:H()});
+    var ex=await chk.json();
+    if(ex&&ex.length){toast("This email already has a login");return}
+    var pass=await sha256hex(pw);
+    var r=await fetch(SB+"/inst_login",{method:"POST",headers:H(),body:JSON.stringify({email:em,pass:pass,inst_code:inst})});
+    if(!r.ok){toast("Could not create login");return}
+    $("liEmail").value="";$("liPass").value="";
+    toast("Login created — send them the credentials");
+    loadLogins();
+  }catch(e){toast("Could not reach server")}
+}
+async function loadLogins(){
+  try{
+    var r=await fetch(SB+"/inst_login?select=email,inst_code",{headers:H()});
+    var rows=await r.json();
+    var ic={};INSTS.forEach(function(i){ic[i.code]=i});
+    var el=$("loginsBox");
+    if(!rows||!rows.length){el.innerHTML='<span class="mut">No portal logins yet.</span>';return}
+    var h='<b class="mut" style="font-size:12px;text-transform:uppercase;letter-spacing:.4px">Existing logins</b>';
+    rows.forEach(function(x){
+      h+='<div class="lg"><b>'+escH(x.email)+'</b> <span class="mut">— '+(ic[x.inst_code]?escH(ic[x.inst_code].name):escH(x.inst_code))+'</span></div>';
+    });
+    el.innerHTML=h;
+  }catch(e){}
+}
+
+function renderSales(){
+  var el=$("salesBox");
+  if(!COURSES.length){el.innerHTML='<span class="mut">No courses yet.</span>';return}
+  var salemap={};
+  SALES.forEach(function(s){if(s.used){var k=s.course_id;salemap[k]=(salemap[k]||0)+1;salemap[k+"p"]=(salemap[k+"p"]||0)+(s.price_at_sale||0)}});
+  var ic={};INSTS.forEach(function(i){ic[i.code]=i});
+  var h='<table class="tbl"><tr><th>Institute</th><th>Course</th><th>Price</th><th>Sold</th><th>Revenue</th><th>Your fee</th></tr>';
+  var tot={r:0,f:0};
+  COURSES.forEach(function(c){
+    var sold=salemap[c.id]||0,rev=salemap[c.id+"p"]||0,fee=Math.round(rev*PCT/100);
+    tot.r+=rev;tot.f+=fee;
+    h+='<tr><td>'+escH(ic[c.inst_code]?ic[c.inst_code].name:c.inst_code)+'</td><td>'+escH(c.title)+'</td><td>Rs '+(c.price||0)+'</td><td>'+sold+'</td><td>Rs '+rev+'</td><td>Rs '+fee+'</td></tr>';
+  });
+  h+='<tr style="font-weight:700"><td colspan="4">TOTAL</td><td>Rs '+tot.r+'</td><td>Rs '+tot.f+'</td></tr>';
+  el.innerHTML=h+'</table>';
+}
+
 async function loadCodes(){
   try{
     var rows=await rpc("admin_list_codes",{p_key:AK});
-    var el=document.getElementById("codeList");
+    var el=$("codeList");
     if(!rows||!rows.length){el.innerHTML='<span class="mut">No codes yet.</span>';return}
     var h='<table class="tbl"><tr><th>Code</th><th>Type</th><th>Valid</th><th>Status</th><th>Note</th></tr>';
     rows.forEach(function(x){
       h+='<tr><td><code>'+escH(x.code)+'</code></td><td>'+(x.kind==='pro'?'<span class="pill pro">PRO</span>':'🏫 Inst')+'</td><td>'+x.days+'d</td><td>'+(x.used?'<span class="pill no">used</span>':'<span class="pill ok">FREE</span>')+'</td><td>'+escH(x.note||"")+'</td></tr>';
     });
     el.innerHTML=h+'</table>';
-  }catch(e){document.getElementById("codeList").innerHTML='<span class="mut">Could not load.</span>'}
+  }catch(e){$("codeList").innerHTML='<span class="mut">Could not load.</span>'}
 }
 
 if(AK){rpc("admin_login",{p_key:AK}).then(function(ok){if(ok===true)showDash()})}
