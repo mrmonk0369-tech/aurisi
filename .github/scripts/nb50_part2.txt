@@ -1,0 +1,98 @@
+var STU_CRC=null;
+function stuCrc32(u8){
+  if(!STU_CRC){
+    STU_CRC=[];
+    for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=(c&1)?(3988292384^(c>>>1)):(c>>>1);STU_CRC[n]=c>>>0}
+  }
+  var c=4294967295;
+  for(var i=0;i<u8.length;i++)c=STU_CRC[(c^u8[i])&255]^(c>>>8);
+  return (c^4294967295)>>>0;
+}
+function stuZip(files){
+  var enc=new TextEncoder();
+  var parts=[],central=[],off=0;
+  function u32(v){return [v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]}
+  function u16(v){return [v&255,(v>>>8)&255]}
+  for(var i=0;i<files.length;i++){
+    var name=files[i].name,data=enc.encode(files[i].content),crc=stuCrc32(data);
+    var nb=enc.encode(name);
+    var lh=[80,75,3,4].concat(u16(20),u16(2048),u16(0),u16(0),u16(33),u32(crc),u32(data.length),u32(data.length),u16(nb.length),u16(0));
+    parts.push(new Uint8Array(lh),nb,data);
+    central.push({name:nb,crc:crc,sz:data.length,off:off});
+    off+=lh.length+nb.length+data.length;
+  }
+  var cd=[],cdlen=0;
+  for(var c2=0;c2<central.length;c2++){
+    var e=central[c2];
+    var ch=[80,75,1,2].concat(u16(20),u16(20),u16(2048),u16(0),u16(0),u16(33),u32(e.crc),u32(e.sz),u32(e.sz),u16(e.name.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(e.off));
+    cd=cd.concat(ch,Array.prototype.slice.call(e.name));
+    cdlen+=ch.length+e.name.length;
+  }
+  var end=[80,75,5,6].concat(u16(0),u16(0),u16(central.length),u16(central.length),u32(cdlen),u32(off),u16(0));
+  var all=parts.concat([new Uint8Array(cd),new Uint8Array(end)]);
+  var total=0;
+  all.forEach(function(p){total+=p.length});
+  var outb=new Uint8Array(total);
+  var pos=0;
+  all.forEach(function(p){outb.set(p,pos);pos+=p.length});
+  return new Blob([outb],{type:"application/zip"});
+}
+function stuPdf(doc){
+  function esc(s){return String(s).replace(/\\/g,String.fromCharCode(92,92)).replace(/\(/g,String.fromCharCode(92,40)).replace(/\)/g,String.fromCharCode(92,41))}
+  function strip(s){return String(s||"").replace(/\*\*([^*]+)\*\*/g,"$1")}
+  var PW=595,PH=842,MX=56,MT=64,MB=64;
+  var maxw=PW-MX*2;
+  var lines=[];
+  function wrap(text,size,indent){
+    var cw=size*0.5;
+    var maxc=Math.max(10,Math.floor((maxw-indent)/cw));
+    var words=String(text).split(/\s+/),cur="";
+    for(var i=0;i<words.length;i++){
+      var t2=cur?cur+" "+words[i]:words[i];
+      if(t2.length>maxc&&cur){lines.push({t:cur,s:size,x:MX+indent});cur=words[i]}
+      else cur=t2;
+    }
+    if(cur)lines.push({t:cur,s:size,x:MX+indent});
+  }
+  wrap(doc.title,24,0);
+  lines[lines.length-1].gap=16;
+  for(var i=0;i<doc.blocks.length;i++){
+    var bl=doc.blocks[i]||{},txt=strip(bl.x||"");
+    if(bl.t==="h1")wrap(txt,19,0);
+    else if(bl.t==="h2"){wrap(txt,15,0);lines[lines.length-1].gap=10}
+    else if(bl.t==="li")wrap("- "+txt,11,16);
+    else if(bl.t==="quote")wrap(txt,11,28);
+    else wrap(txt,11,0);
+  }
+  var pages=[],cur=[],y=PH-MT;
+  for(var j=0;j<lines.length;j++){
+    var L=lines[j],h=(L.s*1.5)+(L.gap||0);
+    if(y-h<MB){pages.push(cur);cur=[];y=PH-MT}
+    cur.push("BT /FR "+L.s+" Tf 1 0 0 1 "+L.x+" "+(y-L.s)+" Tm ("+esc(L.t)+") Tj ET");
+    y-=h;
+  }
+  if(cur.length)pages.push(cur);
+  if(!pages.length)pages.push([]);
+  var objs=[];
+  objs.push("<< /Type /Catalog /Pages 2 0 R >>");
+  var kids=[];
+  for(var p=0;p<pages.length;p++)kids.push((5+p*2)+" 0 R");
+  objs.push("<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+pages.length+" >>");
+  objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+  objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+  for(var p2=0;p2<pages.length;p2++){
+    objs.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+PW+" "+PH+"] /Resources << /Font << /FR 3 0 R >> >> /Contents "+(6+p2*2)+" 0 R >>");
+    var st=pages[p2].join("\n");
+    objs.push("<< /Length "+st.length+" >>\nstream\n"+st+"\nendstream");
+  }
+  var pdf="%PDF-1.4\n",offs=[];
+  for(var o=0;o<objs.length;o++){offs.push(pdf.length);pdf+=(o+1)+" 0 obj\n"+objs[o]+"\nendobj\n"}
+  var xref=pdf.length;
+  pdf+="xref\n0 "+(objs.length+1)+"\n0000000000 65535 f \n";
+  for(var o2=0;o2<offs.length;o2++){
+    var s10="0000000000"+offs[o2];
+    pdf+=s10.slice(-10)+" 00000 n \n";
+  }
+  pdf+="trailer\n<< /Size "+(objs.length+1)+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";
+  return pdf;
+}
