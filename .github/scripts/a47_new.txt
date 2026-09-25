@@ -1,0 +1,2 @@
+html+='<button class="agent-card" onclick="openVideoStudio()"><span class="agent-ico">🎬</span><span><b>PDF to Video</b><small>Upload any PDF or notes — learn it as a video lesson</small></span></button>';
+  html+='<button class="agent-card" onclick="openStudio()"><span class="agent-ico">🏗️</span><span><b>Aurisi Studio</b><small>Describe anything — get a working app or website you can download</small></span></button>';
