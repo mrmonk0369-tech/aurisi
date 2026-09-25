@@ -1,0 +1,5 @@
+function loadDash(){
+  sb('app_config?select=value&key=eq.commission_pct').then(function(cfg){
+    if(cfg&&cfg.length){var p=parseInt(cfg[0].value,10);if(p>=0&&p<=50)PCT=p}
+    return sb('inst_courses?inst_code=eq.'+encodeURIComponent(S.code)+'&select=*&order=id.desc');
+  }).then(function(cs){
