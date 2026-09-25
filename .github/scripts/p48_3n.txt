@@ -1,0 +1,2 @@
+document.getElementById("stuDl").onclick=stuDownload;
+  document.getElementById("stuPub").onclick=stuPublish;
