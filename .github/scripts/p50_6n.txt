@@ -1,0 +1,3 @@
+<div class="stu-row"><button class="crs-next" id="stuGo">🏗️ Build my app</button></div>'
+   +'<div class="stu-row"><button class="stu-ab" id="stuMyP" style="background:#141922;color:#e8ecf3">📁 My Projects</button></div>'
+   +'<div id="stuProjList" style="display:none;margin-top:12px"></div>
