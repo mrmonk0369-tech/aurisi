@@ -1,0 +1,14 @@
+    var url;
+    if(STU.files.length>1){
+      for(var fi=0;fi<STU.files.length;fi++){
+        var fb=btoa(unescape(encodeURIComponent(STU.files[fi].content)));
+        var fp=await fetch("https://api.github.com/repos/mrmonk0369-tech/aurisi-apps/contents/"+slug+"/"+STU.files[fi].name,{method:"PUT",headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Aurisi Studio: publish "+slug,content:fb})});
+        if(!fp.ok){toast("Publish failed — try another name");return}
+      }
+      url="https://mrmonk0369-tech.github.io/aurisi-apps/"+slug+"/";
+    }else{
+      var b64=btoa(unescape(encodeURIComponent(STU.code)));
+      var pr=await fetch("https://api.github.com/repos/mrmonk0369-tech/aurisi-apps/contents/"+slug+".html",{method:"PUT",headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Aurisi Studio: publish "+slug,content:b64})});
+      if(!pr.ok){toast("Publish failed — try another name");return}
+      url="https://mrmonk0369-tech.github.io/aurisi-apps/"+slug+".html";
+    }
