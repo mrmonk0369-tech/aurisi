@@ -1,0 +1,126 @@
+      +'<div class="kpi"><small>Total sales</small><b class="cur">Rs '+gross+'</b><small class="mut">money students paid</small></div>'
+      +'<div class="kpi gold"><small>Your commission ('+PCT+'%)</small><b class="cur">Rs '+fee+'</b><small class="mut">your income</small></div>'
+      +'<div class="kpi"><small>Institutes earned</small><b>Rs '+(gross-fee)+'</b><small class="mut">their share</small></div>';
+    var rr=await fetch(SB+"/course_codes?select=course_id,price_at_sale,used_by,used_at&used=eq.true&order=used_at.desc&limit=10",{headers:H()});
+    var recent=await rr.json();
+    var cmap={};COURSES.forEach(function(c){cmap[c.id]=c});
+    var ic={};INSTS.forEach(function(i){ic[i.code]=i});
+    if(!recent||!recent.length){$("recentBox").innerHTML='<span class="mut">No sales yet.</span>'}
+    else{
+      var h='<table class="tbl"><tr><th>When</th><th>Course</th><th>Institute</th><th>Paid</th><th>Your fee</th></tr>';
+      recent.forEach(function(s){
+        var c=cmap[s.course_id]||{};
+        var i=ic[c.inst_code]||{};
+        h+='<tr><td>'+fmtDate(s.used_at)+'</td><td>'+escH(c.title||("course #"+s.course_id))+'</td><td>'+escH(i.name||"-")+'</td><td>Rs '+(s.price_at_sale||0)+'</td><td>Rs '+Math.round((s.price_at_sale||0)*PCT/100)+'</td></tr>';
+      });
+      $("recentBox").innerHTML=h+'</table>';
+    }
+  }catch(e){$("kpiBox").innerHTML='<span class="mut">Could not load.</span>'}
+}
+
+function fmtDate(s){try{return new Date(s).toLocaleDateString()}catch(e){return s||"-"}}
+function daysLeft(s){try{return Math.ceil((new Date(s)-Date.now())/86400000)}catch(e){return "?"}}
+
+async function loadInsts(){
+  try{
+    var rows=INSTS;
+    if(!rows.length){rows=await rpc("admin_list_institutes",{p_key:AK});INSTS=rows||[]}
+    var el=$("instList");
+    if(!rows||!rows.length){el.innerHTML='<span class="mut">No institutes yet. Generate an institute code to sell your first license.</span>';fillInstSel([]);return}
+    fillInstSel(rows);
+    var sc={};COURSES.forEach(function(c){sc[c.inst_code]=(sc[c.inst_code]||0)+1});
+    var h="";
+    rows.forEach(function(x){
+      h+='<div class="inst"><div class="nm">🏫 '+escH(x.name)+' <span class="pill '+(x.active?'ok':'no')+'">'+(x.active?'ACTIVE':'OFF')+'</span></div>';
+      h+='<div class="meta"><span>Code <b>'+x.code+'</b></span><span>Classes '+escH(x.cls)+(x.exams?' · '+escH(x.exams):'')+'</span><span>Expires '+fmtDate(x.expires)+' ('+daysLeft(x.expires)+'d)</span><span>'+(sc[x.code]||0)+' courses</span></div>';
+      h+='<div class="row" style="margin-top:8px">';
+      h+=x.active?'<button class="sm off" onclick="setInst(\''+x.code+'\',false,0)">⛔ Turn OFF</button>':'<button class="sm on" onclick="setInst(\''+x.code+'\',true,0)">✅ Turn ON</button>';
+      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,30)">+30d</button>';
+      h+='<button class="sm sec" onclick="setInst(\''+x.code+'\',null,365)">+365d</button>';
+      h+='<button class="sm sec" onclick="customExt(\''+x.code+'\')">Custom…</button>';
+      h+='</div></div>';
+    });
+    el.innerHTML=h;
+  }catch(e){$("instList").innerHTML='<span class="mut">Could not load.</span>'}
+}
+function fillInstSel(rows){
+  var s=$("liInst"),h='<option value="">Select institute…</option>';
+  rows.forEach(function(x){h+='<option value="'+x.code+'">'+escH(x.name)+' ('+x.code+')</option>'});
+  s.innerHTML=h;
+}
+function customExt(code){var d=parseInt(prompt("How many days to add?","90"),10);if(d>0)setInst(code,null,d)}
+async function setInst(code,active,addDays){
+  var ok=await rpc("admin_set_institute",{p_key:AK,p_code:code,p_active:active,p_add_days:addDays});
+  toast(ok===true?"Done":"Failed");loadInsts();
+}
+async function sha256hex(s){
+  var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("");
+}
+async function createLogin(){
+  var inst=$("liInst").value,em=$("liEmail").value.trim().toLowerCase(),pw=$("liPass").value;
+  if(!inst){toast("Select an institute first");return}
+  if(!em||em.indexOf("@")<1){toast("Enter a valid email");return}
+  if(pw.length<4){toast("Password must be at least 4 characters");return}
+  toast("Creating…");
+  try{
+    var chk=await fetch(SB+"/inst_login?select=email&email=eq."+encodeURIComponent(em),{headers:H()});
+    var ex=await chk.json();
+    if(ex&&ex.length){toast("This email already has a login");return}
+    var pass=await sha256hex(pw);
+    var r=await fetch(SB+"/inst_login",{method:"POST",headers:H(),body:JSON.stringify({email:em,pass:pass,inst_code:inst})});
+    if(!r.ok){toast("Could not create login");return}
+    $("liEmail").value="";$("liPass").value="";
+    toast("Login created — send them the credentials");
+    loadLogins();
+  }catch(e){toast("Could not reach server")}
+}
+async function loadLogins(){
+  try{
+    var r=await fetch(SB+"/inst_login?select=email,inst_code",{headers:H()});
+    var rows=await r.json();
+    var ic={};INSTS.forEach(function(i){ic[i.code]=i});
+    var el=$("loginsBox");
+    if(!rows||!rows.length){el.innerHTML='<span class="mut">No portal logins yet.</span>';return}
+    var h='<b class="mut" style="font-size:12px;text-transform:uppercase;letter-spacing:.4px">Existing logins</b>';
+    rows.forEach(function(x){
+      h+='<div class="lg"><b>'+escH(x.email)+'</b> <span class="mut">— '+(ic[x.inst_code]?escH(ic[x.inst_code].name):escH(x.inst_code))+'</span></div>';
+    });
+    el.innerHTML=h;
+  }catch(e){}
+}
+
+function renderSales(){
+  var el=$("salesBox");
+  if(!COURSES.length){el.innerHTML='<span class="mut">No courses yet.</span>';return}
+  var salemap={};
+  SALES.forEach(function(s){if(s.used){var k=s.course_id;salemap[k]=(salemap[k]||0)+1;salemap[k+"p"]=(salemap[k+"p"]||0)+(s.price_at_sale||0)}});
+  var ic={};INSTS.forEach(function(i){ic[i.code]=i});
+  var h='<table class="tbl"><tr><th>Institute</th><th>Course</th><th>Price</th><th>Sold</th><th>Revenue</th><th>Your fee</th></tr>';
+  var tot={r:0,f:0};
+  COURSES.forEach(function(c){
+    var sold=salemap[c.id]||0,rev=salemap[c.id+"p"]||0,fee=Math.round(rev*PCT/100);
+    tot.r+=rev;tot.f+=fee;
+    h+='<tr><td>'+escH(ic[c.inst_code]?ic[c.inst_code].name:c.inst_code)+'</td><td>'+escH(c.title)+'</td><td>Rs '+(c.price||0)+'</td><td>'+sold+'</td><td>Rs '+rev+'</td><td>Rs '+fee+'</td></tr>';
+  });
+  h+='<tr style="font-weight:700"><td colspan="4">TOTAL</td><td>Rs '+tot.r+'</td><td>Rs '+tot.f+'</td></tr>';
+  el.innerHTML=h+'</table>';
+}
+
+async function loadCodes(){
+  try{
+    var rows=await rpc("admin_list_codes",{p_key:AK});
+    var el=$("codeList");
+    if(!rows||!rows.length){el.innerHTML='<span class="mut">No codes yet.</span>';return}
+    var h='<table class="tbl"><tr><th>Code</th><th>Type</th><th>Valid</th><th>Status</th><th>Note</th></tr>';
+    rows.forEach(function(x){
+      h+='<tr><td><code>'+escH(x.code)+'</code></td><td>'+(x.kind==='pro'?'<span class="pill pro">PRO</span>':'🏫 Inst')+'</td><td>'+x.days+'d</td><td>'+(x.used?'<span class="pill no">used</span>':'<span class="pill ok">FREE</span>')+'</td><td>'+escH(x.note||"")+'</td></tr>';
+    });
+    el.innerHTML=h+'</table>';
+  }catch(e){$("codeList").innerHTML='<span class="mut">Could not load.</span>'}
+}
+
+if(AK){rpc("admin_login",{p_key:AK}).then(function(ok){if(ok===true)showDash()})}
+</script>
+</body>
+</html>
