@@ -1,0 +1,122 @@
+
+  <div id="pgSet" class="hide">
+    <div class="card">
+      <h2>💰 Money settings</h2>
+      <div class="row">
+        <div style="flex:1;min-width:140px"><label class="mut">Your commission %</label><input id="commIn" type="number" min="0" max="50" step="0.5"></div>
+        <div style="flex:2;min-width:180px"><label class="mut">Your UPI (fee settlement)</label><input id="upiIn" placeholder="yourname@upi"></div>
+        <div style="flex:0"><button style="margin-top:18px" onclick="saveMoney()">Save</button></div>
+      </div>
+      <div class="mut" style="margin-top:8px">Commission % applies to every institute sale. UPI shows in the institute portal for monthly settlement.</div>
+    </div>
+    <div class="card">
+      <h2>🎛️ Live switches</h2>
+      <div class="row"><span>Students Pro (paid mode):</span><button id="swPro" class="sm" onclick="togglePro()">…</button></div>
+      <div class="row" style="margin-top:8px"><span>Business section visible:</span><button id="swBiz" class="sm" onclick="toggleBiz()">…</button></div>
+      <div class="mut" style="margin-top:8px">Pro ON → students need a Pro code to use the app. Business visible → full Business & Institute section shows in Settings.</div>
+    </div>
+    <div class="card">
+      <h2>🤖 House AI key (Gemini)</h2>
+      <input id="hkIn" placeholder="Paste Gemini API key (aistudio.google.com)">
+      <div class="row" style="margin-top:10px">
+        <button onclick="saveHK()">Save key</button>
+        <button class="sec" onclick="clearHK()">Remove</button>
+      </div>
+      <div class="mut" style="margin-top:8px">Default AI for all users — students need zero setup.</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+var SB="https://ehbdvjkguungjccaaqsm.supabase.co/rest/v1",KEY="sb_publishable_ip0uOdOcSplrTkOIw5MDnA_jwSe6jDa";
+var AK=localStorage.getItem("aurisi_admin_key")||"";
+var PCT=10,SALES=[],COURSES=[],INSTS=[];
+function H(){return{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"}}
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},2400)}
+async function rpc(fn,body){var r=await fetch(SB+"/rpc/"+fn,{method:"POST",headers:H(),body:JSON.stringify(body)});return await r.json()}
+function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})}
+function $(id){return document.getElementById(id)}
+function go(p){
+  ["Dash","Inst","Sales","Codes","Set"].forEach(function(x){
+    $("pg"+x).classList.toggle("hide",x!==p);
+    $("tab"+x).classList.toggle("on",x===p);
+  });
+  if(p==="Sales")renderSales();
+}
+
+async function doLogin(){
+  var k=$("keyIn").value.trim();
+  if(!k)return;
+  var ok=await rpc("admin_login",{p_key:k});
+  if(ok!==true){toast("Wrong HQ key");return}
+  AK=k;localStorage.setItem("aurisi_admin_key",k);showDash();
+}
+function logout(){localStorage.removeItem("aurisi_admin_key");location.reload()}
+function showDash(){$("loginCard").classList.add("hide");$("dash").classList.remove("hide");refreshAll()}
+
+async function refreshAll(){await loadSwitches();loadKpis();loadInsts();loadCodes();loadLogins()}
+
+async function loadSwitches(){
+  try{
+    var r=await fetch(SB+"/app_config?select=key,value",{headers:H()});
+    var rows=await r.json();
+    var m={};rows.forEach(function(x){m[x.key]=x.value});
+    var p=parseFloat(m.commission_pct);if(p>=0&&p<=50)PCT=p;
+    $("pctNote").textContent="Commission: "+PCT+"% per sale";
+    $("commIn").value=String(PCT);
+    if(m.aurisi_fee_upi)$("upiIn").value=m.aurisi_fee_upi;
+    var b1=$("swPro"),b2=$("swBiz");
+    b1.textContent=m.student_pro_enabled==="true"?"ON":"OFF";
+    b1.className="sm "+(m.student_pro_enabled==="true"?"on":"off");
+    b2.textContent=m.biz_mode==="visible"?"VISIBLE":"HIDDEN";
+    b2.className="sm "+(m.biz_mode==="visible"?"on":"off");
+    var hk=m.ai_house_key||"";
+    $("hkIn").placeholder=hk?("Current: "+hk.slice(0,4)+"..."+hk.slice(-4)):"Paste Gemini API key (aistudio.google.com)";
+  }catch(e){toast("Could not reach server")}
+}
+async function togglePro(){var on=$("swPro").textContent==="ON";await rpc("admin_set_config",{p_key:AK,p_cfg:"student_pro_enabled",p_value:on?"false":"true"});toast(on?"Students Pro OFF — app is free":"Students Pro ON — Pro code required");loadSwitches()}
+async function toggleBiz(){var on=$("swBiz").textContent==="VISIBLE";await rpc("admin_set_config",{p_key:AK,p_cfg:"biz_mode",p_value:on?"hidden":"visible"});toast(on?"Business section HIDDEN":"Business section VISIBLE");loadSwitches()}
+async function saveHK(){var k=$("hkIn").value.trim();if(!k){toast("Paste the key first");return}
+  var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"ai_house_key",p_value:k});
+  toast(ok===true?"House AI key saved — chat works for everyone":"Failed");loadSwitches()}
+async function clearHK(){var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"ai_house_key",p_value:""});
+  toast(ok===true?"House AI key removed":"Failed");$("hkIn").value="";loadSwitches()}
+async function saveMoney(){
+  var pct=parseFloat($("commIn").value);
+  if(isNaN(pct)||pct<0||pct>50){toast("Commission must be 0-50%");return}
+  var upi=$("upiIn").value.trim();
+  var ok=await rpc("admin_set_config",{p_key:AK,p_cfg:"commission_pct",p_value:String(pct)});
+  if(ok!==true){toast("Failed to save commission");return}
+  if(upi){await rpc("admin_set_config",{p_key:AK,p_cfg:"aurisi_fee_upi",p_value:upi})}
+  toast("Money settings saved");loadSwitches();loadKpis();
+}
+
+async function makeCode(){
+  var days=parseInt($("daysIn").value,10);
+  var kind=$("kindIn").value;
+  var note=$("noteIn").value.trim();
+  var code=await rpc("admin_make_code",{p_key:AK,p_days:days,p_kind:kind,p_note:note});
+  var box=$("newCodeBox");
+  if(typeof code!=="string"||code.indexOf("ERR:")===0){toast(code||"Failed");box.innerHTML="";return}
+  box.innerHTML='<div class="newcode">New '+escH(kind)+' code — <code>'+code+'</code> ('+days+' days)<br><small>'+escH(note||"")+'</small></div>';
+  toast("Code generated — copy and send it");
+  loadCodes();
+}
+
+async function loadKpis(){
+  try{
+    var cfg=await fetch(SB+"/app_config?select=key,value&key=eq.commission_pct",{headers:H()});var cr=await cfg.json();
+    if(cr&&cr.length){var p=parseFloat(cr[0].value);if(p>=0&&p<=50)PCT=p}
+    var rc=await fetch(SB+"/inst_courses?select=id,inst_code,price",{headers:H()});COURSES=await rc.json();
+    var rk=await fetch(SB+"/course_codes?select=course_id,used,price_at_sale",{headers:H()});SALES=await rk.json();
+    var gross=0,sold=0;
+    SALES.forEach(function(s){if(s.used){gross+=(s.price_at_sale||0);sold++}});
+    var fee=Math.round(gross*PCT/100);
+    var ri=await rpc("admin_list_institutes",{p_key:AK});INSTS=(ri&&ri.length)?ri:[];
+    var act=INSTS.filter(function(x){return x.active}).length;
+    var rl=await fetch(SB+"/inst_login?select=email",{headers:H()});var lg=await rl.json();
+    $("kpiBox").innerHTML=
+      '<div class="kpi"><small>Institutes</small><b>'+INSTS.length+'</b><small class="mut">'+act+' active</small></div>'
+      +'<div class="kpi"><small>Courses live</small><b>'+COURSES.length+'</b><small class="mut">'+(lg?lg.length:0)+' portal logins</small></div>'
+      +'<div class="kpi"><small>Codes sold</small><b>'+sold+'</b><small class="mut">course access codes</small></div>'
