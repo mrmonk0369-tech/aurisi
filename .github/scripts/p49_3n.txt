@@ -1,0 +1,13 @@
+    STU.fixes=fixes;
+    var rerr=await stuRunTest(code),rt=0;
+    while(rerr&&rt<2){
+      rt++;
+      var rh=[{role:"user",parts:[{text:"Your app throws this error when actually run in a browser: "+rerr+" - return the FULL corrected complete app (single HTML file) with this error fixed."}]},{role:"user",parts:[{text:code}]}];
+      out=await callGeminiFast("",rh,false,STU_PROMPT);
+      var c3=stuExtract(out);
+      if(!c3)break;
+      code=c3;rerr=await stuRunTest(code);
+    }
+    STU.rt=rt;
+    STU.code=code;
+    STU.hist=STU.hist.concat([{role:"user",parts:[{text:prompt}]}]).slice(-6);
