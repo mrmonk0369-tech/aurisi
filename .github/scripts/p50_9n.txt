@@ -1,0 +1,26 @@
+function stuDownload(){
+  if(!STU.code){toast("Nothing to download yet");return}
+  var n=(STU.lastPrompt||"aurisi-app").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,30);
+  if(!n)n="aurisi-app";
+  var a=document.createElement("a");
+  if(STU.doc){
+    if(/[^\x00-\xFF]/.test(STU.code)){
+      var blob0=new Blob([STU.code],{type:"text/html"});
+      a.href=URL.createObjectURL(blob0);a.download=n+".html";
+      document.body.appendChild(a);a.click();
+      setTimeout(function(){try{URL.revokeObjectURL(a.href);a.remove()}catch(e){}},800);
+      toast("This document has Hindi/unicode text — downloaded as HTML (opens anywhere, print to PDF)");return
+    }
+    var pdf=stuPdf(STU.doc);
+    var blobp=new Blob([pdf],{type:"application/pdf"});
+    a.href=URL.createObjectURL(blobp);a.download=n+".pdf";
+  }else if(STU.files.length>1){
+    a.href=URL.createObjectURL(stuZip(STU.files));a.download=n+".zip";
+  }else{
+    var blob=new Blob([STU.code],{type:"text/html"});
+    a.href=URL.createObjectURL(blob);a.download=n+".html";
+  }
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){try{URL.revokeObjectURL(a.href);a.remove()}catch(e){}},800);
+  toast(STU.doc?"Document downloaded — ready to print or share":(STU.files.length>1?"Project ZIP downloaded — unzip and open index.html":"App downloaded — open it in any browser, works offline"));
+}
