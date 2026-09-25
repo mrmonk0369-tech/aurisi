@@ -1,0 +1,2 @@
+    var code=stuExtract(out);
+    if(!code||code.length<200){throw new Error("empty")}
