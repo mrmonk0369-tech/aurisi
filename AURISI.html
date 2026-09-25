@@ -1910,7 +1910,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.44",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.45",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -5730,6 +5730,7 @@ function renderDash(){
   html+='</div>';
   html+='<div class="ws-h">🌍 Language Hub</div><div class="ws-card" style="text-align:center;padding:24px 18px">';
   html+='<div style="font-size:36px;line-height:1">🌍</div><b style="display:block;font-size:15px;margin-top:8px">One hub. Every language.</b><p style="margin:6px 0 12px;font-size:12px;color:var(--muted)">Spanish · French · German · Japanese · Mandarin · Korean · Global & American English — each with a dedicated level-tracked teacher.</p><button class="lib-open" style="width:100%;font-size:14px;padding:12px" onclick="openLangLab()">🌍 Open the Language Hub</button></div>';}
+  if(getInst()){var _ins=getInst();html+='<div class="ws-h">🎓 Institute Courses</div><div class="ws-card" style="text-align:center;padding:24px 18px"><div style="font-size:36px;line-height:1">🎓</div><b style="display:block;font-size:15px;margin-top:8px">Your coaching, inside Aurisi</b><p style="margin:6px 0 12px;font-size:12px;color:var(--muted)">Video lectures from '+escH(_ins.name)+' — watch right here, no other app needed.</p><button class="lib-open" style="width:100%;font-size:14px;padding:12px" onclick="openInstCourses()">▶ Browse Courses</button></div>'}
   html+='</div>';
   el.innerHTML=html;
   try{applyProfileHome(el)}catch(e){}
@@ -6321,6 +6322,173 @@ function instCats(cls,exams){
     if(["ssc","hssc","dsssb","neet","jee","upsc"].indexOf(t)>=0)_a(t)});
   return cats;
 }
+function myCourseIds(){try{return JSON.parse(localStorage.getItem(STORAGE+"mycrs")||"[]")}catch(e){return []}}
+function myCourseSave(ids){try{localStorage.setItem(STORAGE+"mycrs",JSON.stringify(ids))}catch(e){}}
+function crsIsOpen(id){return myCourseIds().indexOf(id)>=0}
+var CRS={course:null,vids:[],cur:0,player:null,ti:null};
+function crsIns(){try{return JSON.parse(localStorage.getItem(STORAGE+"inst")||"null")}catch(e){return null}}
+function crsProg(id){try{return JSON.parse(localStorage.getItem(STORAGE+"crs_"+id)||"{}")}catch(e){return{}}}
+function crsSaveTick(){
+  if(!CRS.course)return;
+  var t=0;try{t=CRS.player.getCurrentTime()||0}catch(e){}
+  try{localStorage.setItem(STORAGE+"crs_"+CRS.course.id,JSON.stringify({v:CRS.cur,t:t}))}catch(e){}
+}
+function crsLoadYTApi(){
+  if(window.YT&&window.YT.Player)return Promise.resolve();
+  return new Promise(function(res){
+    var s=document.createElement("script");s.src="https://www.youtube.com/iframe_api";
+    var t0=Date.now();
+    var iv=setInterval(function(){
+      if(window.YT&&window.YT.Player){clearInterval(iv);res()}
+      else if(Date.now()-t0>9000){clearInterval(iv);res()}
+    },150);
+    document.head.appendChild(s);
+  });
+}
+async function openInstCourses(){
+  var ins=getInst();if(!ins)return;
+  var old=document.getElementById("instModalBack");if(old)old.remove();
+  var b=document.createElement("div");b.className="modal-back open";b.id="instModalBack";
+  b.onclick=function(e){if(e.target===b)b.remove()};
+  var m=document.createElement("div");m.className="modal feat-modal";
+  m.innerHTML='<h2>🎓 Institute Courses</h2><div class="sub">From '+escH(ins.name)+'</div><div id="crsListBox" class="feat-sec"><small>Loading…</small></div>';
+  b.appendChild(m);document.body.appendChild(b);
+  try{
+    var r=await fetch(SB_URL+"/inst_courses?select=*&inst_code=eq."+encodeURIComponent(ins.code)+"&order=id.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var rows=await r.json();
+    var box=document.getElementById("crsListBox");if(!box)return;
+    if(!rows||!rows.length){box.innerHTML='<small>No courses published yet — ask your teacher.</small>';return}
+    var hh="";
+    rows.forEach(function(c){
+      var open=crsIsOpen(c.id);
+      hh+='<div class="feat-row" style="cursor:pointer;align-items:center" onclick="'+(open?("instPlay("+c.id+")"):("crsUnlockUI("+c.id+","+(c.price||0)+")"))+'"><div style="flex:1"><b>'+escH(c.title)+'</b><small>'+escH(c.description||"")+(c.price>0?(" · ₹"+c.price):" · FREE")+'</small></div><span class="lib-chip">'+(open?"▶ Watch":"🔒 Unlock")+'</span></div>';
+    });
+    box.innerHTML=hh;
+  }catch(e){var bx=document.getElementById("crsListBox");if(bx)bx.innerHTML='<small>Could not load — check internet</small>'}
+}
+function crsUnlockUI(id,price){
+  var code=(prompt("Enter the course access code your teacher gave you:")||"").trim().toUpperCase();
+  if(!code)return;
+  crsUnlock(id,price,code);
+}
+async function crsUnlock(id,price,code){
+  toast("Checking code…");
+  try{
+    var r=await fetch(SB_URL+"/course_codes?select=code,course_id,used&code=eq."+encodeURIComponent(code),{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var rows=await r.json();
+    if(!rows||!rows.length){toast("Wrong code — check with your teacher");return}
+    var cc=rows[0];
+    if(cc.course_id!==id){toast("This code is for a different course");return}
+    if(cc.used){toast("This code was already used");return}
+    var nm="";try{nm=userName()||"student"}catch(e){nm="student"}
+    var r2=await fetch(SB_URL+"/course_codes?code=eq."+encodeURIComponent(code),{method:"PATCH",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({used:true,used_by:nm,price_at_sale:price})});
+    if(!r2.ok){toast("Could not unlock — try again");return}
+    var ids=myCourseIds();ids.push(id);myCourseSave(ids);
+    toast("🎉 Course unlocked — enjoy!");
+    openInstCourses();
+  }catch(e){toast("Could not reach the server")}
+}
+async function instPlay(id){
+  var ins=getInst();if(!ins)return;
+  var course=null,vids=[];
+  try{
+    var r=await fetch(SB_URL+"/inst_courses?select=*&id=eq."+id,{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var cr=(await r.json())[0];
+    var r2=await fetch(SB_URL+"/course_videos?select=*&course_id=eq."+id+"&order=sort.asc,id.asc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    vids=await r2.json();
+    course=cr;
+  }catch(e){toast("Could not load course");return}
+  if(!course||!vids||!vids.length){toast("No videos in this course yet");return}
+  await crsLoadYTApi();
+  if(!(window.YT&&window.YT.Player)){toast("Video player could not load — check internet");return}
+  var old=document.getElementById("crsBack");if(old)old.remove();
+  var b=document.createElement("div");b.id="crsBack";b.className="crs-back";
+  b.innerHTML='<div class="crs-top"><button class="crs-x" title="Close player">✕</button><div class="crs-tt"><b></b><small></small></div></div>'
+    +'<div class="crs-stage"><div id="crsPlayer"></div></div>'
+    +'<div class="crs-stage-btm"><button class="crs-next">Next video ▶</button><span class="crs-pos"></span></div>'
+    +'<div class="crs-listhead">Episodes</div><div class="crs-list"></div>';
+  document.body.appendChild(b);
+  document.body.style.overflow="hidden";
+  b.querySelector(".crs-x").onclick=crsClose;
+  b.querySelector(".crs-next").onclick=function(){crsGo(CRS.cur+1)};
+  CRS.course=course;CRS.vids=vids;CRS.player=null;
+  var st=crsProg(id);
+  CRS.cur=(st&&typeof st.v==="number"&&st.v<vids.length)?st.v:0;
+  crsHeader();crsRenderList();
+  crsMount(vids[CRS.cur].yt,(st&&st.t)||0);
+  if(CRS.ti)clearInterval(CRS.ti);
+  CRS.ti=setInterval(crsSaveTick,3000);
+  b.scrollTop=0;
+}
+function crsHeader(){
+  var b=document.getElementById("crsBack");if(!b)return;
+  var tt=b.querySelector(".crs-tt b"),sm=b.querySelector(".crs-tt small");
+  if(tt)tt.textContent=CRS.course.title||"Course";
+  if(sm)sm.textContent=(CRS.cur+1)+" of "+CRS.vids.length+" · "+(CRS.vids[CRS.cur].title||"");
+}
+function crsRenderList(){
+  var b=document.getElementById("crsBack");if(!b)return;
+  var w=b.querySelector(".crs-list");if(!w)return;
+  var hh="";
+  CRS.vids.forEach(function(v,i){
+    hh+='<div class="crs-ep'+(i===CRS.cur?" on":"")+'" data-i="'+i+'"><span class="crs-ep-n">'+(i+1)+'</span><span class="crs-ep-t">'+escH(v.title||("Video "+(i+1)))+'</span><span class="crs-ep-b">'+(i===CRS.cur?"▶":"")+'</span></div>';
+  });
+  w.innerHTML=hh;
+  w.querySelectorAll(".crs-ep").forEach(function(el){
+    el.onclick=function(){crsGo(parseInt(el.getAttribute("data-i"),10))};
+  });
+  var pos=b.querySelector(".crs-pos");
+  if(pos)pos.textContent="";
+}
+function crsGo(i){
+  if(i<0||i>=CRS.vids.length){if(i>=CRS.vids.length)toast("Course complete! 🎉");return}
+  CRS.cur=i;
+  crsHeader();crsRenderList();crsMount(CRS.vids[i].yt,0);
+  var b=document.getElementById("crsBack");if(b)b.scrollTop=0;
+}
+function crsMount(vidId,startSec){
+  if(CRS.player){
+    try{CRS.player.loadVideoById({videoId:vidId,startSeconds:Math.floor(startSec||0)});return}catch(e){CRS.player=null}
+  }
+  CRS.player=new YT.Player("crsPlayer",{
+    videoId:vidId,
+    playerVars:{autoplay:1,rel:0,modestbranding:1,playsinline:1,iv_load_policy:3,start:Math.floor(startSec||0)},
+    events:{
+      onReady:function(e){try{if(startSec&&startSec>3)e.target.seekTo(startSec,true);e.target.playVideo()}catch(x){}},
+      onStateChange:function(e){if(window.YT&&e.data===YT.PlayerState.ENDED)crsGo(CRS.cur+1)}
+    }
+  });
+}
+function crsClose(){
+  try{if(CRS.player)CRS.player.destroy()}catch(e){}
+  CRS.player=null;
+  if(CRS.ti){clearInterval(CRS.ti);CRS.ti=null}
+  crsSaveTick();
+  var b=document.getElementById("crsBack");if(b)b.remove();
+  document.body.style.overflow="";
+}
+(function(){
+  var st=document.createElement("style");
+  st.textContent=".crs-back{position:fixed;inset:0;z-index:9999;background:#05070a;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}"
+   +".crs-top{display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(180deg,#0b0e13,#05070a);position:sticky;top:0;z-index:2}"
+   +".crs-x{background:none;border:1px solid #2a3342;color:#e8ecf3;border-radius:9px;width:34px;height:34px;font-size:15px;cursor:pointer;flex-shrink:0}"
+   +".crs-tt{min-width:0}.crs-tt b{font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.crs-tt small{color:#8b95a7;font-size:11.5px}"
+   +".crs-stage{width:100%;max-width:920px;margin:0 auto;padding:10px 12px 0;background:#000}"
+   +"#crsPlayer{width:100%;aspect-ratio:16/9;background:#000}"
+   +".crs-back iframe{width:100%;height:100%;border:0;display:block}"
+   +".crs-stage-btm{width:100%;max-width:920px;margin:0 auto;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:#05070a;position:relative}"
+   +".crs-next{background:linear-gradient(135deg,#d4af37,#f5d97a);color:#1a1405;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13.5px;cursor:pointer}"
+   +".crs-pos{color:#8b95a7;font-size:12px}"
+   +".crs-listhead{width:100%;max-width:920px;margin:4px auto 0;padding:10px 14px 4px;color:#8b95a7;font-size:12px;letter-spacing:.5px;text-transform:uppercase}"
+   +".crs-list{width:100%;max-width:920px;margin:0 auto;padding:0 12px 26px;display:flex;flex-direction:column;gap:6px}"
+   +".crs-ep{display:flex;align-items:center;gap:12px;background:#141922;border:1px solid #232b38;border-radius:11px;padding:11px 13px;cursor:pointer}"
+   +".crs-ep.on{border-color:#d4af37;background:#1a1b16}"
+   +".crs-ep-n{width:26px;height:26px;border-radius:8px;background:#1d2430;display:flex;align-items:center;justify-content:center;font-size:12px;color:#d4af37;flex-shrink:0}"
+   +".crs-ep-t{flex:1;font-size:14px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+   +".crs-ep-b{color:#d4af37;font-size:12px;width:18px;text-align:center}";
+  document.head.appendChild(st);
+})();
+
 function instCloseModals(){try{document.querySelectorAll(".modal-back.open").forEach(function(x){x.remove()})}catch(e){}}
 function instRenderBox(){
   var el=$("instBox");if(!el)return;
@@ -6329,7 +6497,7 @@ function instRenderBox(){
     el.innerHTML='<button class="lib-chip" onclick="instJoin()">🔑 Join my institute (I have a code)</button> <button class="lib-chip" onclick="instCreate()">🏫 Create an institute (activation code)</button>';
     return;
   }
-  el.innerHTML='<div class="feat-row"><b>🏫 '+escH(ins.name)+'</b><small>Classes '+escH(ins.cls)+(ins.exams?' · '+escH(ins.exams):'')+'</small></div><div style="margin-top:8px"><button class="lib-chip" onclick="instShowCode()">🔑 Show code</button> <button class="lib-chip" onclick="openInstLib()">📚 Material</button> <button class="lib-chip" onclick="instAdd()">➕ Add</button></div><button class="lib-chip" style="margin-top:8px" onclick="instLeave()">✖ Leave institute</button>';
+  el.innerHTML='<div class="feat-row"><b>🏫 '+escH(ins.name)+'</b><small>Classes '+escH(ins.cls)+(ins.exams?' · '+escH(ins.exams):'')+'</small></div><div style="margin-top:8px"><button class="lib-chip" onclick="instShowCode()">🔑 Show code</button> <button class="lib-chip" onclick="openInstLib()">📚 Material</button> <button class="lib-chip" onclick="openInstCourses()">🎓 Courses</button> <button class="lib-chip" onclick="instAdd()">➕ Add</button></div><button class="lib-chip" style="margin-top:8px" onclick="instLeave()">✖ Leave institute</button>';
 }
 async function instJoin(){
   var code=(prompt("Enter your institute's 6-character code (get it from your teacher):")||"").trim().toUpperCase();
