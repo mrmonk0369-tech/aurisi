@@ -1,0 +1,55 @@
+async function stuSaveProj(){
+  if(!STU.code){toast("Build something first");return}
+  try{
+    var body={user_name:userName(),name:(STU.lastPrompt||"My project").slice(0,60),files:STU.files.length?STU.files:[{name:"app.html",content:STU.code}],code:STU.code,doc:STU.doc};
+    var hd={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"};
+    var r;
+    if(STU.projId){
+      body.updated_at=new Date().toISOString();
+      r=await fetch(SB_URL+"/studio_projects?id=eq."+STU.projId,{method:"PATCH",headers:hd,body:JSON.stringify(body)});
+    }else{
+      hd["Prefer"]="return=representation";
+      r=await fetch(SB_URL+"/studio_projects",{method:"POST",headers:hd,body:JSON.stringify(body)});
+    }
+    if(!r.ok){toast("Could not save — try again");return}
+    var rows=await r.json();
+    if(rows&&rows.length&&rows[0].id)STU.projId=rows[0].id;
+    toast("Project saved — find it in My Projects");
+  }catch(e){toast("Could not reach server")}
+}
+async function stuListProjs(){
+  var box=document.getElementById("stuProjList");
+  if(!box)return;
+  if(box.style.display!="none"){box.style.display="none";return}
+  box.style.display="block";
+  box.innerHTML='<div class="stu-note">Loading…</div>';
+  try{
+    var r=await fetch(SB_URL+"/studio_projects?select=id,name,updated_at&user_name=eq."+encodeURIComponent(userName())+"&order=updated_at.desc&limit=20",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var rows=await r.json();
+    if(!rows||!rows.length){box.innerHTML='<div class="stu-note">No saved projects yet — build something, then tap Save.</div>';return}
+    var h='<div class="stu-ideas">';
+    rows.forEach(function(p){h+='<span class="stu-chip" data-pid="'+p.id+'">'+escH(String(p.name||"project")).slice(0,26)+'</span>'});
+    box.innerHTML=h+'</div>';
+    Array.prototype.forEach.call(box.querySelectorAll(".stu-chip"),function(ch){
+      ch.onclick=function(){stuLoadProj(parseInt(ch.getAttribute("data-pid"),10))};
+    });
+  }catch(e){box.innerHTML='<div class="stu-note">Could not reach server</div>'}
+}
+async function stuLoadProj(id){
+  if(!id){toast("Project not found");return}
+  try{
+    var r=await fetch(SB_URL+"/studio_projects?select=*&id=eq."+id,{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    var rows=await r.json();
+    if(!rows||!rows.length){toast("Project not found");return}
+    var p=rows[0];
+    STU.code=p.code||"";
+    STU.files=(p.files&&p.files.length)?p.files:[{name:"app.html",content:STU.code}];
+    STU.doc=p.doc||null;
+    STU.projId=p.id;
+    STU.lastPrompt=p.name||"my project";
+    STU.hist=[{role:"user",parts:[{text:String(p.name||"my project")}]}];
+    document.getElementById("stuFrame").srcdoc=STU.code;
+    stuShow("prev");
+    toast("Project loaded — Improve to continue");
+  }catch(e){toast("Could not reach server")}
+}
