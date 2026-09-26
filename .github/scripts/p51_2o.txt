@@ -1,0 +1,9 @@
+function puterMessages(history,jsonMode,sysPrompt){
+  const msgs=[{role:"system",content:(sysPrompt||SYS_PROMPT())+(jsonMode?" Respond ONLY with valid JSON.":"")}];
+  (history||[]).forEach(h=>{
+    const txt=(h.parts||[]).map(p=>p.text||"").join(" ");
+    if(!txt.trim())return;
+    msgs.push({role:h.role==="model"?"assistant":"user",content:txt});
+  });
+  return msgs;
+}
