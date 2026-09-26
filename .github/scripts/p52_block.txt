@@ -1,0 +1,156 @@
+/* ===================== v60.52 LANGUAGE LAB — 90-DAY FLUENCY ENGINE ===================== */
+var LL_LANGS={
+ 'en-US':{name:'American English',native:'English',flag:'🇺🇸',voice:'en-US',days:90,place:'the USA (you are in New York City)',
+  vital:['the','be','to','of','and','a','in','that','have','I','it','for','not','on','with','he','as','you','do','at','this','but','his','by','from','they','we','say','her','she','or','an','will','my','one','all','would','there','their','what','so','up','out','if','about','who','get','which','go','me','when','make','can','like','time','no','just','him','know','take','good','new','first','much','right','think','every'],
+  phrases:['Good morning!','How are you doing?','My name is…','I do not understand.','Could you repeat that, please?','How much does it cost?','Where is the nearest…?','I would like…','Can you help me?','See you later!','Thank you so much.','Nice to meet you.'],
+  grammar:['Word order is always Subject + Verb + Object: "I drink coffee."','Articles: a/an (one thing) / the (that thing). Never forget them — Indians often drop them.','Simple present = habits: "I wake up at 7." Verb takes -s with he/she/it.','Present continuous = now: "I am learning English."','Past = -ed: "I watched a movie." Irregulars: go→went, have→had, see→saw.','Future: will + verb: "I will call you." Plan = going to: "I am going to study."','Questions need do/does: "Do you like tea?" "Does she work here?"','Hindi has no articles and often drops the subject — English NEVER drops the subject. Say "It is raining", not "Raining is".']},
+  'es-ES':{name:'Spanish (Spain)',native:'Español',flag:'🇪🇸',voice:'es-ES',days:90,place:'Spain (you are in Madrid)',
+  vital:['ser','estar','tener','hacer','poder','decir','ir','ver','dar','saber','querer','llegar','pasar','deber','poner','parecer','quedar','creer','hablar','llevar','dejar','seguir','encontrar','llamar','venir','pensar','salir','volver','tomar','conocer','vivir','sentir','querer','mucho','año','día','antes','persona','trabajo','casa','cosa','tiempo','buena','vida','nunca','siempre','también','muy','más','pero','porque','cuando','aquí','todo','nada','ahora','bien','entonces','cada','dos'],
+  phrases:['¡Buenos días!','¿Cómo estás?','Me llamo…','No entiendo.','¿Puedes repetir, por favor?','¿Cuánto cuesta?','¿Dónde está…?','Quiero…','¿Puedes ayudarme?','¡Hasta luego!','Muchas gracias.','Mucho gusto.'],
+  grammar:['SER = permanent (identity), ESTAR = temporary (state/location). "Soy de la India" / "Estoy cansado."','Every noun is masculine (el) or feminine (la): el libro, la casa.','Verbs end in -ar, -er, -ir; each has a pattern — master the patterns, not the list.','Tú = friend, usted = respect. Default to usted with strangers.','Negation is just "no" before the verb: "No quiero" = I do not want.','Questions start with ¿ and end with ? — "¿Dónde vives?"','Likes: "Me gusta el café" (it pleases me). Plural: "Me gustan los libros."','HAY = there is/there are: "Hay un problema."']},
+ 'fr-FR':{name:'French',native:'Français',flag:'🇫🇷',voice:'fr-FR',days:0,place:'France'},
+ 'de-DE':{name:'German',native:'Deutsch',flag:'🇩🇪',voice:'de-DE',days:0,place:'Germany'},
+ 'it-IT':{name:'Italian',native:'Italiano',flag:'🇮🇹',voice:'it-IT',days:0,place:'Italy'},
+ 'pt-BR':{name:'Portuguese',native:'Português',flag:'🇧🇷',voice:'pt-BR',days:0,place:'Brazil'},
+ 'ja-JP':{name:'Japanese',native:'日本語',flag:'🇯🇵',voice:'ja-JP',days:0,place:'Japan'},
+ 'ko-KR':{name:'Korean',native:'한국어',flag:'🇰🇷',voice:'ko-KR',days:0,place:'Korea'},
+ 'zh-CN':{name:'Mandarin',native:'中文',flag:'🇨🇳',voice:'zh-CN',days:0,place:'China'},
+ 'ru-RU':{name:'Russian',native:'Русский',flag:'🇷🇺',voice:'ru-RU',days:0,place:'Russia'},
+ 'hi-IN':{name:'Hindi (native)',native:'हिन्दी',flag:'🇮🇳',voice:'hi-IN',days:0,place:'India'}
+};
+var LL_SCEN=['Coffee shop — order like a local','Metro station — buy a ticket & ask directions','Job interview — introduce yourself','Doctor visit — describe a problem','Restaurant — order food & pay','Meeting a new neighbour — small talk','Phone call — book an appointment','Market — bargain for vegetables','Hotel check-in','First day of class — ask the teacher questions'];
+function llState(){try{return JSON.parse(localStorage.getItem(STORAGE+'ll')||'null')}catch(e){return null}}
+function llSave(s){try{localStorage.setItem(STORAGE+'ll',JSON.stringify(s))}catch(e){}}
+function llLang(){var s=llState();return s&&LL_LANGS[s.lang]?LL_LANGS[s.lang]:null}
+function llDay(){var s=llState();if(!s||!s.start)return 1;var L=llLang();var cap=L&&L.days?L.days:9999;return Math.min(cap,Math.floor((Date.now()-s.start)/86400000)+1)}
+function llPhase(d){return d<=30?'FOUNDATION':(d<=60?'IMMERSION':'FLUENCY')}
+function llPhaseDesc(p){return p==='FOUNDATION'?'Master the sounds, the Vital 90% words, survival phrases and core grammar — the 90% you will use every single day.':(p==='IMMERSION'?'Consume REAL content daily — read, listen, shadow speak. AURISI corrects everything.':'Speak, argue, joke, think in the language. AURISI is your conversation partner, every day.')}
+function llMissions(){var s=llState();if(!s)return 0;var k='d'+llDay();return (s.done&&s.done[k])||0}
+function llMark(){var s=llState();if(!s)return;s.done=s.done||{};var k='d'+llDay();s.done[k]=(s.done[k]||0)+1;llSave(s);renderLL()}
+function llStreak(){var s=llState();if(!s||!s.done)return 0;var n=0;for(var i=llDay();i>=1;i--){if(s.done['d'+i])n++;else if(i!==llDay())break}return n}
+function llSys(){
+  var s=llState();if(!s)return '';
+  var L=llLang();if(!L)return '';
+  var d=llDay();
+  return '\n\n[LANGUAGE FLUENCY MODE — ACTIVE. You are a NATIVE '+L.name+' teacher. The student is in '+L.place+'. ROLE: you are a real, strict, warm native teacher — never a chatbot.]\n'+
+  'RULES (STRICT):\n'+
+  '1. Speak ONLY '+L.name+' in your lessons and examples. If the student writes in Hindi, give a SHORT Hindi explanation (1-2 lines), then immediately continue in '+L.name+'.\n'+
+  '2. NO TIMEPASS. Every single reply must teach something concrete: new words, a corrected mistake, or a drill. Never chat idly.\n'+
+  '3. FRONT-LOAD THE VITAL 90%: teach the most-used words, phrases and patterns FIRST, clearly, with examples. Tell the student: "this is the 90% you will use daily — learn it once, use it forever."\n'+
+  '4. Correct EVERY mistake the student makes — rewrite their sentence correctly, explain in one line why.\n'+
+  '5. End every reply with ONE quick drill (fill-the-blank / translate this / say this aloud).\n'+
+  '6. Use real places, prices, names and daily situations from '+L.place+' so it feels like the student is living there.\n'+
+  '7. Keep lessons tight: max ~180 words per reply. Bold the key words.\n'+
+  (L.days?('8. THE STUDENT IS ON A 90-DAY FLUENCY PROGRAM: Day '+d+'/90, Phase: '+llPhase(d)+' — '+llPhaseDesc(llPhase(d))+'\n9. In Phase FOUNDATION drill sounds, vital words and survival phrases. In IMMERSION use real readings/audio + shadowing. In FLUENCY run full conversations and debate.'):'8. Teach as a full deep course: sounds → vital words → grammar patterns → reading → listening → speaking, always with the Vital-90% first principle.')+'\n';
+}
+function llMission(kind){
+  var s=llState();if(!s)return;var L=llLang();var d=llDay();
+  var base='This is my Day '+d+'/'+(L.days||'∞')+' '+L.name+' lesson ('+llPhase(d)+' phase). ';
+  var map={
+   read:base+'READING MISSION: give me a short graded passage (4-6 sentences, real-life '+L.place+' situation), then: (1) 3 new key words with meaning, (2) 2 comprehension questions, (3) one line I must say aloud.',
+   write:base+'WRITING MISSION: give me ONE short writing prompt about my real life (today, my family, my work). WAIT for my reply, then correct my sentences line-by-line and rewrite them perfectly.',
+   listen:base+'LISTENING MISSION: give me ONE natural sentence in '+L.name+'. Tell me to press the 🔊 Listen button, hear it 2-3 times, and type exactly what I heard. Then check my answer, fix mistakes, and give the next sentence. 3 sentences total.',
+   speak:base+'SPEAKING MISSION (voice): start a roleplay — '+LL_SCEN[Math.floor(Math.random()*LL_SCEN.length)]+'. Speak in character in '+L.name+', keep it to 2 short sentences max, and tell me to reply out loud with my 🎙️ mic button (or by typing). Grade my pronunciation from my words, correct me, continue the scene for 4-5 turns.'
+  };
+  closeLL();
+  quick(map[kind]);
+  setTimeout(llMark,1500);
+}
+function llVital(){
+  var s=llState();if(!s)return;var L=llLang();
+  closeLL();
+  quick('Show me THE VITAL 90% of '+L.name+' right now (Day '+llDay()+', '+llPhase(llDay())+' phase): (1) the top 60 most-used words you know I must master first, (2) the 12 survival phrases I will use every single day, (3) the core grammar rules that cover most sentences. Teach it like the most important lesson of my life — clear, bolded, with mini-examples. End with: which 5 words I should remember from my previous lessons to revise.');
+}
+function llKit(){
+  var s=llState();if(!s)return;var L=llLang();var p=llPhase(llDay());
+  var K={
+   'en-US':{listen:['NPR "Up First" — 5 min daily (Day 1-90)','Songs: read lyrics WHILE listening','BBC "6 Minute English" (Day 30+)','Watch English YouTubers at 1x — no subtitles after Day 45'],read:['Graded readers — Penguin/Oxford Level 2 → 4 (Day 1-45)','Breaking News English (7 levels, free)','Calvin & Hobbes comics (Day 15+)','News: read ONE headline + first paragraph daily'],watch:['Peppa Pig & kids cartoons (Day 1-30, seriously — cleanest English)','"Extra" English series on YouTube (made for learners)','Friends / Modern Family — EN subs till Day 60, then NONE','Shark Tank US (Day 60+: real fast business English)']},
+   'es-ES':{listen:['Duolingo Spanish Podcast (Day 1-45)','News in Slow Spanish (Day 1-60)','Songs: Juanes, Jesse & Joy — lyrics while listening','Spanish radio while commuting (Day 60+)'],read:['Graded readers — Level A1 → B1 (Day 1-45)','"El País" — ONE headline + first line daily','Mafalda comics (Day 15+)','Children\'s stories: "Cuentos para niños"'],watch:['"Extra en español" on YouTube (Day 1-45, made for learners)','Pocoyo & kids cartoons (Day 1-30)','"La Casa de Papel" — ES subtitles till Day 60, then none','Spanish series with no subs (Day 60+)']}
+  }[s.lang]||{listen:['Kids songs & cartoons in '+L.name+' (Day 1-30)','Slow-'+L.name+' podcasts (search "slow '+L.name+' podcast")','Songs: lyrics while listening'],read:['Graded readers / children\'s stories in '+L.name,'One news headline daily (Google News in '+L.name+')','Comics in '+L.name],watch:['"Extra" series for your language if available','Kids cartoons (Day 1-30)','Series with '+L.name+' subtitles (Day 30-60), then none']};
+  var html='<h2>🧭 Your Immersion Kit ('+p+' phase)</h2><div class="sub">Live inside the language daily. This is the difference between "knowing" and "speaking".</div>';
+  html+='<div class="feat-sec"><b>🎧 LISTEN</b>'+K.listen.map(function(x){return '<div class="ll-row">• '+x+'</div>'}).join('')+'</div>';
+  html+='<div class="feat-sec"><b>📖 READ</b>'+K.read.map(function(x){return '<div class="ll-row">• '+x+'</div>'}).join('')+'</div>';
+  html+='<div class="feat-sec"><b>📺 WATCH</b>'+K.watch.map(function(x){return '<div class="ll-row">• '+x+'</div>'}).join('')+'</div>';
+  html+='<div class="feat-sec"><b>🎙️ SPEAK (no friends needed)</b><div class="ll-row">• Talk to ME daily — press the mic in chat and speak in '+L.name+'</div><div class="ll-row">• Shadowing: replay any line with 🔊 and repeat it OUT LOUD 3×</div><div class="ll-row">• Think in '+L.name+' while walking — describe what you see</div></div>';
+  html+='<div class="feat-sec"><b>⚡ THE VITAL 90% RULE</b><div class="ll-row">The most-used words + phrases + patterns come FIRST. Learn them once, deeply — they cover ~90% of daily conversation. Everything after that builds on them.</div></div>';
+  var old=document.getElementById('llKitBox');if(old)old.remove();
+  var box=document.createElement('div');box.id='llKitBox';box.className='modal feat-modal';box.innerHTML=html+'<button class="btn" style="width:100%" onclick="document.getElementById(\'llKitBox\').remove()">Close</button>';
+  document.body.appendChild(box);
+}
+function llPick(code){
+  var L=LL_LANGS[code];
+  llSave({lang:code,start:Date.now(),done:{}});
+  closeLL();
+  toast('🌍 '+L.name+' — Day 1. Welcome to your fluency journey!');
+  setTimeout(llVital,600);
+}
+function llReset(){
+  var s=llState();if(!s)return;
+  if(!confirm('Reset your language program? Progress will be cleared.'))return;
+  llSave(null);try{localStorage.removeItem(STORAGE+'ll')}catch(e){}
+  openLangLab();
+}
+function openLangLab(){
+  var old=document.getElementById('llModalBack');if(old)old.remove();
+  var s=llState();var L=s?LL_LANGS[s.lang]:null;
+  var b=document.createElement('div');b.className='modal-back open';b.id='llModalBack';
+  b.onclick=function(e){if(e.target===b)b.remove()};
+  var m=document.createElement('div');m.className='modal feat-modal';
+  var html='';
+  if(!s){
+    html='<h2>🌍 Language Lab</h2><div class="sub">A real native teacher, in your pocket. Reading · Writing · Listening · Speaking.</div>';
+    html+='<div class="feat-sec"><b>PICK YOUR LANGUAGE</b><div class="ll-grid">';
+    Object.keys(LL_LANGS).forEach(function(k){
+      var t=LL_LANGS[k];
+      var badge=t.days?'<span class="ll-90">90-DAY</span>':'<span class="ll-nl">FULL COURSE</span>';
+      html+='<div class="ll-card" onclick="llPick(\''+k+'\')"><div class="ll-fl">'+t.flag+'</div><b>'+t.name+'</b>'+badge+'<small>'+(t.days?'Reading, writing, listening, speaking — fluent in 90 days':'Same deep system, learn at your pace')+'</small></div>';
+    });
+    html+='</div></div>';
+    html+='<div class="feat-sec"><b>⚡ THE PROMISE</b><div class="ll-row">• For <b>American English & Spanish</b>: a strict 90-day day-by-day program — 4 skills daily.</div><div class="ll-row">• Every language gets the same deep teaching: vital-90% first, real corrections, real immersion.</div><div class="ll-row">• No friends who speak it? No problem — <b>AURISI is your speaking partner</b>, by voice.</div></div>';
+  }else{
+    var d=llDay();var ph=llPhase(d);var ms=llMissions();var L2=L;
+    var prog=L.days?Math.min(100,Math.round(d/(L.days||90)*100)):0;
+    html='<h2>'+L.flag+' '+L.name+' <button class="ll-x" onclick="llReset()">reset</button></h2>';
+    html+='<div class="sub">'+(L.days?('Day <b>'+d+'</b> of 90 — you finish on '+new Date(Date.now()+(L.days-d)*86400000).toLocaleDateString()):('Full course — Day <b>'+d+'</b>'))+' · 🔥 '+llStreak()+'-day streak</div>';
+    if(L.days)html+='<div class="ll-bar"><div style="width:'+prog+'%"></div></div>';
+    html+='<div class="ll-phase">'+ph+' PHASE</div><div class="ll-pd">'+llPhaseDesc(ph)+'</div>';
+    html+='<div class="feat-sec"><b>TODAY\u2019S MISSIONS ('+ms+'/4 done)</b><div class="ll-grid2">';
+    html+='<div class="ll-m" onclick="llMission(\'read\')">📖<b>Reading</b><small>Real passage + questions</small></div>';
+    html+='<div class="ll-m" onclick="llMission(\'write\')">✍️<b>Writing</b><small>Write, get corrected</small></div>';
+    html+='<div class="ll-m" onclick="llMission(\'listen\')">🎧<b>Listening</b><small>Hear it, type it</small></div>';
+    html+='<div class="ll-m" onclick="llMission(\'speak\')">🎙️<b>Speaking</b><small>Talk to Aurisi by voice</small></div>';
+    html+='</div></div>';
+    html+='<div class="feat-sec"><b>⚡ POWER TOOLS</b>';
+    html+='<div class="ll-row ll-link" onclick="llVital()">⚡ The Vital 90% — see the words, phrases & rules that matter most</div>';
+    html+='<div class="ll-row ll-link" onclick="llKit()">🧭 Immersion Kit — what to listen, read & watch</div>';
+    html+='<div class="ll-row ll-link" onclick="llMission(\'speak\')">🎙️ Practice speaking now — AURISI is your conversation partner (no friends needed)</div>';
+    html+='</div>';
+  }
+  m.innerHTML=html+'<button class="btn" style="width:100%" onclick="document.getElementById(\'llModalBack\').remove()">Close</button>';
+  b.appendChild(m);document.body.appendChild(b);
+}
+function closeLL(){var b=document.getElementById('llModalBack');if(b)b.remove()}
+function renderLL(){}
+function llMountCard(){
+  try{
+    var cards=document.querySelectorAll('[onclick]');
+    for(var i=0;i<cards.length;i++){
+      var oc=cards[i].getAttribute&&cards[i].getAttribute('onclick');
+      if(oc&&oc.indexOf('openStudio')>-1&&!cards[i].__ll){
+        cards[i].__ll=1;
+        var c=document.createElement(cards[i].tagName==='A'?'a':'div');
+        c.innerHTML='<b>🌍 Language Lab</b><small>Speak '+'English or Spanish in 90 days — 4 skills, real teacher</small>';
+        c.setAttribute('onclick','openLangLab()');
+        if(cards[i].className)c.className=cards[i].className;
+        cards[i].parentNode.insertBefore(c,cards[i].nextSibling);
+        break;
+      }
+    }
+  }catch(e){}
+}
+(function llStyle(){
+  var st=document.createElement('style');
+  st.textContent='.ll-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ll-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ll-card{background:#141926;border:1px solid #232b3d;border-radius:14px;padding:14px;cursor:pointer;text-align:center}.ll-card:active{transform:scale(.97)}.ll-fl{font-size:30px}.ll-card b{display:block;margin:6px 0 4px;font-size:14px}.ll-card small{display:block;color:#8b94a8;font-size:10px;line-height:1.3;margin-top:3px}.ll-90{background:rgba(245,158,11,.18);color:#f59e0b;font-size:9px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.5px}.ll-nl{background:rgba(139,148,168,.15);color:#8b94a8;font-size:9px;font-weight:700;border-radius:10px;padding:2px 8px}.ll-bar{height:6px;background:#141926;border-radius:4px;overflow:hidden;margin:10px 0}.ll-bar div{height:100%;background:#f59e0b;border-radius:4px}.ll-phase{margin-top:10px;font-weight:800;color:#f59e0b;font-size:12px;letter-spacing:1px}.ll-pd{color:#8b94a8;font-size:12px;margin:4px 0 8px;line-height:1.4}.ll-m{background:#141926;border:1px solid #232b3d;border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer}.ll-m:active{transform:scale(.96)}.ll-m b{display:block;font-size:13px;margin-top:5px}.ll-m small{display:block;color:#8b94a8;font-size:10px;margin-top:2px}.ll-row{background:#0f1420;border:1px solid #232b3d;border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13px;line-height:1.45}.ll-link{cursor:pointer;border-color:#f59e0b}.ll-x{background:none;color:#8b94a8;border:none;font-size:11px;cursor:pointer;float:right;text-decoration:underline}';
+  document.head.appendChild(st);
+  if(document.readyState!=='loading')llMountCard();else document.addEventListener('DOMContentLoaded',llMountCard);
+})();
