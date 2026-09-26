@@ -1916,7 +1916,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.52",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.53",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -6958,7 +6958,7 @@ async function stuLoadProj(id){
   }catch(e){toast("Could not reach server")}
 }
 
-/* ===================== v60.52 LANGUAGE LAB — 90-DAY FLUENCY ENGINE ===================== */
+/* ===================== v60.53 LANGUAGE HUB — 4 PILLARS + PRONUNCIATION ENGINE ===================== */
 var LL_LANGS={
  'en-US':{name:'American English',native:'English',flag:'🇺🇸',voice:'en-US',days:90,place:'the USA (you are in New York City)',
   vital:['the','be','to','of','and','a','in','that','have','I','it','for','not','on','with','he','as','you','do','at','this','but','his','by','from','they','we','say','her','she','or','an','will','my','one','all','would','there','their','what','so','up','out','if','about','who','get','which','go','me','when','make','can','like','time','no','just','him','know','take','good','new','first','much','right','think','every'],
@@ -6978,18 +6978,43 @@ var LL_LANGS={
  'ru-RU':{name:'Russian',native:'Русский',flag:'🇷🇺',voice:'ru-RU',days:0,place:'Russia'},
  'hi-IN':{name:'Hindi (native)',native:'हिन्दी',flag:'🇮🇳',voice:'hi-IN',days:0,place:'India'}
 };
+var LL_PRON={
+ 'en-US':['three','world','comfortable','vegetable','schedule','thought','colleague','answer','island','iron','literature','restaurant'],
+ 'es-ES':['jamón','gente','cielo','zapato','trabajo','después','ciudad','señor','mucho','desarrollar','cerveza','murciélago'],
+ 'fr-FR':['bonjour','rouge','voiture','fromage','beaucoup','parler','école','français'],
+ 'de-DE':['ich','schön','Welt','Straße','nichts','Wissenschaft','Brötchen','Eichhörnchen'],
+ 'it-IT':['ciao','spaghetti','grazie','gnocchi','bagno','chiave','espresso','cellulare'],
+ 'pt-BR':['trabalho','coração','pessoal','exceção','riqueza','acessível','chocolate','bicicleta'],
+ 'ja-JP':['こんにちは','ありがとう','さようなら','お願いします','すみません','名前','日本','学校'],
+ 'ko-KR':['안녕하세요','감사합니다','사랑','학교','친구','음식','시간','한국어'],
+ 'zh-CN':['你好','谢谢','再见','请','学校','朋友','中国','吃饭'],
+ 'ru-RU':['привет','спасибо','пожалуйста','здравствуйте','мороженое','школа'],
+ 'hi-IN':['धन्यवाद','नमस्ते','विद्यालय','मित्र','स्वागत']
+};
 var LL_SCEN=['Coffee shop — order like a local','Metro station — buy a ticket & ask directions','Job interview — introduce yourself','Doctor visit — describe a problem','Restaurant — order food & pay','Meeting a new neighbour — small talk','Phone call — book an appointment','Market — bargain for vegetables','Hotel check-in','First day of class — ask the teacher questions'];
-function llState(){try{return JSON.parse(localStorage.getItem(STORAGE+'ll')||'null')}catch(e){return null}}
-function llSave(s){try{localStorage.setItem(STORAGE+'ll',JSON.stringify(s))}catch(e){}}
-function llLang(){var s=llState();return s&&LL_LANGS[s.lang]?LL_LANGS[s.lang]:null}
-function llDay(){var s=llState();if(!s||!s.start)return 1;var L=llLang();var cap=L&&L.days?L.days:9999;return Math.min(cap,Math.floor((Date.now()-s.start)/86400000)+1)}
+function llHub(){try{return JSON.parse(localStorage.getItem(STORAGE+'ll')||'null')}catch(e){return null}}
+function llSaveHub(h){try{localStorage.setItem(STORAGE+'ll',JSON.stringify(h))}catch(e){}}
+function llMigrate(){
+  var h=llHub();if(!h)return;
+  if(h.langs&&h.active)return;
+  var code=h.lang&&LL_LANGS[h.lang]?h.lang:null;
+  if(code){
+    var nh={langs:{},active:code};
+    nh.langs[code]={start:h.start||Date.now(),done:h.done||{}};
+    llSaveHub(nh);return;
+  }
+  llSaveHub({langs:{},active:null});
+}
+function llCur(){var h=llHub();return h&&h.langs&&h.active?h.langs[h.active]:null}
+function llLang(){var h=llHub();return h&&h.langs&&h.active&&LL_LANGS[h.active]?LL_LANGS[h.active]:null}
+function llCode(){var h=llHub();return h?h.active:null}
+function llDay(){var c=llCur();if(!c||!c.start)return 1;var L=llLang();var cap=L&&L.days?L.days:9999;return Math.min(cap,Math.floor((Date.now()-c.start)/86400000)+1)}
 function llPhase(d){return d<=30?'FOUNDATION':(d<=60?'IMMERSION':'FLUENCY')}
 function llPhaseDesc(p){return p==='FOUNDATION'?'Master the sounds, the Vital 90% words, survival phrases and core grammar — the 90% you will use every single day.':(p==='IMMERSION'?'Consume REAL content daily — read, listen, shadow speak. AURISI corrects everything.':'Speak, argue, joke, think in the language. AURISI is your conversation partner, every day.')}
-function llMissions(){var s=llState();if(!s)return 0;var k='d'+llDay();return (s.done&&s.done[k])||0}
-function llMark(){var s=llState();if(!s)return;s.done=s.done||{};var k='d'+llDay();s.done[k]=(s.done[k]||0)+1;llSave(s);renderLL()}
-function llStreak(){var s=llState();if(!s||!s.done)return 0;var n=0;for(var i=llDay();i>=1;i--){if(s.done['d'+i])n++;else if(i!==llDay())break}return n}
+function llMissions(){var c=llCur();if(!c)return 0;var k='d'+llDay();return (c.done&&c.done[k])||0}
+function llMark(){var h=llHub();if(!h||!h.active)return;h.langs[h.active].done=h.langs[h.active].done||{};var k='d'+llDay();h.langs[h.active].done[k]=(h.langs[h.active].done[k]||0)+1;llSaveHub(h)}
+function llStreak(){var c=llCur();if(!c||!c.done)return 0;var n=0;for(var i=llDay();i>=1;i--){if(c.done['d'+i])n++;else if(i!==llDay())break}return n}
 function llSys(){
-  var s=llState();if(!s)return '';
   var L=llLang();if(!L)return '';
   var d=llDay();
   return '\n\n[LANGUAGE FLUENCY MODE — ACTIVE. You are a NATIVE '+L.name+' teacher. The student is in '+L.place+'. ROLE: you are a real, strict, warm native teacher — never a chatbot.]\n'+
@@ -7001,32 +7026,38 @@ function llSys(){
   '5. End every reply with ONE quick drill (fill-the-blank / translate this / say this aloud).\n'+
   '6. Use real places, prices, names and daily situations from '+L.place+' so it feels like the student is living there.\n'+
   '7. Keep lessons tight: max ~180 words per reply. Bold the key words.\n'+
-  (L.days?('8. THE STUDENT IS ON A 90-DAY FLUENCY PROGRAM: Day '+d+'/90, Phase: '+llPhase(d)+' — '+llPhaseDesc(llPhase(d))+'\n9. In Phase FOUNDATION drill sounds, vital words and survival phrases. In IMMERSION use real readings/audio + shadowing. In FLUENCY run full conversations and debate.'):'8. Teach as a full deep course: sounds → vital words → grammar patterns → reading → listening → speaking, always with the Vital-90% first principle.')+'\n';
+  (L.days?('8. THE STUDENT IS ON A 90-DAY FLUENCY PROGRAM: Day '+d+'/90, Phase: '+llPhase(d)+' — '+llPhaseDesc(llPhase(d))+'\n9. In Phase FOUNDATION drill sounds, vital words and survival phrases. In IMMERSION use real readings/audio + shadowing. In FLUENCY run full conversations and debate. Always train the 4 pillars: reading, writing, listening, speaking — plus pronunciation drills (phonetic respelling, mouth position tips, common Indian-speaker mistakes).'):'8. Teach as a full deep course: sounds → vital words → grammar patterns → reading → listening → speaking, always with the Vital-90% first principle. Always train the 4 pillars: reading, writing, listening, speaking — plus pronunciation drills (phonetic respelling, mouth position tips, common Indian-speaker mistakes).')+'\n';
 }
 function llMission(kind){
-  var s=llState();if(!s)return;var L=llLang();var d=llDay();
+  var s=llHub();if(!s||!s.active)return;var L=llLang();var d=llDay();
   var base='This is my Day '+d+'/'+(L.days||'∞')+' '+L.name+' lesson ('+llPhase(d)+' phase). ';
   var map={
-   read:base+'READING MISSION: give me a short graded passage (4-6 sentences, real-life '+L.place+' situation), then: (1) 3 new key words with meaning, (2) 2 comprehension questions, (3) one line I must say aloud.',
-   write:base+'WRITING MISSION: give me ONE short writing prompt about my real life (today, my family, my work). WAIT for my reply, then correct my sentences line-by-line and rewrite them perfectly.',
-   listen:base+'LISTENING MISSION: give me ONE natural sentence in '+L.name+'. Tell me to press the 🔊 Listen button, hear it 2-3 times, and type exactly what I heard. Then check my answer, fix mistakes, and give the next sentence. 3 sentences total.',
-   speak:base+'SPEAKING MISSION (voice): start a roleplay — '+LL_SCEN[Math.floor(Math.random()*LL_SCEN.length)]+'. Speak in character in '+L.name+', keep it to 2 short sentences max, and tell me to reply out loud with my 🎙️ mic button (or by typing). Grade my pronunciation from my words, correct me, continue the scene for 4-5 turns.'
+   read:base+'READING PILLAR MISSION: give me a short graded passage (4-6 sentences, real-life '+L.place+' situation), then: (1) 3 new key words with meaning, (2) 2 comprehension questions, (3) one line I must say aloud.',
+   write:base+'WRITING PILLAR MISSION: give me ONE short writing prompt about my real life (today, my family, my work). WAIT for my reply, then correct my sentences line-by-line and rewrite them perfectly.',
+   listen:base+'LISTENING PILLAR MISSION: give me ONE natural sentence in '+L.name+'. Tell me to press the 🔊 Listen button, hear it 2-3 times, and type exactly what I heard. Then check my answer, fix mistakes, and give the next sentence. 3 sentences total.',
+   speak:base+'SPEAKING PILLAR MISSION (voice): start a roleplay — '+LL_SCEN[Math.floor(Math.random()*LL_SCEN.length)]+'. Speak in character in '+L.name+', keep it to 2 short sentences max, and tell me to reply out loud with my 🎙️ mic button (or by typing). Grade my pronunciation from my words, correct me, continue the scene for 4-5 turns.'
   };
   closeLL();
   quick(map[kind]);
   setTimeout(llMark,1500);
 }
+function llPron(){
+  var s=llHub();if(!s||!s.active)return;var L=llLang();
+  closeLL();
+  quick('PRONUNCIATION MISSION for '+L.name+' (native-level accent training, Indian speaker edition): pick 4 words + 1 full sentence. For EACH give: (1) the word written in simple phonetic respelling (how it SOUNDS, letter by letter), (2) the mistake most Indian Hindi speakers make with it and how to fix it, (3) mouth position tip (tongue, lips, teeth). Make the sounds come from real '+L.place+' daily life. End by telling me: "Now open Language Hub → 🎙️ Pronunciation Check to test your mouth."');
+  setTimeout(llMark,1500);
+}
 function llVital(){
-  var s=llState();if(!s)return;var L=llLang();
+  var s=llHub();if(!s||!s.active)return;var L=llLang();
   closeLL();
   quick('Show me THE VITAL 90% of '+L.name+' right now (Day '+llDay()+', '+llPhase(llDay())+' phase): (1) the top 60 most-used words you know I must master first, (2) the 12 survival phrases I will use every single day, (3) the core grammar rules that cover most sentences. Teach it like the most important lesson of my life — clear, bolded, with mini-examples. End with: which 5 words I should remember from my previous lessons to revise.');
 }
 function llKit(){
-  var s=llState();if(!s)return;var L=llLang();var p=llPhase(llDay());
+  var s=llHub();if(!s||!s.active)return;var L=llLang();var p=llPhase(llDay());
   var K={
    'en-US':{listen:['NPR "Up First" — 5 min daily (Day 1-90)','Songs: read lyrics WHILE listening','BBC "6 Minute English" (Day 30+)','Watch English YouTubers at 1x — no subtitles after Day 45'],read:['Graded readers — Penguin/Oxford Level 2 → 4 (Day 1-45)','Breaking News English (7 levels, free)','Calvin & Hobbes comics (Day 15+)','News: read ONE headline + first paragraph daily'],watch:['Peppa Pig & kids cartoons (Day 1-30, seriously — cleanest English)','"Extra" English series on YouTube (made for learners)','Friends / Modern Family — EN subs till Day 60, then NONE','Shark Tank US (Day 60+: real fast business English)']},
-   'es-ES':{listen:['Duolingo Spanish Podcast (Day 1-45)','News in Slow Spanish (Day 1-60)','Songs: Juanes, Jesse & Joy — lyrics while listening','Spanish radio while commuting (Day 60+)'],read:['Graded readers — Level A1 → B1 (Day 1-45)','"El País" — ONE headline + first line daily','Mafalda comics (Day 15+)','Children\'s stories: "Cuentos para niños"'],watch:['"Extra en español" on YouTube (Day 1-45, made for learners)','Pocoyo & kids cartoons (Day 1-30)','"La Casa de Papel" — ES subtitles till Day 60, then none','Spanish series with no subs (Day 60+)']}
-  }[s.lang]||{listen:['Kids songs & cartoons in '+L.name+' (Day 1-30)','Slow-'+L.name+' podcasts (search "slow '+L.name+' podcast")','Songs: lyrics while listening'],read:['Graded readers / children\'s stories in '+L.name,'One news headline daily (Google News in '+L.name+')','Comics in '+L.name],watch:['"Extra" series for your language if available','Kids cartoons (Day 1-30)','Series with '+L.name+' subtitles (Day 30-60), then none']};
+   'es-ES':{listen:['Duolingo Spanish Podcast (Day 1-45)','News in Slow Spanish (Day 1-60)','Songs: Juanes, Jesse & Joy — lyrics while listening','Spanish radio while commuting (Day 60+)'],read:['Graded readers — Level A1 → B1 (Day 1-45)','"El País" — ONE headline + first line daily','Mafalda comics (Day 15+)','Children stories: "Cuentos para niños"'],watch:['"Extra en español" on YouTube (Day 1-45, made for learners)','Pocoyo & kids cartoons (Day 1-30)','"La Casa de Papel" — ES subtitles till Day 60, then none','Spanish series with no subs (Day 60+)']}
+  }[llCode()]||{listen:['Kids songs & cartoons in '+L.name+' (Day 1-30)','Slow-'+L.name+' podcasts (search "slow '+L.name+' podcast")','Songs: lyrics while listening'],read:['Graded readers / children stories in '+L.name,'One news headline daily (Google News in '+L.name+')','Comics in '+L.name],watch:['"Extra" series for your language if available','Kids cartoons (Day 1-30)','Series with '+L.name+' subtitles (Day 30-60), then none']};
   var html='<h2>🧭 Your Immersion Kit ('+p+' phase)</h2><div class="sub">Live inside the language daily. This is the difference between "knowing" and "speaking".</div>';
   html+='<div class="feat-sec"><b>🎧 LISTEN</b>'+K.listen.map(function(x){return '<div class="ll-row">• '+x+'</div>'}).join('')+'</div>';
   html+='<div class="feat-sec"><b>📖 READ</b>'+K.read.map(function(x){return '<div class="ll-row">• '+x+'</div>'}).join('')+'</div>';
@@ -7037,60 +7068,146 @@ function llKit(){
   var box=document.createElement('div');box.id='llKitBox';box.className='modal feat-modal';box.innerHTML=html+'<button class="btn" style="width:100%" onclick="document.getElementById(\'llKitBox\').remove()">Close</button>';
   document.body.appendChild(box);
 }
-function llPick(code){
-  var L=LL_LANGS[code];
-  llSave({lang:code,start:Date.now(),done:{}});
-  closeLL();
-  toast('🌍 '+L.name+' — Day 1. Welcome to your fluency journey!');
-  setTimeout(llVital,600);
+function llSim(a,b){
+  var n=function(x){return String(x||'').toLowerCase().replace(/[^a-zà-ÿ\u0400-\u04ff\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af\u0900-\u097f0-9\s]/gi,'').replace(/\s+/g,' ').trim()};
+  a=n(a);b=n(b);
+  if(!a||!b)return 0;
+  if(b.indexOf(a)>-1)return 100;
+  var m=a.length,nn=b.length,d=[],i,j;
+  for(i=0;i<=m;i++){d[i]=[i]}for(j=0;j<=nn;j++){d[0][j]=j}
+  for(i=1;i<=m;i++)for(j=1;j<=nn;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a.charAt(i-1)===b.charAt(j-1)?0:1))}
+  return Math.max(0,Math.round((1-d[m][nn]/Math.max(m,nn))*100));
 }
-function llReset(){
-  var s=llState();if(!s)return;
-  if(!confirm('Reset your language program? Progress will be cleared.'))return;
-  llSave(null);try{localStorage.removeItem(STORAGE+'ll')}catch(e){}
-  openLangLab();
+var LL_DRILL={on:false,idx:0,words:[],scores:[],rec:null};
+function llPronCheck(){
+  var s=llHub();if(!s||!s.active)return;var L=llLang();
+  var base=LL_PRON[llCode()]||[];
+  if(!base.length){toast('Pronunciation check not available for this language yet');return}
+  LL_DRILL.words=base.slice().sort(function(){return Math.random()-0.5}).slice(0,5);
+  LL_DRILL.idx=0;LL_DRILL.scores=[];LL_DRILL.on=true;
+  var old=document.getElementById('llPronBack');if(old)old.remove();
+  var b=document.createElement('div');b.className='modal-back open';b.id='llPronBack';
+  b.onclick=function(e){if(e.target===b){LL_DRILL.on=false;b.remove()}};
+  var m=document.createElement('div');m.className='modal feat-modal';m.id='llPronModal';
+  m.innerHTML='<h2>🎙️ Pronunciation Check — '+L.flag+' '+L.name+'</h2><div class="sub">Hear the word, then say it OUT LOUD. I will score your accent like a native coach.</div><div id="llPronBody"></div>';
+  b.appendChild(m);document.body.appendChild(b);
+  llPronShow();
+}
+function llPronShow(){
+  var L=llLang();var body=document.getElementById('llPronBody');if(!body)return;
+  if(LL_DRILL.idx>=LL_DRILL.words.length){
+    var avg=LL_DRILL.scores.length?Math.round(LL_DRILL.scores.reduce(function(a,b){return a+b},0)/LL_DRILL.scores.length):0;
+    var verdict=avg>=90?'🏆 NATIVE-LEVEL — your mouth is learning!':(avg>=70?'💪 GOOD — close, keep drilling daily':'🔥 KEEP GOING — slow it down, exaggerate the sounds');
+    body.innerHTML='<div class="ll-pd" style="text-align:center;font-size:15px;color:#e8ecf4">'+verdict+'</div><div class="ll-bar"><div style="width:'+avg+'%"></div></div><div style="text-align:center;font-weight:800;font-size:20px">'+avg+'%</div><button class="btn" style="width:100%" onclick="LL_DRILL.on=false;document.getElementById(\'llPronBack\').remove();openLangLab()">Done</button>';
+    llMark();
+    return;
+  }
+  var w=LL_DRILL.words[LL_DRILL.idx];
+  body.innerHTML='<div class="ll-count">Word '+(LL_DRILL.idx+1)+' of '+LL_DRILL.words.length+'</div>'+
+  '<div class="ll-word">'+w+'</div>'+
+  '<div class="ll-grid2">'+
+  '<div class="ll-m" onclick="speakText(LL_DRILL.words[LL_DRILL.idx]);this.style.background=\'#1d2739\'">🔊<b>Hear it</b><small>Listen 2-3 times</small></div>'+
+  '<div class="ll-m" id="llMicBtn" onclick="llPronMic()">🎙️<b>Say it</b><small>Speak now</small></div>'+
+  '</div><div id="llPronResult"></div>';
+}
+function llPronMic(){
+  var L=llLang();var btn=document.getElementById('llMicBtn');var res=document.getElementById('llPronResult');
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){res.innerHTML='<div class="ll-row">Voice recognition not supported here — type the word in chat and ask me to check it. Or use Chrome.</div>';return}
+  try{
+    if(LL_DRILL.rec){LL_DRILL.rec.abort()}
+    var r=new SR();LL_DRILL.rec=r;
+    r.lang=L.voice;r.interimResults=false;r.maxAlternatives=3;
+    btn.innerHTML='👂<b>Listening…</b><small>Say it now</small>';
+    r.onresult=function(e){
+      var best=0;var said='';
+      for(var i=0;i<e.results[0].length;i++){var alt=e.results[0][i].transcript;var sc=llSim(LL_DRILL.words[LL_DRILL.idx],alt);if(sc>best){best=sc;said=alt}}
+      LL_DRILL.scores.push(best);
+      var v=best>=90?'✅ EXCELLENT — native level!':(best>=70?'👍 GOOD — almost there':'🎯 Keep trying — exaggerate the sound');
+      res.innerHTML='<div class="ll-row">You said: <b>'+String(said).replace(/</g,'<')+'</b><br>Score: <b style="font-size:16px">'+best+'%</b> — '+v+'</div><button class="btn" style="width:100%" onclick="LL_DRILL.idx++;llPronShow()">Next word →</button>';
+    };
+    r.onerror=function(){btn.innerHTML='🎙️<b>Say it</b><small>Tap & speak</small>';res.innerHTML='<div class="ll-row">Could not hear you — check mic permission & try again.</div>'};
+    r.onend=function(){btn.innerHTML='🎙️<b>Say it</b><small>Tap & speak</small>'};
+    r.start();
+  }catch(e){res.innerHTML='<div class="ll-row">Mic error: '+String(e.message||e)+'</div>'}
+}
+function llPick(code){
+  var h=llHub()||{langs:{},active:null};
+  var isNew=!h.langs[code];
+  if(isNew)h.langs[code]={start:Date.now(),done:{}};
+  h.active=code;llSaveHub(h);
+  closeLL();
+  var L=LL_LANGS[code];
+  if(isNew){toast('🌍 '+L.name+' — Day 1. Welcome to your fluency journey!');setTimeout(llVital,600)}
+  else{toast('🌍 Switched to '+L.name+' — Day '+(Math.min(L.days||9999,Math.floor((Date.now()-h.langs[code].start)/86400000)+1)))}
+}
+function llDrop(code){
+  var h=llHub();if(!h||!h.langs[code])return;
+  if(!confirm('Remove '+LL_LANGS[code].name+' and its progress?'))return;
+  delete h.langs[code];
+  if(h.active===code)h.active=Object.keys(h.langs)[0]||null;
+  llSaveHub(h);openLangLab();
 }
 function openLangLab(){
   var old=document.getElementById('llModalBack');if(old)old.remove();
-  var s=llState();var L=s?LL_LANGS[s.lang]:null;
+  llMigrate();
+  var h=llHub();
   var b=document.createElement('div');b.className='modal-back open';b.id='llModalBack';
   b.onclick=function(e){if(e.target===b)b.remove()};
   var m=document.createElement('div');m.className='modal feat-modal';
   var html='';
-  if(!s){
-    html='<h2>🌍 Language Lab</h2><div class="sub">A real native teacher, in your pocket. Reading · Writing · Listening · Speaking.</div>';
+  if(!h||!h.active){
+    html='<h2>🌍 Language Hub</h2><div class="sub">A real native teacher, in your pocket. Built on 4 pillars: Reading · Writing · Listening · Speaking — with native-level pronunciation training.</div>';
     html+='<div class="feat-sec"><b>PICK YOUR LANGUAGE</b><div class="ll-grid">';
     Object.keys(LL_LANGS).forEach(function(k){
       var t=LL_LANGS[k];
       var badge=t.days?'<span class="ll-90">90-DAY</span>':'<span class="ll-nl">FULL COURSE</span>';
-      html+='<div class="ll-card" onclick="llPick(\''+k+'\')"><div class="ll-fl">'+t.flag+'</div><b>'+t.name+'</b>'+badge+'<small>'+(t.days?'Reading, writing, listening, speaking — fluent in 90 days':'Same deep system, learn at your pace')+'</small></div>';
+      html+='<div class="ll-card" onclick="llPick(\''+k+'\')"><div class="ll-fl">'+t.flag+'</div><b>'+t.name+'</b>'+badge+'<small>'+(t.days?'All 4 pillars daily — fluent in 90 days':'Same 4-pillar deep system, learn at your pace')+'</small></div>';
     });
     html+='</div></div>';
-    html+='<div class="feat-sec"><b>⚡ THE PROMISE</b><div class="ll-row">• For <b>American English & Spanish</b>: a strict 90-day day-by-day program — 4 skills daily.</div><div class="ll-row">• Every language gets the same deep teaching: vital-90% first, real corrections, real immersion.</div><div class="ll-row">• No friends who speak it? No problem — <b>AURISI is your speaking partner</b>, by voice.</div></div>';
+    html+='<div class="feat-sec"><b>⚡ THE PROMISE</b><div class="ll-row">• For <b>American English & Spanish</b>: a strict 90-day day-by-day program — all 4 pillars daily.</div><div class="ll-row">• EVERY language gets the same top-tier deep teaching: vital-90% first, real corrections, real immersion.</div><div class="ll-row">• No friends who speak it? No problem — <b>AURISI is your speaking partner</b>, by voice, with accent scoring.</div></div>';
   }else{
-    var d=llDay();var ph=llPhase(d);var ms=llMissions();var L2=L;
+    var code=h.active;var L=LL_LANGS[code];
+    var d=llDay();var ph=llPhase(d);var ms=llMissions();
     var prog=L.days?Math.min(100,Math.round(d/(L.days||90)*100)):0;
-    html='<h2>'+L.flag+' '+L.name+' <button class="ll-x" onclick="llReset()">reset</button></h2>';
+    html='<h2>'+L.flag+' '+L.name+' <button class="ll-x" onclick="llDrop(\''+code+'\')">remove</button></h2>';
     html+='<div class="sub">'+(L.days?('Day <b>'+d+'</b> of 90 — you finish on '+new Date(Date.now()+(L.days-d)*86400000).toLocaleDateString()):('Full course — Day <b>'+d+'</b>'))+' · 🔥 '+llStreak()+'-day streak</div>';
     if(L.days)html+='<div class="ll-bar"><div style="width:'+prog+'%"></div></div>';
-    html+='<div class="ll-phase">'+ph+' PHASE</div><div class="ll-pd">'+llPhaseDesc(ph)+'</div>';
-    html+='<div class="feat-sec"><b>TODAY\u2019S MISSIONS ('+ms+'/4 done)</b><div class="ll-grid2">';
+    if(Object.keys(h.langs).length>1){
+      html+='<div class="feat-sec"><b>🌐 MY LANGUAGES — switch anytime</b><div class="ll-chips">';
+      Object.keys(h.langs).forEach(function(k){
+        var t=LL_LANGS[k];var dd=Math.min(t.days||9999,Math.floor((Date.now()-h.langs[k].start)/86400000)+1);
+        html+='<div class="ll-chip'+(k===code?' on':'')+'" onclick="llPick(\''+k+'\')">'+t.flag+' '+t.name.split(' ')[0]+' · D'+dd+'</div>';
+      });
+      html+='</div></div>';
+    }
+    html+='<div class="ll-phase">⚡ THE 4 PILLARS — EVERY DAY</div><div class="ll-pd">'+llPhaseDesc(ph)+'</div>';
+    html+='<div class="feat-sec"><b>TODAY\u2019S PILLAR MISSIONS ('+ms+'/4 done)</b><div class="ll-grid2">';
     html+='<div class="ll-m" onclick="llMission(\'read\')">📖<b>Reading</b><small>Real passage + questions</small></div>';
     html+='<div class="ll-m" onclick="llMission(\'write\')">✍️<b>Writing</b><small>Write, get corrected</small></div>';
     html+='<div class="ll-m" onclick="llMission(\'listen\')">🎧<b>Listening</b><small>Hear it, type it</small></div>';
-    html+='<div class="ll-m" onclick="llMission(\'speak\')">🎙️<b>Speaking</b><small>Talk to Aurisi by voice</small></div>';
+    html+='<div class="ll-m" onclick="llMission(\'speak\')">🗣️<b>Speaking</b><small>Talk to Aurisi by voice</small></div>';
     html+='</div></div>';
-    html+='<div class="feat-sec"><b>⚡ POWER TOOLS</b>';
-    html+='<div class="ll-row ll-link" onclick="llVital()">⚡ The Vital 90% — see the words, phrases & rules that matter most</div>';
-    html+='<div class="ll-row ll-link" onclick="llKit()">🧭 Immersion Kit — what to listen, read & watch</div>';
-    html+='<div class="ll-row ll-link" onclick="llMission(\'speak\')">🎙️ Practice speaking now — AURISI is your conversation partner (no friends needed)</div>';
+    html+='<div class="feat-sec"><b>🎙️ PRONUNCIATION ENGINE</b>';
+    html+='<div class="ll-row ll-link" onclick="llPron()">🎙️ Accent lesson — phonetics + mouth tips + Indian-speaker fixes</div>';
+    html+='<div class="ll-row ll-link" onclick="llPronCheck()">🏅 Pronunciation Check — say 5 words, get your accent SCORE</div>';
     html+='</div>';
+    html+='<div class="feat-sec"><b>⚡ POWER TOOLS</b>';
+    html+='<div class="ll-row ll-link" onclick="llVital()">⚡ The Vital 90% — words, phrases & rules that matter most</div>';
+    html+='<div class="ll-row ll-link" onclick="llKit()">🧭 Immersion Kit — what to listen, read & watch</div>';
+    html+='<div class="ll-row ll-link" onclick="llMission(\'speak\')">🗣️ Practice speaking now — AURISI is your conversation partner</div>';
+    html+='</div>';
+    html+='<div class="feat-sec"><b>➕ ADD ANOTHER LANGUAGE</b><div class="ll-grid">';
+    Object.keys(LL_LANGS).forEach(function(k){
+      var t=LL_LANGS[k];var on=h.langs[k];
+      html+='<div class="ll-card'+(on?' on':'')+'" onclick="llPick(\''+k+'\')"><div class="ll-fl">'+t.flag+'</div><b>'+t.name+'</b>'+(on?'<span class="ll-nl">ACTIVE</span>':'')+'</div>';
+    });
+    html+='</div></div>';
   }
   m.innerHTML=html+'<button class="btn" style="width:100%" onclick="document.getElementById(\'llModalBack\').remove()">Close</button>';
   b.appendChild(m);document.body.appendChild(b);
 }
 function closeLL(){var b=document.getElementById('llModalBack');if(b)b.remove()}
-function renderLL(){}
 function llMountCard(){
   try{
     var cards=document.querySelectorAll('[onclick]');
@@ -7099,7 +7216,7 @@ function llMountCard(){
       if(oc&&oc.indexOf('openStudio')>-1&&!cards[i].__ll){
         cards[i].__ll=1;
         var c=document.createElement(cards[i].tagName==='A'?'a':'div');
-        c.innerHTML='<b>🌍 Language Lab</b><small>Speak '+'English or Spanish in 90 days — 4 skills, real teacher</small>';
+        c.innerHTML='<b>🌍 Language Hub</b><small>All languages · 4 pillars · 90-day English/Spanish · accent scoring</small>';
         c.setAttribute('onclick','openLangLab()');
         if(cards[i].className)c.className=cards[i].className;
         cards[i].parentNode.insertBefore(c,cards[i].nextSibling);
@@ -7110,11 +7227,10 @@ function llMountCard(){
 }
 (function llStyle(){
   var st=document.createElement('style');
-  st.textContent='.ll-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ll-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ll-card{background:#141926;border:1px solid #232b3d;border-radius:14px;padding:14px;cursor:pointer;text-align:center}.ll-card:active{transform:scale(.97)}.ll-fl{font-size:30px}.ll-card b{display:block;margin:6px 0 4px;font-size:14px}.ll-card small{display:block;color:#8b94a8;font-size:10px;line-height:1.3;margin-top:3px}.ll-90{background:rgba(245,158,11,.18);color:#f59e0b;font-size:9px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.5px}.ll-nl{background:rgba(139,148,168,.15);color:#8b94a8;font-size:9px;font-weight:700;border-radius:10px;padding:2px 8px}.ll-bar{height:6px;background:#141926;border-radius:4px;overflow:hidden;margin:10px 0}.ll-bar div{height:100%;background:#f59e0b;border-radius:4px}.ll-phase{margin-top:10px;font-weight:800;color:#f59e0b;font-size:12px;letter-spacing:1px}.ll-pd{color:#8b94a8;font-size:12px;margin:4px 0 8px;line-height:1.4}.ll-m{background:#141926;border:1px solid #232b3d;border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer}.ll-m:active{transform:scale(.96)}.ll-m b{display:block;font-size:13px;margin-top:5px}.ll-m small{display:block;color:#8b94a8;font-size:10px;margin-top:2px}.ll-row{background:#0f1420;border:1px solid #232b3d;border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13px;line-height:1.45}.ll-link{cursor:pointer;border-color:#f59e0b}.ll-x{background:none;color:#8b94a8;border:none;font-size:11px;cursor:pointer;float:right;text-decoration:underline}';
+  st.textContent='.ll-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ll-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ll-card{background:#141926;border:1px solid #232b3d;border-radius:14px;padding:14px;cursor:pointer;text-align:center}.ll-card.on{border-color:#f59e0b}.ll-card:active{transform:scale(.97)}.ll-fl{font-size:30px}.ll-card b{display:block;margin:6px 0 4px;font-size:14px}.ll-card small{display:block;color:#8b94a8;font-size:10px;line-height:1.3;margin-top:3px}.ll-90{background:rgba(245,158,11,.18);color:#f59e0b;font-size:9px;font-weight:800;border-radius:10px;padding:2px 8px;letter-spacing:.5px}.ll-nl{background:rgba(139,148,168,.15);color:#8b94a8;font-size:9px;font-weight:700;border-radius:10px;padding:2px 8px}.ll-bar{height:6px;background:#141926;border-radius:4px;overflow:hidden;margin:10px 0}.ll-bar div{height:100%;background:#f59e0b;border-radius:4px}.ll-phase{margin-top:10px;font-weight:800;color:#f59e0b;font-size:12px;letter-spacing:1px}.ll-pd{color:#8b94a8;font-size:12px;margin:4px 0 8px;line-height:1.4}.ll-m{background:#141926;border:1px solid #232b3d;border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer}.ll-m:active{transform:scale(.96)}.ll-m b{display:block;font-size:13px;margin-top:5px}.ll-m small{display:block;color:#8b94a8;font-size:10px;margin-top:2px}.ll-row{background:#0f1420;border:1px solid #232b3d;border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13px;line-height:1.45}.ll-link{cursor:pointer;border-color:#f59e0b}.ll-x{background:none;color:#8b94a8;border:none;font-size:11px;cursor:pointer;float:right;text-decoration:underline}.ll-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.ll-chip{background:#141926;border:1px solid #232b3d;border-radius:20px;padding:7px 12px;font-size:12px;cursor:pointer;color:#c7cede}.ll-chip.on{border-color:#f59e0b;background:rgba(245,158,11,.12);color:#f59e0b;font-weight:700}.ll-count{color:#8b94a8;font-size:11px;letter-spacing:.5px;margin-top:4px}.ll-word{text-align:center;font-size:34px;font-weight:800;margin:18px 0;word-break:break-word}';
   document.head.appendChild(st);
   if(document.readyState!=='loading')llMountCard();else document.addEventListener('DOMContentLoaded',llMountCard);
 })();
-
 function instCloseModals(){try{document.querySelectorAll(".modal-back.open").forEach(function(x){x.remove()})}catch(e){}}
 function instRenderBox(){
   var el=$("instBox");if(!el)return;
