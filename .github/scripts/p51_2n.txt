@@ -1,0 +1,19 @@
+function puterMessages(history,jsonMode,sysPrompt){
+  const msgs=[{role:"system",content:(sysPrompt||SYS_PROMPT())+(jsonMode?" Respond ONLY with valid JSON.":"")}];
+  const hs=history||[];
+  for(let hi=0;hi<hs.length;hi++){
+    const h=hs[hi];
+    const txt=(h.parts||[]).map(p=>p.text||"").join(" ");
+    const recent=hi>=hs.length-4;
+    const imgs=recent?(h.parts||[]).filter(p=>p.inline_data&&p.inline_data.data):[];
+    if(!txt.trim()&&!imgs.length)continue;
+    if(imgs.length){
+      const content=[{type:"text",text:txt.trim()||"Solve the question in this image step by step and give the final answer clearly."}];
+      imgs.forEach(p=>content.push({type:"image_url",image_url:{url:"data:"+(p.inline_data.mime_type||"image/jpeg")+";base64,"+p.inline_data.data}}));
+      msgs.push({role:h.role==="model"?"assistant":"user",content:content});
+    }else{
+      msgs.push({role:h.role==="model"?"assistant":"user",content:txt});
+    }
+  }
+  return msgs;
+}
