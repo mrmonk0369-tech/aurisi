@@ -1916,7 +1916,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.50",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.51",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -2518,11 +2518,21 @@ function switchPuterAccount(){
 function puterReady(){return !window.PUTER_OFF&&typeof puter!=="undefined"&&puter.ai&&typeof puter.ai.chat==="function"}
 function puterMessages(history,jsonMode,sysPrompt){
   const msgs=[{role:"system",content:(sysPrompt||SYS_PROMPT())+(jsonMode?" Respond ONLY with valid JSON.":"")}];
-  (history||[]).forEach(h=>{
+  const hs=history||[];
+  for(let hi=0;hi<hs.length;hi++){
+    const h=hs[hi];
     const txt=(h.parts||[]).map(p=>p.text||"").join(" ");
-    if(!txt.trim())return;
-    msgs.push({role:h.role==="model"?"assistant":"user",content:txt});
-  });
+    const recent=hi>=hs.length-4;
+    const imgs=recent?(h.parts||[]).filter(p=>p.inline_data&&p.inline_data.data):[];
+    if(!txt.trim()&&!imgs.length)continue;
+    if(imgs.length){
+      const content=[{type:"text",text:txt.trim()||"Solve the question in this image step by step and give the final answer clearly."}];
+      imgs.forEach(p=>content.push({type:"image_url",image_url:{url:"data:"+(p.inline_data.mime_type||"image/jpeg")+";base64,"+p.inline_data.data}}));
+      msgs.push({role:h.role==="model"?"assistant":"user",content:content});
+    }else{
+      msgs.push({role:h.role==="model"?"assistant":"user",content:txt});
+    }
+  }
   return msgs;
 }
 function puterText(r){
@@ -4459,7 +4469,7 @@ function send(){
   if(!v&&!state.currentImageBase64){toast("Type something or attach an image");return}
   const parts=[];
   if(v)parts.push({text:v});
-  if(state.currentImageBase64)parts.push({inline_data:{mime_type:"image/jpeg",data:state.currentImageBase64}});
+  if(state.currentImageBase64){parts.push({inline_data:{mime_type:"image/jpeg",data:state.currentImageBase64}});if(!v)parts.push({text:"Solve the question in this image step by step and give the final answer clearly."});}
   state.chatHistory.push({role:"user",parts,hid:HIDE_SEND===true});HIDE_SEND=false;
   if(v&&/quiz|mcq/i.test(v)){QUIZ_SCORE.right=0;QUIZ_SCORE.wrong=0;QUIZ_SCORE.level="medium";QUIZ_SCORE.streak=0;QUIZ_SCORE.wstreak=0;QUIZ_SCORE.timed=/timed|timer|exam/i.test(v);QUIZ_SCORE.voice=/voice|rapid|viva|oral/i.test(v)}
   if(LOCKER_QUEUED){LOCKER_QUEUED=false}else if(v&&/quiz|mcq|mock/i.test(v)){LOCKER_CTX=null}
