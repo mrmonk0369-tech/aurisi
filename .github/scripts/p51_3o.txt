@@ -1,0 +1,3 @@
+  const parts=[];
+  if(v)parts.push({text:v});
+  if(state.currentImageBase64)parts.push({inline_data:{mime_type:"image/jpeg",data:state.currentImageBase64}});
