@@ -11,7 +11,7 @@ pairs = [('p51_1o.txt', 'p51_1n.txt'), ('p51_2o.txt', 'p51_2n.txt'), ('p51_3o.tx
 import sys
 src = sys.argv[1] if len(sys.argv) > 1 else 'AURISI.html'
 dst = sys.argv[2] if len(sys.argv) > 2 else 'AURISI_new.html'
-h = rf(src)
+h = io.open(src, encoding='utf-8').read()
 
 for i, (o, n) in enumerate(pairs, 1):
     old = rf(o)
@@ -21,5 +21,5 @@ for i, (o, n) in enumerate(pairs, 1):
     h = h.replace(old, new)
     print('patch %d applied (%d -> %d bytes)' % (i, len(old.encode()), len(new.encode())))
 
-io.open(os.path.join(D, dst), 'w', encoding='utf-8', newline='').write(h)
+io.open(dst, 'w', encoding='utf-8', newline='').write(h)
 print('built', dst, len(h.encode()), 'bytes')
