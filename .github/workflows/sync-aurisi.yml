@@ -1,4 +1,4 @@
-name: Build AURISI v60.52 + Institute Portal v2 + HQ v2
+name: Build AURISI v60.53 + Institute Portal v2 + HQ v2
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,26 +10,24 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if ! grep -q 'APP_VERSION="60.51"' AURISI.html; then
+          if ! grep -q 'APP_VERSION="60.52"' AURISI.html && ! grep -q 'APP_VERSION="60.53"' AURISI.html; then
             test "$(wc -c < AURISI.html)" -eq 1916237
             python3 .github/scripts/build_v6051.py AURISI.html AURISI_new.html
             test "$(wc -c < AURISI_new.html)" -eq 1916935
             grep -q 'stuParse' AURISI_new.html
-            grep -q 'stuZip' AURISI_new.html
-            grep -q 'studio_projects' AURISI_new.html
             grep -q 'image_url' AURISI_new.html
             mv AURISI_new.html AURISI.html
           fi
-          if ! grep -q 'APP_VERSION="60.52"' AURISI.html; then
-            test "$(wc -c < AURISI.html)" -eq 1916935
-            python3 .github/scripts/build_v6052.py AURISI.html AURISI_new.html
-            test "$(wc -c < AURISI_new.html)" -eq 1935927
-            grep -q 'llSys' AURISI_new.html
+          if ! grep -q 'APP_VERSION="60.53"' AURISI.html; then
+            test "$(wc -c < AURISI.html)" -eq 1935927
+            python3 .github/scripts/build_v6053.py AURISI.html AURISI_new.html
+            test "$(wc -c < AURISI_new.html)" -eq 1945423
+            grep -q 'llHub' AURISI_new.html
+            grep -q 'llMigrate' AURISI_new.html
+            grep -q 'llPronCheck' AURISI_new.html
+            grep -q 'llSim' AURISI_new.html
             grep -q 'openLangLab' AURISI_new.html
-            grep -q 'llMission' AURISI_new.html
-            grep -q 'llKit' AURISI_new.html
-            grep -q 'llVital' AURISI_new.html
-            grep -q 'Language Lab' AURISI_new.html
+            grep -q 'Language Hub' AURISI_new.html
             mv AURISI_new.html AURISI.html
           fi
           python3 .github/scripts/build_institute_v2.py institute_new.html
@@ -45,6 +43,6 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add AURISI.html institute.html admin.html
-            git commit -m "chore: build v60.52 + institute v2 + HQ v2"
+            git commit -m "chore: build v60.53 + institute v2 + HQ v2"
             git push
           fi
