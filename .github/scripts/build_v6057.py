@@ -4,12 +4,9 @@ h=io.open(src,encoding='utf-8').read()
 assert len(h.encode('utf-8'))==1950110, 'base size mismatch'
 assert h.count('APP_VERSION="60.56"')==1
 pairs=[
-  (base64.b64decode('J0FkamVjdGl2ZXMgJiB0aGVpciBvcHBvc2l0ZXMn').decode('utf-8'),
-   base64.b64decode('J1ZlcmIgZm9ybXM6IFYxIFYyIFYzIG9mIGtleSB2ZXJicyc=').decode('utf-8')),
-  (base64.b64decode('J1dvcmsgJiBzdHVkeSB3b3Jkcyc=').decode('utf-8'),
-   base64.b64decode('J1dvcmQgZm9ybXM6IG5vdW4gdmVyYiBhZGplY3RpdmUgYWR2ZXJiJw==').decode('utf-8')),
-  (base64.b64decode('J0h1bW91cjogam9rZXMgJiB3b3JkcGxheSc=').decode('utf-8'),
-   base64.b64decode('J0dsb2JhbCBFbmdsaXNoOiBhY2NlbnRzLCBzbGFuZywgYW55IGNvdW50cnkn').decode('utf-8')),
+  ('Adjectives & their opposites','Verb forms: V1 V2 V3 of key verbs'),
+  ('Work & study words','Word forms: noun verb adjective adverb'),
+  ('Humour: jokes & wordplay','Global English: accents, slang, any country'),
   (base64.b64decode('' +
     'KDMpIFRFTlNFUzogQUxMIGVzc2VudGlhbCB0ZW5zZXMg4oCUIG5hbWUsIHdoZW4gdG8gdXNlLCBo' +
     'b3cgdG8gZm9ybSwgb25lIG1pbmkgZXhhbXBsZSBlYWNoOyAoNCkgVE9QIDUwIFBIUkFTRVM6').decode('utf-8'),
