@@ -5,7 +5,7 @@ assert len(h.encode('utf-8'))==1950110, 'base size mismatch'
 assert h.count('APP_VERSION="60.56"')==1
 pairs=[
   (base64.b64decode('J0FkamVjdGl2ZXMgJiB0aGVpciBvcHBvc2l0ZXMn').decode('utf-8'),
-   base64.b64decode('J1ZlcmIgZm9ybXM6IFYxIFYyIFYzIG9mIGtleSB2ZXJicw==').decode('utf-8')),
+   base64.b64decode('J1ZlcmIgZm9ybXM6IFYxIFYyIFYzIG9mIGtleSB2ZXJicyc=').decode('utf-8')),
   (base64.b64decode('J1dvcmsgJiBzdHVkeSB3b3Jkcyc=').decode('utf-8'),
    base64.b64decode('J1dvcmQgZm9ybXM6IG5vdW4gdmVyYiBhZGplY3RpdmUgYWR2ZXJiJw==').decode('utf-8')),
   (base64.b64decode('J0h1bW91cjogam9rZXMgJiB3b3JkcGxheSc=').decode('utf-8'),
