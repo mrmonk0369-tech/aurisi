@@ -1,3 +1,22 @@
-# v60.55 build was abandoned mid-way — the English-only-immersion direction was rejected.
-# Live AURISI v60.54 (Bilingual Ladder: Hindi support for all languages incl. American English) is the desired behavior.
-# This file is intentionally inert. Do not call it from any workflow.
+import sys,io,base64
+src,dst=sys.argv[1],sys.argv[2]
+h=io.open(src,encoding='utf-8').read()
+assert len(h.encode('utf-8'))==1946390, 'base size mismatch'
+assert h.count('APP_VERSION="60.54"')==1
+OLD=base64.b64decode('CiAgJzEuIFRIRSBCSUxJTkdVQUwgTEFEREVSIChNT1NUIElNUE9SVEFOVCBSVUxFIOKAlCBhIGNvbmZ1c2VkIHN0dWRlbnQgbGVhcm5zIG5vdGhpbmcpOlxuJysKICAoTC5kYXlzJiZkPD0zMD8nICAgRk9VTkRBVElPTiBwaGFzZSA9IEZVTEwgQklMSU5HVUFMOiBldmVyeSBzZW50ZW5jZSB5b3Ugd3JpdGUgaW4gJytMLm5hbWUrJyBNVVNUIGJlIGltbWVkaWF0ZWx5IGZvbGxvd2VkIGJ5IGl0cyBIaW5kaSB0cmFuc2xhdGlvbiBpbiBicmFja2V0cy4gRXZlcnkgbmV3IHdvcmQ6ICcrTC5uYW1lKycgd29yZCDigJQgSGluZGkgbWVhbmluZy4gRm9yIHNlbnRlbmNlcyB0aGUgc3R1ZGVudCBtdXN0IGxlYXJuLCBnaXZlIHdvcmQtYnktd29yZCBicmVha2Rvd24uIFRoZSBzdHVkZW50IG11c3QgTkVWRVIgd29uZGVyIHdoYXQgc29tZXRoaW5nIG1lYW5zLic6JycpKwogIChMLmRheXMmJmQ+MzAmJmQ8PTYwPycgICBJTU1FUlNJT04gcGhhc2UgPSAnK0wubmFtZSsnIGZpcnN0LCBidXQgZ2l2ZSBIaW5kaSBtZWFuaW5nIGZvciBldmVyeSBORVcgd29yZCBhbmQgYSAxLWxpbmUgSGluZGkgc3VtbWFyeSBhZnRlciBlYWNoIHBhcmFncmFwaC4nOicnKSsKICAoTC5kYXlzJiZkPjYwPycgICBGTFVFTkNZIHBoYXNlID0gcHVyZSAnK0wubmFtZSsnLiBVc2UgSGluZGkgT05MWSB0byBleHBsYWluIGEgbWlzdGFrZSBvciBpZiBhc2tlZC4nOicnKSsKICAoIUwuZGF5cz8nICAgRlVMTCBCSUxJTkdVQUw6IGV2ZXJ5IHNlbnRlbmNlIGluICcrTC5uYW1lKycgZm9sbG93ZWQgYnkgSGluZGkgdHJhbnNsYXRpb24gaW4gYnJhY2tldHM7IGV2ZXJ5IG5ldyB3b3JkIHdpdGggSGluZGkgbWVhbmluZy4nOicnKSsnXG4nKwogICcyLiBJZiB0aGUgc3R1ZGVudCB0eXBlcyA/IG9yIGFza3MgdGhlIG1lYW5pbmcg4oCUIFNUT1AgYW5kIHJlLWV4cGxhaW4geW91ciBsYXN0IG1lc3NhZ2UgaW4gSGluZGksIHdvcmQgYnkgd29yZCwgdGhlbiBjb250aW51ZS5cbicrCg==').decode('utf-8')
+NEW=base64.b64decode('CiAgJzEuIElNTUVSU0lPTiBSVUxFIOKAlCBIaW5kaSBpcyBDT01QTEVURUxZIFJFTU9WRUQgZnJvbSBhbGwgbGVzc29ucy4gTkVWRVIgd3JpdGUgYSBzaW5nbGUgSGluZGkgd29yZC4gVGVhY2ggT05MWSBpbiAnK0wubmFtZSsnOlxuJysKICAnICAgLSBFeHBsYWluIG1lYW5pbmcgdXNpbmcgc2ltcGxlciAnK0wubmFtZSsnLCBzeW5vbnltcywgZXhhbXBsZXMsIHJlYWwgc2l0dWF0aW9ucyDigJQgbm90IHRyYW5zbGF0aW9uLlxuJysKICAnICAgLSBBY3QgbGlrZSBhIHRlYWNoZXIgaW4gJytMLnBsYWNlKycgd2hvIGRvZXMgbm90IGtub3cgYW55IG90aGVyIGxhbmd1YWdlLlxuJysKICAnMi4gSWYgdGhlIHN0dWRlbnQgdHlwZXMgPyBvciBhc2tzIHRoZSBtZWFuaW5nIOKAlCBTVE9QIGFuZCByZS1leHBsYWluIHVzaW5nIFNJTVBMRVIgJytMLm5hbWUrJyAoc21hbGxlciB3b3Jkcywgc2hvcnRlciBzZW50ZW5jZXMsIG9uZSBleGFtcGxlKS4gU3RpbGwgbmV2ZXIgSGluZGkuXG4nKwo=').decode('utf-8')
+ot=base64.b64decode('8J+SoSBUeXBlIDxiPj88L2I+IGluIGNoYXQgYW55dGltZSDigJQgQVVSSVNJIHdpbGwgcmUtZXhwbGFpbiBpbiBIaW5kaSwgd29yZCBieSB3b3JkLiBFYXJseSBkYXlzID0gZnVsbCBiaWxpbmd1YWwgc3VwcG9ydDsgaXQgZmFkZXMgYXMgeW91IGltcHJvdmUu').decode('utf-8')
+nt=base64.b64decode('8J+SoSBUeXBlIDxiPj88L2I+IGluIGNoYXQgYW55dGltZSDigJQgQVVSSVNJIHdpbGwgcmUtZXhwbGFpbiBpbiBzaW1wbGVyIHdvcmRzLiBGdWxsIGltbWVyc2lvbjogb25seSB0aGUgY291cnNlIGxhbmd1YWdlLCBuZXZlciBIaW5kaS4=').decode('utf-8')
+hdr=base64.b64decode('djYwLjU0IExBTkdVQUdFIEhVQiDigJQgQklMSU5HVUFMIExBRERFUiBFRElUSU9OAHY2MC41NSBMQU5HVUFHRSBIVUIg4oCUIFBVUkUgSU1NRVJTSU9OIEVESVRJT04=').decode('utf-8').split(chr(0))
+assert OLD in h, 'llSys region missing'
+h=h.replace(OLD,NEW)
+assert ot in h, 'tip missing'
+h=h.replace(ot,nt)
+h=h.replace(hdr[0],hdr[1])
+h=h.replace('APP_VERSION="60.54"','APP_VERSION="60.55"')
+out=h.encode('utf-8')
+assert len(out)==1945893, 'output mismatch: %d'%len(out)
+for m in ['IMMERSION RULE','NEVER write a single Hindi word','never Hindi','llHub','llPronCheck','APP_VERSION="60.55"']:
+    assert m in h, 'missing '+m
+io.open(dst,'w',encoding='utf-8').write(h)
+print('build_v6055 OK ->',len(out))
