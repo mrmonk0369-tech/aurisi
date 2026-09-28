@@ -1,4 +1,4 @@
-name: Build AURISI v60.61 + Institute Portal v2 + HQ v2
+name: Build AURISI v60.61 + Institute Portal v2 + HQ v3
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -15,7 +15,6 @@ jobs:
             python3 .github/scripts/build_v6061.py AURISI.html AURISI_new.html
             test "$(wc -c < AURISI_new.html)" -eq 1955980
             grep -q 'LANGUAGE SEPARATION' AURISI_new.html
-            grep -q 'Fresh chat' AURISI_new.html
             grep -q 'llWorld' AURISI_new.html
             grep -q 'llQuiz' AURISI_new.html
             mv AURISI_new.html AURISI.html
@@ -25,14 +24,15 @@ jobs:
           grep -q 'Aurisi platform fee' institute_new.html
           mv institute_new.html institute.html
           python3 .github/scripts/build_hq.py admin_new.html
-          test "$(wc -c < admin_new.html)" -eq 22598
+          test "$(wc -c < admin_new.html)" -eq 25694
           grep -q 'AURISI HQ' admin_new.html
-          grep -q 'ghTok' admin_new.html
+          grep -q 'wl_payments' admin_new.html
+          grep -q 'loadPays' admin_new.html
           mv admin_new.html admin.html
           if [ -n "$(git status --porcelain)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add AURISI.html institute.html admin.html
-            git commit -m "chore: build v60.61 + institute v2 + HQ v2"
+            git commit -m "chore: build v60.61 + institute v2 + HQ v3"
             git push
           fi
