@@ -1916,7 +1916,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.58",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.59",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -6958,7 +6958,7 @@ async function stuLoadProj(id){
   }catch(e){toast("Could not reach server")}
 }
 
-/* ===================== v60.58 LANGUAGE HUB — HOW-TO-PRONOUNCE EDITION ===================== */
+/* ===================== v60.59 LANGUAGE HUB — QUIZ-AFTER-LESSON EDITION ===================== */
 var LL_LANGS={
  'en-US':{name:'American English',native:'English',flag:'🇺🇸',voice:'en-US',days:90,place:'the USA (you are in New York City)',
   vital:['the','be','to','of','and','a','in','that','have','I','it','for','not','on','with','he','as','you','do','at','this','but','his','by','from','they','we','say','her','she','or','an','will','my','one','all','would','there','their','what','so','up','out','if','about','who','get','which','go','me','when','make','can','like','time','no','just','him','know','take','good','new','first','much','right','think','every'],
@@ -7024,7 +7024,7 @@ function llStep(){var ph=llPhase(llDay());return LL_STEPS[ph][llStepIdx()]}
 function llMaster(){
   var s=llHub();if(!s||!s.active)return;var L=llLang();
   closeLL();
-  quick('ONE-SHOT MASTER FOUNDATION for '+L.name+' — the 100% survival kit I will revise for the whole course. Teach it ALL in this single lesson, in clear sections: (1) ALPHABET & SOUNDS: every letter and key letter-combination with its sound; (2) SILENT LETTERS: every silent-letter rule with example words; (3) TENSES: ALL essential tenses — name, when to use, how to form, one mini example each; (3b) VERB FORMS: 1st, 2nd, 3rd form (V1 V2 V3) of the 60 most important verbs, plus word forms (same word as noun/verb/adjective/adverb); (4) TOP 50 PHRASES: the most-used everyday phrases; (5) TOP 20 IDIOMS: idioms natives really use; (6) CORE GRAMMAR: the rules that cover most sentences; (7) THE 100 VITAL WORDS. Tight sections, bold key items, short examples. This is the single most important lesson of the course — complete and unforgettable.');
+  quick('ONE-SHOT MASTER FOUNDATION for '+L.name+' — the 100% survival kit I will revise for the whole course. Teach it ALL in this single lesson, in clear sections: (1) ALPHABET & SOUNDS: every letter and key letter-combination with its sound; (2) SILENT LETTERS: every silent-letter rule with example words; (3) TENSES: ALL essential tenses — name, when to use, how to form, one mini example each; (3b) VERB FORMS: 1st, 2nd, 3rd form (V1 V2 V3) of the 60 most important verbs, plus word forms (same word as noun/verb/adjective/adverb); (4) TOP 50 PHRASES: the most-used everyday phrases; (5) TOP 20 IDIOMS: idioms natives really use; (6) CORE GRAMMAR: the rules that cover most sentences; (7) THE 100 VITAL WORDS. Tight sections, bold key items, short examples. This is the single most important lesson of the course — complete and unforgettable. End with a 5-question quiz on this foundation, one question at a time, format: [[QUIZ|question|option A|option B|option C|option D|correct letter|one-line explanation|topic]].');
   setTimeout(llMark,1500);
 }
 function llSys(){
@@ -7042,11 +7042,11 @@ function llSys(){
   '6. End every reply with ONE quick drill (fill-the-blank / translate this / say this aloud).\n'+
   '7. Use real places, prices, names and daily situations from '+L.place+' so it feels like the student is living there.\n'+
   '8. Keep lessons tight: max ~180 words per reply. Bold the key words.\n'+
-  (L.days?('9. THE STUDENT IS ON A 90-DAY FLUENCY PROGRAM: Day '+d+'/90, Phase: '+llPhase(d)+' — '+llPhaseDesc(llPhase(d))+'\n9. In Phase FOUNDATION drill sounds, vital words and survival phrases. In IMMERSION use real readings/audio + shadowing. In FLUENCY run full conversations and debate. Always train the 4 pillars: reading, writing, listening, speaking — plus pronunciation drills (phonetic respelling, mouth position tips, common Indian-speaker mistakes).'):'9. Teach as a full deep course: sounds → vital words → grammar patterns → reading → listening → speaking, always with the Vital-90% first principle. Always train the 4 pillars: reading, writing, listening, speaking — plus pronunciation drills (phonetic respelling, mouth position tips, common Indian-speaker mistakes).')+'\nCURRENT STEP: '+llStep()+'. Build today\'s lesson around this step topic.\n';
+  (L.days?('9. THE STUDENT IS ON A 90-DAY FLUENCY PROGRAM: Day '+d+'/90, Phase: '+llPhase(d)+' — '+llPhaseDesc(llPhase(d))+'\n9. In Phase FOUNDATION drill sounds, vital words and survival phrases. In IMMERSION use real readings/audio + shadowing. In FLUENCY run full conversations and debate. Always train the 4 pillars: reading, writing, listening, speaking — plus pronunciation drills (phonetic respelling, mouth position tips, common Indian-speaker mistakes).'):'9. Teach as a full deep course: sounds → vital words → grammar patterns → reading → listening → speaking, always with the Vital-90% first principle. Always train the 4 pillars: reading, writing, listening, speaking — plus pronunciation drills (phonetic respelling, mouth position tips, common Indian-speaker mistakes).')+'\nCURRENT STEP: '+llStep()+'. Build today\'s lesson around this step topic.\n10. QUIZ AFTER EVERY LESSON (MANDATORY): when the lesson content is done, give a 5-question quiz on what you just taught. One question at a time, use EXACTLY this token format: [[QUIZ|question|option A|option B|option C|option D|correct letter|one-line explanation|2-4 word topic]] — exactly 4 options, correct letter is A, B, C or D, keep fields short, never use the | character inside a field. After the quiz, report my score and my weak growth areas.\n';
 }
 function llMission(kind){
   var s=llHub();if(!s||!s.active)return;var L=llLang();var d=llDay();
-  var base='This is my Day '+d+'/'+(L.days||'∞')+' '+L.name+' lesson — CURRENT STEP: '+llStep()+'. ';
+  var base='This is my Day '+d+'/'+(L.days||'∞')+' '+L.name+' lesson — CURRENT STEP: '+llStep()+'. End with the 5-question lesson quiz. ';
   var map={
    read:base+'READING PILLAR MISSION: give me a short graded passage (4-6 sentences, real-life '+L.place+' situation), then: (1) 3 new key words with meaning, (2) 2 comprehension questions, (3) one line I must say aloud.',
    write:base+'WRITING PILLAR MISSION: give me ONE short writing prompt about my real life (today, my family, my work). WAIT for my reply, then correct my sentences line-by-line and rewrite them perfectly.',
@@ -7083,6 +7083,12 @@ function llHowGo(){
   var b=document.getElementById('llHowBack');if(b)b.remove();
   try{speakText(w)}catch(e){}
   quick('HOW TO PRONOUNCE in '+L.name+' — say it out loud for me too. The word/sentence: "'+w+'". Teach me EXACTLY how to say it: (1) SOUND-WORDS in brackets, made of simple small words/sounds I already know — exactly like: I’m (eye, m) · comfortable (KUM-fur-tuh-bul) · world (wur-ld) · schedule (SKED-jool). Do this for EVERY word I typed. (2) SYLLABLES: split each word, stressed part in CAPS. (3) SLOW-MO: small repeatable chunks. (4) SILENT LETTERS in it, if any. (5) Mouth tip for the hardest sound. (6) Two more words that follow the same pattern. Never Hindi.');
+  setTimeout(llMark,1500);
+}
+function llQuiz(){
+  var s=llHub();if(!s||!s.active)return;var L=llLang();
+  closeLL();
+  quick('QUIZ TIME — '+L.name+'. Give me a 10-question interactive quiz covering everything I have learned so far (my current step is: '+llStep()+'), mixing older steps in too. One question at a time, use EXACTLY this format: [[QUIZ|question|option A|option B|option C|option D|correct letter|one-line explanation|2-4 word topic]] — exactly 4 options, correct letter A, B, C or D, short fields, never use | inside a field. After the last question, report my score and my weak growth areas.');
   setTimeout(llMark,1500);
 }
 function llVital(){
@@ -7223,6 +7229,7 @@ function openLangLab(){
     var si=llStepIdx();var phK=llPhase(d);
     html+='<div class="ll-step">📍 STEP '+(si+1)+' of 30: '+LL_STEPS[phK][si]+'</div>';
     html+='<div class="ll-road">NEXT → '+LL_STEPS[phK][Math.min(si+1,29)]+' · '+LL_STEPS[phK][Math.min(si+2,29)]+'</div>';
+    html+='<div class="ll-road">✅ After every lesson: a 5-question quiz with score & growth areas</div>';
     html+='<div class="feat-sec"><b>TODAY\u2019S PILLAR MISSIONS ('+ms+'/4 done)</b><div class="ll-grid2">';
     html+='<div class="ll-m" onclick="llMission(\'read\')">📖<b>Reading</b><small>Real passage + questions</small></div>';
     html+='<div class="ll-m" onclick="llMission(\'write\')">✍️<b>Writing</b><small>Write, get corrected</small></div>';
@@ -7234,6 +7241,7 @@ function openLangLab(){
     html+='<div class="ll-row ll-link" onclick="llPronCheck()">🏅 Pronunciation Check — say 5 words, get your accent SCORE</div>';
     html+='</div>';
     html+='<div class="feat-sec"><b>⚡ POWER TOOLS</b>';
+    html+='<div class="ll-row ll-link" onclick="llQuiz()">📝 Quiz me — 10-question test on my progress + growth areas</div>';
     html+='<div class="ll-row ll-link" onclick="llHow()">🔤 How to pronounce — type any word, get (eye, m) style sound-words</div>';
     html+='<div class="ll-row ll-link" onclick="llMaster()">🎓 Master Foundation — one-shot kit: letters, silent letters, ALL tenses, phrases, idioms</div>';
     html+='<div class="ll-row ll-link" onclick="llVital()">⚡ The Vital 90% — words, phrases & rules that matter most</div>';
