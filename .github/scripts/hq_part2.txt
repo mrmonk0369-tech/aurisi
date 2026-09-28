@@ -39,11 +39,12 @@ async function rpc(fn,body){var r=await fetch(SB+"/rpc/"+fn,{method:"POST",heade
 function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return "&#"+c.charCodeAt(0)+";"})}
 function $(id){return document.getElementById(id)}
 function go(p){
-  ["Dash","Inst","Sales","Codes","Set"].forEach(function(x){
+  ["Dash","Inst","Pay","Sales","Codes","Set"].forEach(function(x){
     $("pg"+x).classList.toggle("hide",x!==p);
     $("tab"+x).classList.toggle("on",x===p);
   });
   if(p==="Sales")renderSales();
+  if(p==="Pay")loadPays();
 }
 
 async function doLogin(){
