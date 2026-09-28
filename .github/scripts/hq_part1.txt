@@ -70,6 +70,7 @@ code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padd
     <div class="tab" id="tabInst" onclick="go('Inst')">🏫 Institutes</div>
     <div class="tab" id="tabSales" onclick="go('Sales')">🎓 Sales</div>
     <div class="tab" id="tabCodes" onclick="go('Codes')">🔑 Codes</div>
+    <div class="tab" id="tabPay" onclick="go('Pay')">💰 Payments</div>
     <div class="tab" id="tabSet" onclick="go('Set')">⚙️ Settings</div>
   </div>
 
@@ -107,6 +108,14 @@ code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padd
       <h2>🎓 Courses & sales — every institute</h2>
       <div id="salesBox"><span class="mut">Loading…</span></div>
       <div class="mut" style="margin-top:8px">Your fee = commission% of every sale. Institutes settle monthly via your UPI (Settings tab).</div>
+    </div>
+  </div>
+
+  <div id="pgPay" class="hide">
+    <div class="card">
+      <h2>💰 White-label payments</h2>
+      <div class="mut" style="margin-bottom:10px">Institute plan payments (UPI + UTR). Approve after checking your bank/UPI app — approving activates the plan and adds its days.</div>
+      <div id="payBox"><span class="mut">Loading…</span></div>
     </div>
   </div>
 
