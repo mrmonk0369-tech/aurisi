@@ -120,6 +120,51 @@ async function loadCodes(){
   }catch(e){$("codeList").innerHTML='<span class="mut">Could not load.</span>'}
 }
 
+var PAYS=[];
+async function loadPays(){
+  var el=$("payBox");
+  try{
+    var r=await fetch(SB+"/wl_payments?select=*&order=created_at.desc&limit=200",{headers:H()});
+    PAYS=await r.json()||[];
+    if(!PAYS.length){el.innerHTML='<span class="mut">No payment requests yet.</span>';return}
+    var rank={pending:0,approved:1,rejected:2};
+    PAYS.sort(function(a,b){return (rank[a.status]!==undefined?rank[a.status]:3)-(rank[b.status]!==undefined?rank[b.status]:3)});
+    var h='<table class="tbl"><tr><th>Institute</th><th>Plan</th><th>Amount</th><th>UTR</th><th>Status</th><th>Action</th></tr>';
+    PAYS.forEach(function(p){
+      var nm=p.slug||p.email||String(p.inst_id||"").slice(0,8);
+      h+='<tr><td>'+escH(nm)+'</td><td>'+escH(p.plan)+'</td><td>Rs '+(p.amount||0)+'</td><td>'+escH(p.utr||"—")+'</td><td>'+escH(p.status)+'</td>';
+      h+='<td>'+(p.status==="pending"?'<button class="sec" onclick="approvePay(\''+p.id+'\')">Approve</button> <button class="sec" onclick="rejectPay(\''+p.id+'\')">Reject</button>':'—')+'</td></tr>';
+    });
+    el.innerHTML=h+'</table>';
+  }catch(e){el.innerHTML='<span class="mut">Could not load payments.</span>'}
+}
+async function approvePay(id){
+  var p=PAYS.filter(function(x){return x.id===id})[0];if(!p)return;
+  var days=p.plan==="monthly"?30:365;
+  if(!confirm("Approve "+p.plan+" (Rs "+p.amount+") for "+(p.slug||p.email||"?")+" — activates plan and adds "+days+" days?"))return;
+  try{
+    var q="wl_institutes?id=eq."+encodeURIComponent(p.inst_id);
+    if(!p.inst_id&&p.slug)q="wl_institutes?slug=eq."+encodeURIComponent(p.slug);
+    var rr=await fetch(SB+"/"+q+"&select=id,trial_ends",{headers:H()});
+    var rows=await rr.json();
+    if(!rows||!rows.length){toast("Institute not found");return}
+    var base=new Date(rows[0].trial_ends||"");
+    if(isNaN(base.getTime())||base<new Date())base=new Date();
+    base.setDate(base.getDate()+days);
+    var iso=base.toISOString().slice(0,10);
+    await fetch(SB+"/"+q,{method:"PATCH",headers:H(),body:JSON.stringify({plan:p.plan,trial_ends:iso,status:"active"})});
+    await fetch(SB+"/wl_payments?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:H(),body:JSON.stringify({status:"approved"})});
+    toast("Approved — plan active till "+iso);
+    loadPays();
+  }catch(e){toast("Failed — try again")}
+}
+async function rejectPay(id){
+  if(!confirm("Reject this payment request?"))return;
+  try{
+    await fetch(SB+"/wl_payments?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:H(),body:JSON.stringify({status:"rejected"})});
+    toast("Rejected");loadPays();
+  }catch(e){toast("Failed — try again")}
+}
 if(AK){rpc("admin_login",{p_key:AK}).then(function(ok){if(ok===true)showDash()})}
 </script>
 </body>
