@@ -1,4 +1,4 @@
-name: Build AURISI v60.62 + Institute Portal v2 + HQ v3
+name: Build AURISI v60.63 + Institute Portal v2 + HQ v3
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,14 +10,16 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if ! grep -q 'APP_VERSION="60.62"' AURISI.html; then
-            test "$(wc -c < AURISI.html)" -eq 1955980
-            python3 .github/scripts/build_v6062.py AURISI.html AURISI_new.html
-            test "$(wc -c < AURISI_new.html)" -eq 1914846
-            grep -q 'APP_VERSION="60.62"' AURISI_new.html
+          if ! grep -q 'APP_VERSION="60.63"' AURISI.html; then
+            test "$(wc -c < AURISI.html)" -eq 1914846
+            python3 .github/scripts/build_v6063.py AURISI.html AURISI_new.html
+            test "$(wc -c < AURISI_new.html)" -eq 1904318
+            grep -q 'APP_VERSION="60.63"' AURISI_new.html
+            if grep -q 'LANG_MODES' AURISI_new.html; then echo 'LANG_MODES still present'; exit 1; fi
             if grep -q 'Language Hub' AURISI_new.html; then echo 'Language Hub still present'; exit 1; fi
-            if grep -q 'llSys' AURISI_new.html; then echo 'llSys still present'; exit 1; fi
-            grep -q 'LANG_MODES' AURISI_new.html
+            if grep -q 'stopLangMode' AURISI_new.html; then echo 'stopLangMode still present'; exit 1; fi
+            grep -q 'uiLangSel' AURISI_new.html
+            grep -q 'lang-tile' AURISI_new.html
             mv AURISI_new.html AURISI.html
           fi
           python3 .github/scripts/build_institute_v2.py institute_new.html
@@ -32,6 +34,6 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add AURISI.html institute.html admin.html
-            git commit -m "chore: build v60.62 (Language Hub removed) + institute v2 + HQ v3"
+            git commit -m "chore: build v60.63 (Language Hub fully removed) + institute v2 + HQ v3"
             git push
           fi
