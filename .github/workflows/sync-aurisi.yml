@@ -1,4 +1,4 @@
-name: Build AURISI v60.67 + Institute Portal v2 + HQ v3
+name: Build AURISI v60.68 + Institute Portal v2 + HQ v3
 on: [push, workflow_dispatch]
 permissions:
   contents: write
@@ -10,14 +10,14 @@ jobs:
       - run: |
           set -e
           test -f AURISI.html
-          if ! grep -q 'APP_VERSION="60.67"' AURISI.html; then
-            test "$(wc -c < AURISI.html)" -eq 1779806
-            python3 .github/scripts/build_v6067.py AURISI.html AURISI_new.html
-            test "$(wc -c < AURISI_new.html)" -eq 1786250
-            grep -q 'APP_VERSION="60.67"' AURISI_new.html
-            grep -q 'CreateMLCEngine' AURISI_new.html
-            grep -q 'localStatus' AURISI_new.html
-            grep -q 'if(localReady()){' AURISI_new.html
+          if ! grep -q 'APP_VERSION="60.68"' AURISI.html; then
+            test "$(wc -c < AURISI.html)" -eq 1786250
+            python3 .github/scripts/build_v6068.py AURISI.html AURISI_new.html
+            test "$(wc -c < AURISI_new.html)" -eq 1787620
+            grep -q 'APP_VERSION="60.68"' AURISI_new.html
+            grep -q 'PROFESSOR STANDARD' AURISI_new.html
+            if grep -q 'LANG_ON' AURISI_new.html; then echo 'LANG_ON remnant'; exit 1; fi
+            grep -q 'return PROF+profileLine()' AURISI_new.html
             mv AURISI_new.html AURISI.html
           fi
           python3 .github/scripts/build_institute_v2.py institute_new.html
@@ -30,6 +30,6 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add AURISI.html institute.html admin.html
-            git commit -m "chore: build v60.67 (on-device AI via WebGPU) + institute v2 + HQ v3"
+            git commit -m "chore: build v60.68 (professor standard + dead-code surgery)"
             git push
           fi
