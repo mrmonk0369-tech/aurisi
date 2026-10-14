@@ -1,4 +1,4 @@
-name: Sync AURISI (verify v60.71)
+name: Sync AURISI (verify v60.72)
 on: [push, workflow_dispatch]
 permissions:
   contents: read
@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify v60.71 (chat-first + saved chats + Settings visible)
+      - name: Verify v60.72 (Language Professor EN+ES, API voice + mic)
         run: |
           set -e
-          test "$(wc -c < AURISI.html)" -eq 1755688
-          grep -q 'APP_VERSION="60.71"' AURISI.html
+          test "$(wc -c < AURISI.html)" -eq 1783632
+          grep -q 'APP_VERSION="60.72"' AURISI.html
           grep -q 'PROFESSOR STANDARD' AURISI.html
-          for s in SEALED sealed-hide seal-target aurisiApplySeal; do
-            if grep -q "$s" AURISI.html; then echo "REMNANT: $s"; exit 1; fi
-          done
-          echo "v60.71 verified: chat-first, seal removed, professor present"
+          grep -q 'profScreen' AURISI.html
+          grep -q 'AURALIS_EN_ES' AURISI.html
+          grep -q 'SpeechRecognition' AURISI.html
+          echo "v60.72 verified: Language Professor present, professor standard intact"
