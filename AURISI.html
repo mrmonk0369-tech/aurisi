@@ -1620,7 +1620,7 @@ body.chat-focus .chat-back-btn{display:none!important}
       <div class="field">
         <label data-i18n="langLabel">🌍 Language (Aurisi replies & speaks in this)</label>
         <select class="select" id="uiLangSel" style="width:100%"></select>
-        <div class="hint" data-i18n="langHint">Pick any language — Hindi, Korean, Spanish, Tamil, whatever you like. If you type in a different language, Aurisi switches to match you automatically.</div>
+        <div class="hint" data-i18n="langHint">Aurisi replies and speaks in the language you pick. Choose American English (en-US) or Spanish (es-ES). The Language Professor teaches both by voice.</div>
       </div>
 
       <div class="field">
@@ -1629,37 +1629,9 @@ body.chat-focus .chat-back-btn{display:none!important}
           <option value="auto" data-i18n="curAuto">Auto-detect from how I write</option>
           <option value="india" data-i18n="curIndia">🇮🇳 India — CBSE / ICSE / State Boards</option>
           <option value="usa" data-i18n="curUsa">🇺🇸 USA — Common Core / AP / SAT</option>
-          <option value="uk" data-i18n="curUk">🇬🇧 UK — GCSE / A-Level / National Curriculum</option>
-          <option value="korea" data-i18n="curKorea">🇰🇷 Korea — National Curriculum / CSAT (수능)</option>
           <option value="other" data-i18n="curOther">🌍 Other / International</option>
         </select>
       </div>
-
-      <div class="field">
-        <label>👤 Who uses Aurisi?</label>
-        <select class="select" id="profileSel" style="width:100%" onchange="profileSelChange()">
-          <option value="student">🎓 Student — full app</option>
-          <option value="teacher">👨‍🏫 Teacher / Tuition — teaching tools only</option>
-          <option value="institute">🏫 Coaching Institute — batch & exam focus</option>
-          <option value="junior">🧒 Junior student (classes 6-8) — simple mode</option>
-        </select>
-        <select class="select" id="profileDetailSel" style="width:100%;margin-top:6px;display:none"></select>
-        <div class="hint">Aurisi adapts the Home screen and teaching style to who is using it. Tuition owners: pick the classes you teach.</div>
-      </div>
-
-      <div class="field" id="bizField">
-        <label>💼 Business & Institute</label>
-        <button class="lib-open" style="width:100%;margin-bottom:10px" onclick="openBizGuide()">📖 How Aurisi Business works</button>
-        <div id="instBox"></div>
-        <div class="hint">One app, three plans: students learn free, institutes run on a paid license, and Pro unlocks the full app. Tap the guide for details.</div>
-      </div>
-
-      <div class="field" id="proField" style="display:none">
-        <label>✨ Aurisi Pro</label>
-        <div id="proBox"></div>
-      </div>
-
-      <div id="bizDiscreet" style="display:none;text-align:center;margin-top:4px"><button class="lib-chip" onclick="openBizDiscreet()">🏫 For institutes & tuitions</button></div>
 
       <div class="field">
         <label>🎭 AI teaching tone</label>
@@ -1773,28 +1745,9 @@ body.chat-focus .chat-back-btn{display:none!important}
         <div class="hint">Paid — console.anthropic.com. Claude Sonnet does the teaching.</div>
       </div>
 
-      <div class="s-sec-h">Free account switch</div>
-
-      <div class="field">
-        <button class="lib-open" style="width:100%" onclick="switchPuterAccount()">🔄 Change Puter account (the free fallback)</button>
-        <div class="hint">Puter is the free backup brain Aurisi uses when no key is set. No setup needed.</div>
-      </div>
     </div>
 
     <div class="stab-grp" id="stab-advanced">
-      <div class="s-sec-h">Your institute — white-label</div>
-
-      <div class="field">
-        <label>🏫 Institute name (optional)</label>
-        <input type="text" id="instName" placeholder="e.g. Apex Classes">
-        <div class="hint">Your institute's name and logo replace Aurisi branding — on the app and on printed papers.</div>
-      </div>
-
-      <div class="field">
-        <label>🖼️ Institute logo (optional — leave empty to keep current)</label>
-        <div class="file-row"><label class="file-btn">🖼️ Choose image<input type="file" id="instLogo" accept="image/*" style="display:none"></label><span class="file-name" id="instLogoName">No file chosen</span></div>
-      </div>
-
       <div class="s-sec-h">Look & feel</div>
 
       <div class="field">
@@ -1820,20 +1773,6 @@ body.chat-focus .chat-back-btn{display:none!important}
         </div>
         <div class="hint">Recolours the whole app instantly — buttons, highlights, glows.</div>
       </div>
-
-      <div class="s-sec-h">☁️ Cloud sync — same data on every device (optional)</div>
-      <div class="hint" style="margin:-6px 0 10px">Optional. Sign in on another device with the same account and your chats and settings appear there. Most students can skip this.</div>
-
-      <div class="field">
-        <label>Supabase project URL</label>
-        <input type="text" id="sbUrlSet" placeholder="https://xxxx.supabase.co">
-      </div>
-      <div class="field">
-        <label>Supabase anon key (public)</label>
-        <input type="password" id="sbKeySet" placeholder="eyJ…">
-      </div>
-      <div class="acct-row"><span id="cloudStatus">Not configured</span></div>
-      <div class="acct-row"><button class="btn small" onclick="cloudSaveSettings()">Save cloud settings</button> <button class="btn small" onclick="cloudSyncNow()">Sync now</button> <button class="btn small" onclick="cloudSignOut()">Sign out</button></div>
 
       <div class="s-sec-h">Backup & restore</div>
 
@@ -1934,7 +1873,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.73",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.74",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -2231,7 +2170,7 @@ function populateLangSelect(){
   sel.dataset.filled="1";
 }
 const I18N={
-  en:{appTagline:"AI Assistant",welcomeTitle:"Hi, I'm Aurisi",welcomeSub:"Your all-in-one teacher. Ask me anything — any subject, taught the way a great teacher would.",starterExplain:"🔭 Explain a topic",starterQuiz:"❓ Quiz me",starterCards:"📇 Flashcards",starterHomework:"📝 Homework help",starterPlan:"🗓️ Study plan",placeholderMsg:"Message Aurisi…",makeNotesBtn:"✨ Make notes",ocrScanBtn:"🔍 Scan text",imgAttachedLbl:"🖼️ Image attached",footNote:"Aurisi can make mistakes. Chat is free forever — no key needed (Puter or Pollinations).",chatsTitle:"Chats",newChatBtn:"＋ New chat",settingsTitle:"Settings",settingsSub:"Everything is saved only in your browser.",langLabel:"\ud83c\udf0d Language (American English or Spanish)",langHint:"Aurisi replies and speaks in the language you pick. Choose American English (en-US) or Spanish (es-ES). The Language Professor (Tools \u2192 Language Professor) teaches both by voice.",curriculumLabel:"🎓 Your country / curriculum",curAuto:"Auto-detect from how I write",curIndia:"🇮🇳 India — CBSE / ICSE / State Boards",curUsa:"🇺🇸 USA — Common Core / AP / SAT",curUk:"🇬🇧 UK — GCSE / A-Level / National Curriculum",curKorea:"🇰🇷 Korea — National Curriculum / CSAT (수능)",curOther:"🌍 Other / International",stepLabel:"🪜 Step-by-step mode — tiny steps, checks my understanding before moving on",stepTitle:"🪜 Step-by-step mode",handsTitle:"🎙️ Hands-free mode",wlibTitle:"🌍 World Library",searchTitle:"🔎 Web search on replies",keyLabel:"Gemini API key (optional)",keyHint:"No key? No problem — Aurisi runs free through the Puter fallback (a Puter sign-in window may appear on first use). You can also get a free key at aistudio.google.com.",searchLabel:"Google Search on replies (Web search)",saveBtn:"Save",closeBtn:"Close",deleteBtn:"Delete all data",statusThinking:"Thinking…",statusReady:"Your personal AI",noChats:"No saved chats yet.",starterCheck:"🧠 Check my understanding",cheatBtn:"⚡ Cheat sheet",pdfQuizBtn:"🎯 Quiz from PDF",examModeBtn:"Exam Mode",mistakesBtn:"My Mistakes",starterEmergency:"🆘 Exam in 3 days",testPaperBtn:"📋 Test paper",gradeHwBtn:"📝 Grade homework",starterPredict:"🔮 Predict my score"},
+  en:{appTagline:"AI Assistant",welcomeTitle:"Hi, I'm Aurisi",welcomeSub:"Your all-in-one teacher. Ask me anything — any subject, taught the way a great teacher would.",starterExplain:"🔭 Explain a topic",starterQuiz:"❓ Quiz me",starterCards:"📇 Flashcards",starterHomework:"📝 Homework help",starterPlan:"🗓️ Study plan",placeholderMsg:"Message Aurisi…",makeNotesBtn:"✨ Make notes",ocrScanBtn:"🔍 Scan text",imgAttachedLbl:"🖼️ Image attached",footNote:"Aurisi can make mistakes. Chat is free forever — no key needed (Puter or Pollinations).",chatsTitle:"Chats",newChatBtn:"＋ New chat",settingsTitle:"Settings",settingsSub:"Everything is saved only in your browser.",langLabel:"\ud83c\udf0d Language (American English or Spanish)",langHint:"Aurisi replies and speaks in the language you pick. Choose American English (en-US) or Spanish (es-ES). The Language Professor teaches both by voice.",curriculumLabel:"🎓 Your country / curriculum",curAuto:"Auto-detect from how I write",curIndia:"🇮🇳 India — CBSE / ICSE / State Boards",curUsa:"🇺🇸 USA — Common Core / AP / SAT",curUk:"🇬🇧 UK — GCSE / A-Level / National Curriculum",curKorea:"🇰🇷 Korea — National Curriculum / CSAT (수능)",curOther:"🌍 Other / International",stepLabel:"🪜 Step-by-step mode — tiny steps, checks my understanding before moving on",stepTitle:"🪜 Step-by-step mode",handsTitle:"🎙️ Hands-free mode",wlibTitle:"🌍 World Library",searchTitle:"🔎 Web search on replies",keyLabel:"Gemini API key (optional)",keyHint:"No key? No problem — Aurisi runs free through the Puter fallback (a Puter sign-in window may appear on first use). You can also get a free key at aistudio.google.com.",searchLabel:"Google Search on replies (Web search)",saveBtn:"Save",closeBtn:"Close",deleteBtn:"Delete all data",statusThinking:"Thinking…",statusReady:"Your personal AI",noChats:"No saved chats yet.",starterCheck:"🧠 Check my understanding",cheatBtn:"⚡ Cheat sheet",pdfQuizBtn:"🎯 Quiz from PDF",examModeBtn:"Exam Mode",mistakesBtn:"My Mistakes",starterEmergency:"🆘 Exam in 3 days",testPaperBtn:"📋 Test paper",gradeHwBtn:"📝 Grade homework",starterPredict:"🔮 Predict my score"},
   Hindi:{appTagline:"एआई असिस्टेंट",welcomeTitle:"नमस्ते, मैं Aurisi हूँ",welcomeSub:"आपका ऑल-इन-वन शिक्षक। कुछ भी पूछें — कोई भी विषय, एक बेहतरीन शिक्षक के तरीके से।",starterExplain:"🔭 कोई टॉपिक समझाएं",starterQuiz:"❓ मुझसे क्विज़ लें",starterCards:"📇 फ्लैशकार्ड्स",starterHomework:"📝 होमवर्क में मदद",starterPlan:"🗓️ स्टडी प्लान",placeholderMsg:"Aurisi को मैसेज करें…",makeNotesBtn:"✨ नोट्स बनाएं",ocrScanBtn:"🔍 टेक्स्ट स्कैन",imgAttachedLbl:"🖼️ इमेज जुड़ी है",footNote:"Aurisi गलती कर सकता है। Settings में अपनी Gemini key डालें, या Puter fallback से मुफ्त इस्तेमाल करें।",chatsTitle:"चैट्स",newChatBtn:"＋ नई चैट",settingsTitle:"सेटिंग्स",settingsSub:"सब कुछ केवल आपके ब्राउज़र में सेव होता है।",langLabel:"🌍 भाषा (Aurisi इसी में जवाब देगा और बोलेगा)",langHint:"कोई भी भाषा चुनें — हिंदी, कोरियाई, स्पैनिश, तमिल, जो पसंद हो। अगर आप किसी और भाषा में टाइप करेंगे, तो Aurisi खुद बदल जाएगा।",curriculumLabel:"🎓 आपका देश / पाठ्यक्रम",curAuto:"मेरी लिखावट से खुद पता करें",curIndia:"🇮🇳 भारत — CBSE / ICSE / राज्य बोर्ड",curUsa:"🇺🇸 USA — Common Core / AP / SAT",curUk:"🇬🇧 UK — GCSE / A-Level / National Curriculum",curKorea:"🇰🇷 कोरिया — National Curriculum / CSAT (수능)",curOther:"🌍 अन्य / अंतरराष्ट्रीय",stepLabel:"🪜 स्टेप-बाय-स्टेप मोड — छोटे-छोटे कदम, आगे बढ़ने से पहले समझ जांचें",stepTitle:"🪜 स्टेप-बाय-स्टेप मोड",handsTitle:"🎙️ हैंड्स-फ्री मोड",wlibTitle:"🌍 वर्ल्ड लाइब्रेरी",searchTitle:"🔎 जवाबों में वेब सर्च",keyLabel:"Gemini API key (वैकल्पिक)",keyHint:"Key नहीं है? कोई बात नहीं — Aurisi Puter fallback से मुफ्त चलता है (पहली बार Puter साइन-इन विंडो आ सकती है)। aistudio.google.com से मुफ्त key भी मिल सकती है।",searchLabel:"जवाबों में Google Search (वेब सर्च)",saveBtn:"सेव करें",closeBtn:"बंद करें",deleteBtn:"सारा डेटा डिलीट करें",statusThinking:"सोच रहा हूँ…",statusReady:"आपका पर्सनल AI",noChats:"अभी कोई सेव्ड चैट नहीं है।",starterCheck:"🧠 मेरी समझ जांचें",cheatBtn:"⚡ चीट शीट",pdfQuizBtn:"🎯 PDF से क्विज़",examModeBtn:"एग्ज़ाम मोड",mistakesBtn:"मेरी गलतियाँ",starterEmergency:"🆘 3 दिन में एग्ज़ाम",testPaperBtn:"📋 टेस्ट पेपर",gradeHwBtn:"📝 होमवर्क जांचें",starterPredict:"🔮 मेरा स्कोर बताओ"},
   Korean:{appTagline:"AI 어시스턴트",welcomeTitle:"안녕하세요, 저는 Aurisi예요",welcomeSub:"당신의 올인원 선생님입니다. 무엇이든 물어보세요 — 어떤 과목이든, 훌륭한 선생님처럼 가르쳐 드려요.",starterExplain:"🔭 주제 설명해주기",starterQuiz:"❓ 퀴즈 내주기",starterCards:"📇 플래시카드",starterHomework:"📝 숙제 도움",starterPlan:"🗓️ 학습 계획",placeholderMsg:"Aurisi에게 메시지 보내기…",makeNotesBtn:"✨ 노트 만들기",ocrScanBtn:"🔍 텍스트 스캔",imgAttachedLbl:"🖼️ 이미지 첨부됨",footNote:"Aurisi는 실수를 할 수 있어요. 설정에서 Gemini 키를 추가하거나, Puter 대체 기능으로 무료로 사용하세요.",chatsTitle:"채팅",newChatBtn:"＋ 새 채팅",settingsTitle:"설정",settingsSub:"모든 것은 브라우저에만 저장됩니다.",langLabel:"🌍 언어 (Aurisi가 이 언어로 답하고 말해요)",langHint:"어떤 언어든 선택하세요 — 한국어, 스페인어, 힌디어 등. 다른 언어로 입력하면 Aurisi가 자동으로 맞춰줘요.",curriculumLabel:"🎓 국가 / 교육과정",curAuto:"글쓰기로 자동 감지",curIndia:"🇮🇳 인도 — CBSE / ICSE / 주 교육위원회",curUsa:"🇺🇸 미국 — Common Core / AP / SAT",curUk:"🇬🇧 영국 — GCSE / A-Level / 국가교육과정",curKorea:"🇰🇷 한국 — 국가교육과정 / 수능(CSAT)",curOther:"🌍 기타 / 국제",stepLabel:"🪜 단계별 모드 — 아주 작은 단계로, 이해했는지 확인 후 진행",stepTitle:"🪜 단계별 모드",handsTitle:"🎙️ 핸즈프리 모드",wlibTitle:"🌍 월드 라이브러리",searchTitle:"🔎 답변에 웹 검색",keyLabel:"Gemini API 키 (선택 사항)",keyHint:"키가 없나요? 괜찮아요 — Aurisi는 Puter 대체 기능으로 무료로 실행됩니다. aistudio.google.com에서 무료 키를 받을 수도 있어요.",searchLabel:"답변에 Google 검색 사용",saveBtn:"저장",closeBtn:"닫기",deleteBtn:"모든 데이터 삭제",statusThinking:"생각 중…",statusReady:"나만의 AI",noChats:"저장된 채팅이 아직 없어요.",starterCheck:"🧠 이해도 확인",cheatBtn:"⚡ 치트 시트",pdfQuizBtn:"🎯 PDF 퀴즈",examModeBtn:"시험 모드",mistakesBtn:"내 오답 노트",starterEmergency:"🆘 시험 3일 전",testPaperBtn:"📋 시험지",gradeHwBtn:"📝 숙제 채점",starterPredict:"🔮 점수 예측"},
   Spanish:{appTagline:"Asistente de IA",welcomeTitle:"Hola, soy Aurisi",welcomeSub:"Tu profesor todo en uno. Pregúntame lo que quieras — cualquier materia, enseñado como lo haría un gran profesor.",starterExplain:"🔭 Explicar un tema",starterQuiz:"❓ Hazme un examen",starterCards:"📇 Tarjetas de estudio",starterHomework:"📝 Ayuda con tareas",starterPlan:"🗓️ Plan de estudio",placeholderMsg:"Escribe a Aurisi…",makeNotesBtn:"✨ Crear apuntes",ocrScanBtn:"🔍 Escanear texto",imgAttachedLbl:"🖼️ Imagen adjunta",footNote:"Aurisi puede cometer errores. Agrega tu clave Gemini en Ajustes, o usa el modo gratuito con Puter.",chatsTitle:"Chats",newChatBtn:"＋ Nuevo chat",settingsTitle:"Ajustes",settingsSub:"Todo se guarda solo en tu navegador.",langLabel:"🌍 Idioma (Aurisi responde y habla en este idioma)",langHint:"Elige cualquier idioma — español, coreano, hindi, lo que prefieras. Si escribes en otro idioma, Aurisi se adapta automáticamente.",curriculumLabel:"🎓 Tu país / plan de estudios",curAuto:"Detectar automáticamente",curIndia:"🇮🇳 India — CBSE / ICSE / Juntas estatales",curUsa:"🇺🇸 EE. UU. — Common Core / AP / SAT",curUk:"🇬🇧 Reino Unido — GCSE / A-Level",curKorea:"🇰🇷 Corea — Currículo nacional / CSAT",curOther:"🌍 Otro / Internacional",stepLabel:"🪜 Modo paso a paso — pasos pequeños, comprobando que entiendes antes de avanzar",stepTitle:"🪜 Modo paso a paso",handsTitle:"🎙️ Modo manos libres",wlibTitle:"🌍 Biblioteca mundial",searchTitle:"🔎 Búsqueda web en respuestas",keyLabel:"Clave API de Gemini (opcional)",keyHint:"¿Sin clave? No hay problema — Aurisi funciona gratis con Puter. También puedes obtener una clave gratis en aistudio.google.com.",searchLabel:"Búsqueda de Google en las respuestas",saveBtn:"Guardar",closeBtn:"Cerrar",deleteBtn:"Borrar todos los datos",statusThinking:"Pensando…",statusReady:"Tu IA personal",noChats:"Aún no hay chats guardados.",starterCheck:"🧠 Comprueba mi comprensión",cheatBtn:"⚡ Chuleta",pdfQuizBtn:"🎯 Quiz del PDF",examModeBtn:"Modo de examen",mistakesBtn:"Mis errores",starterEmergency:"🆘 Examen en 3 días",testPaperBtn:"📋 Examen",gradeHwBtn:"📝 Corregir deberes",starterPredict:"🔮 Predecir mi nota"}
@@ -6643,7 +6582,7 @@ async function stuLoadProj(id){
   }catch(e){toast("Could not reach server")}
 }
 
-/* ===================== v60.73 — student sees ONLY the chat; features moved to AURISI backend ===================== */
+/* ===================== v60.74 — Settings cleaned + native-speaker Language Professor ===================== */
 function instCloseModals(){try{document.querySelectorAll(".modal-back.open").forEach(function(x){x.remove()})}catch(e){}}
 function instRenderBox(){
   var el=$("instBox");if(!el)return;
@@ -7338,10 +7277,10 @@ function openSettings(){updateAcctUI();instRenderBox();proRenderBox();bizApplyMo
   $("uiLangSel").value=getUiLang();
   $("curriculumSel").value=getCurriculum();
   try{$("toneSel").value=localStorage.getItem(STORAGE+"tone")||"auto"}catch(e){}
-  try{$("profileSel").value=(getProfile()||{}).role||"student";fillProfileDetail()}catch(e){}
+  try{var _ps=$("profileSel");if(_ps)_ps.value=(getProfile()||{}).role||"student";fillProfileDetail()}catch(e){}
   $("stepChk").checked=getStepMode();
   $("handsFreeChk").checked=isHandsFree();
-  $("instName").value=localStorage.getItem(STORAGE+"instName")||"";
+  var _instNameEl=$("instName");if(_instNameEl)_instNameEl.value=localStorage.getItem(STORAGE+"instName")||"";
   var oi=$("openaiInput");if(oi)oi.value=localStorage.getItem(STORAGE+"openaiKey")||"";
   var ci=$("claudeInput");if(ci)ci.value=localStorage.getItem(STORAGE+"claudeKey")||"";
   var tr=$("ttsRate");if(tr)tr.value=localStorage.getItem(STORAGE+"ttsRate")||"1";
@@ -7374,7 +7313,7 @@ function saveSettings(){
   try{localStorage.setItem(STORAGE+"worldLib",($("wlibChk")&&$("wlibChk").checked)?"1":"0")}catch(e){}
   localStorage.setItem(STORAGE+"uiLang",$("uiLangSel").value||"auto");
   localStorage.setItem(STORAGE+"curriculum",$("curriculumSel").value||"auto");
-  try{saveProfile($("profileSel").value||"student",(($("profileDetailSel")||{}).value)||"")}catch(e){}
+  try{var _ps2=$("profileSel");saveProfile((_ps2&&_ps2.value)||"student",(($("profileDetailSel")||{}).value)||"")}catch(e){}
   try{localStorage.setItem(STORAGE+"tone",$("toneSel").value||"auto")}catch(e){}
   localStorage.setItem(STORAGE+"stepMode",$("stepChk").checked?"1":"0");
   localStorage.setItem(STORAGE+"handsFree",$("handsFreeChk").checked?"1":"0");
@@ -7389,7 +7328,7 @@ function saveSettings(){
   if(sk)localStorage.setItem(STORAGE+"sarvamKey",sk);
   else localStorage.removeItem(STORAGE+"sarvamKey");
   localStorage.setItem(STORAGE+"sarvamVoice",$("sarvamVoiceSel").value||"shubh");
-  localStorage.setItem(STORAGE+"instName",($("instName").value||"").trim());
+  var _instNameEl2=$("instName");localStorage.setItem(STORAGE+"instName",((_instNameEl2&&_instNameEl2.value)||"").trim());
   const lf=$("instLogo");
   if(lf&&lf.files&&lf.files[0]){
     const fr=new FileReader();
@@ -7736,8 +7675,8 @@ function profPickLang(lang){
 }
 function profBegin(){
   var es=PROF.lang==="es-ES";
-  var g=es?"\u00a1Hola! Soy tu profesor de espa\u00f1ol.":"Hi! I'm your English professor.";
-  var gl=es?"(Hello! I'm your Spanish professor.)":"(\u00a1Hola! Soy tu profesor de ingl\u00e9s.)";
+  var g=es?"¡Hola! Soy tu profesor de español nativo.":"Hi! I'm your native English professor.";
+  var gl=es?"(Hello! I'm your native Spanish professor.)":"(¡Hola! Soy tu profesor nativo de inglés.)";
   profAppend("prof","<b>"+profEsc(g)+"</b> <span class='prof-gloss'>"+profEsc(gl)+"</span>");
   profSay(g);
   if(PROF.mode==="lesson")profStartLesson(PROF.topicIdx||0);
@@ -7758,13 +7697,13 @@ function profStartLesson(idx){
   var tp=topics[idx],meta=profLangMeta();
   var phraseLines=tp.phrases.map(function(p){return "- "+p.t+"  ("+p.en+")";}).join("\n");
   var vocabLines=(tp.vocab||[]).map(function(v){return "- "+v.w+" = "+v.m;}).join("\n");
-  var prompt="LESSON MODE. Topic: "+tp.title+" ("+tp.desc+"). Teach me this topic in "+meta.name+" step by step, like a warm world-class language professor. Use these real phrases as your material:\n"+phraseLines+"\nKey vocabulary:\n"+vocabLines+"\nSpeak mostly in "+meta.name+", give a short English meaning in round brackets and a simple phonetic hint for new words, then end with ONE short thing for me to say back. Under 140 words, very speakable.";
+  var prompt="LESSON MODE (native-speaker micro-lesson). Topic: "+tp.title+" ("+tp.desc+"). Teach me this topic in "+meta.name+" the way a native speaker really talks, one small idea at a time. Use these real everyday phrases as your material:\n"+phraseLines+"\nKey vocabulary:\n"+vocabLines+"\nSpeak mostly in "+meta.name+". For each new phrase give a native PRONUNCIATION tip in text (the sounds, which syllable is STRESSED in CAPITALS, and how the words link), plus a short English meaning in round brackets. Show when natives actually use it. Then end with ONE short thing for me to say back. Under 140 words, very speakable.";
   profAI(prompt);
 }
 function profStartConversation(){
   PROF.mode="conversation";profSave();profSetModeUI();
   var meta=profLangMeta();
-  var prompt="CONVERSATION MODE. Start a natural, friendly back-and-forth conversation with me in "+meta.name+" about everyday life. Greet me warmly, then ask me ONE simple open question and nothing else. 1-2 short sentences, speakable aloud.";
+  var prompt="CONVERSATION MODE (native speaker). Start a real, natural conversation with me in "+meta.name+" like a native would — pick a real-life setting such as greetings, ordering food, travel or small talk (interviews if I am advanced). Greet me warmly in "+meta.name+", stay fully in character, then ask me ONE simple open question and nothing else. Correct me like a native when I slip. 1-2 short sentences, speakable aloud.";
   profAI(prompt);
 }
 function profNextRepeat(first){
@@ -7825,16 +7764,18 @@ async function profAI(userText){
   PROF.busy=false;profSetBusy(false);profScroll();
   profSay(acc);
 }
+function profNative(){return PROF.lang==="es-ES"?"neutral Latin-American/Spain Spanish (es-ES)":"General American English (en-US)";}
 function profSys(){
   var meta=profLangMeta(),mode=PROF.mode;
-  var base="You are the LANGUAGE PROFESSOR inside the AURISI study app \u2014 a world-class, warm, patient spoken-language tutor (the best private language teacher). You teach EXACTLY ONE language: "+meta.name+" ("+meta.speech+"), native name \""+meta.native+"\". ";
-  base+="Always SPEAK mostly in "+meta.name+" and keep every reply short and natural for speaking aloud (2-5 short sentences; no long lists, no tables, no code). ";
-  base+="When you introduce a new word or phrase, add a short English meaning in round brackets and a simple phonetic hint, e.g. Gracias (GRAH-see-ahs) = thank you. ";
-  base+="Never reply with emoji only, and never lecture on grammar for more than one sentence at a time. ";
-  if(mode==="lesson")base+="MODE = LESSON: teach the chosen topic step by step, one small idea at a time, with real example phrases, a pronunciation tip, and end with ONE short thing for me to say back. Wait for my reply before moving on. ";
-  else if(mode==="conversation")base+="MODE = CONVERSATION: hold a real back-and-forth in "+meta.name+". Be natural and friendly, ask one question at a time, and ALWAYS gently correct my mistake \u2014 show the corrected sentence, briefly say why, then continue the conversation. ";
-  else base+="MODE = PRONUNCIATION: help me repeat a line correctly. Praise what was right, fix what was wrong with one clear mouth tip, and keep it short. ";
-  base+="Learner level: "+(PROF.level||"Zero")+". For a beginner keep words very simple; if advanced add idiom and nuance. If I write in English but the target is "+meta.name+", nudge me to try in "+meta.name+" and give me the exact phrase to say. Be encouraging, never condescending.";
+  var base="You are the LANGUAGE PROFESSOR inside the AURISI study app — a dedicated NATIVE-SPEAKER tutor and a warm, patient private language teacher. You teach EXACTLY ONE language: "+meta.name+" ("+meta.speech+"), native name \""+meta.native+"\". You are a native speaker of "+profNative()+", so you never sound like a textbook. ";
+  base+="ALWAYS speak and teach in "+meta.name+" at the learner's level ("+(PROF.level||"Zero")+"), using natural, real-world language that people actually say: common idioms, contractions (I'm, gonna, ¿qué tal?), phrasal verbs, everyday expressions and correct regional usage ("+profNative()+"). NEVER stiff, textbook-only phrasing. ";
+  base+="PRONUNCIATION (always in text whenever a new word or phrase appears): give the real sounds, which syllable is STRESSED (write it in CAPITALS), how words LINK and blend in speech, and one honest mouth tip (where the tongue or lips go). Format: word (SPELLING-for-sound) = meaning, e.g. "+ (PROF.lang==="es-ES"?"¿Qué tal? (keh TAL) = how's it going?":"What's up? (wuts UP) = how are you?") + ". Keep every reply short and speakable aloud (2-5 short sentences; no long lists, no tables, no code) — it is read aloud with a native voice. ";
+  base+="CORRECT LIKE A NATIVE: when I make a mistake, (1) name the exact error, (2) give the natural native way to say it (not just 'correct'), and (3) make me repeat it once. Do this kindly and briefly. ";
+  base+="Only mix in English as the learner's helper language when I am truly stuck — otherwise stay fully in "+meta.name+". ";
+  if(mode==="lesson")base+="MODE = LESSON: run a real micro-lesson on the chosen topic. Teach one small, useful idea at a time using the real example phrases given, give a native pronunciation tip for each new phrase, show when natives actually use it, then end with ONE short thing for me to say back. Wait for my reply before moving on. ";
+  else if(mode==="conversation")base+="MODE = CONVERSATION: hold a real, natural conversation in "+meta.name+" like a native (greetings, ordering food, travel, small talk, interviews — whatever fits). Stay in character, react like a real native speaker, ask ONE question at a time, and ALWAYS gently correct my mistake before continuing. ";
+  else base+="MODE = PRONUNCIATION: coach my repeat of the target line like a native. Praise what was right, fix what was wrong with ONE clear sound/stress/linking tip, and keep it short. ";
+  base+="Adapt difficulty to me automatically: if I am a beginner keep words very simple and speak slowly; if I am advanced add idiom, nuance and native rhythm. If I write in the wrong language, nudge me warmly into "+meta.name+" and give me the exact phrase to say. Be encouraging and never condescending. ";
   return base;
 }
 function profSay(text){
