@@ -1,4 +1,4 @@
-name: Sync AURISI (verify v60.77)
+name: Sync AURISI (verify v60.78)
 on: [push, workflow_dispatch]
 permissions:
   contents: read
@@ -7,11 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify v60.77 (single clean settings panel)
+      - name: Verify v60.78 (on-demand single model download + quality labels)
         run: |
           set -e
-          test "$(wc -c < AURISI.html)" -eq 1778640
-          grep -q 'APP_VERSION="60.77"' AURISI.html
+          test "$(wc -c < AURISI.html)" -eq 1781260
+          grep -q 'APP_VERSION="60.78"' AURISI.html
           grep -q 'PROFESSOR STANDARD' AURISI.html
+          grep -q 'strongest small model' AURISI.html
           grep -q 'aurisiThemeToggle' AURISI.html
-          echo "v60.77 verified"
+          echo "v60.78 verified"
