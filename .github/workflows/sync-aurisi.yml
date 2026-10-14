@@ -1,35 +1,19 @@
-name: Build AURISI v60.68 + Institute Portal v2 + HQ v3
+name: Sync AURISI (verify v60.69)
 on: [push, workflow_dispatch]
 permissions:
-  contents: write
+  contents: read
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
+      - name: Verify v60.69 (professor + surgery)
+        run: |
           set -e
-          test -f AURISI.html
-          if ! grep -q 'APP_VERSION="60.68"' AURISI.html; then
-            test "$(wc -c < AURISI.html)" -eq 1786250
-            python3 .github/scripts/build_v6068.py AURISI.html AURISI_new.html
-            test "$(wc -c < AURISI_new.html)" -eq 1787620
-            grep -q 'APP_VERSION="60.68"' AURISI_new.html
-            grep -q 'PROFESSOR STANDARD' AURISI_new.html
-            if grep -q 'LANG_ON' AURISI_new.html; then echo 'LANG_ON remnant'; exit 1; fi
-            grep -q 'return PROF+profileLine()' AURISI_new.html
-            mv AURISI_new.html AURISI.html
-          fi
-          python3 .github/scripts/build_institute_v2.py institute_new.html
-          test "$(wc -c < institute_new.html)" -eq 19629
-          mv institute_new.html institute.html
-          python3 .github/scripts/build_hq.py admin_new.html
-          test "$(wc -c < admin_new.html)" -eq 25694
-          mv admin_new.html admin.html
-          if [ -n "$(git status --porcelain)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add AURISI.html institute.html admin.html
-            git commit -m "chore: build v60.68 (professor standard + dead-code surgery)"
-            git push
-          fi
+          test "$(wc -c < AURISI.html)" -eq 1746558
+          grep -q 'APP_VERSION="60.69"' AURISI.html
+          grep -q 'PROFESSOR STANDARD' AURISI.html
+          for s in TALK_SCENARIOS SANS_ON makePodcast openVideoStudio dailyBrief lockerQuiz LOCKER_CTX openTalk renderSanskritChip; do
+            if grep -q "$s" AURISI.html; then echo "REMNANT: $s"; exit 1; fi
+          done
+          echo "v60.69 verified: 1746558 bytes, professor standard present, 6 features removed"
