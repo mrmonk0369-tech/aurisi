@@ -1,4 +1,4 @@
-name: Sync AURISI (verify v60.75)
+name: Sync AURISI (verify v60.76)
 on: [push, workflow_dispatch]
 permissions:
   contents: read
@@ -7,13 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify v60.75 (chat history back; themes removed; features in backend)
+      - name: Verify v60.76 (premium clean settings + direct 2-theme switch)
         run: |
           set -e
-          test "$(wc -c < AURISI.html)" -eq 1779746
-          grep -q 'APP_VERSION="60.75"' AURISI.html
+          test "$(wc -c < AURISI.html)" -eq 1778042
+          grep -q 'APP_VERSION="60.76"' AURISI.html
           grep -q 'PROFESSOR STANDARD' AURISI.html
-          grep -q '.drawer-tools{display:none!important}' AURISI.html
-          grep -q '#themeBtn,#themePop{display:none!important}' AURISI.html
-          if grep -q 'Look & feel' AURISI.html; then echo 'theme section left'; exit 1; fi
-          echo "v60.75 verified"
+          grep -q 'aurisiThemeToggle' AURISI.html
+          grep -q 'Danger zone' AURISI.html
+          echo "v60.76 verified"
