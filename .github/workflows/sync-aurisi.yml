@@ -1,4 +1,4 @@
-name: Sync AURISI (verify v60.74)
+name: Sync AURISI (verify v60.75)
 on: [push, workflow_dispatch]
 permissions:
   contents: read
@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify v60.74 (clean settings + native-speaker professor)
+      - name: Verify v60.75 (chat history back; themes removed; features in backend)
         run: |
           set -e
-          test "$(wc -c < AURISI.html)" -eq 1781817
-          grep -q 'APP_VERSION="60.74"' AURISI.html
+          test "$(wc -c < AURISI.html)" -eq 1779746
+          grep -q 'APP_VERSION="60.75"' AURISI.html
           grep -q 'PROFESSOR STANDARD' AURISI.html
-          grep -q 'profNative' AURISI.html
-          grep -q 'profScreen' AURISI.html
-          if grep -q 'WHO USES AURISI' AURISI.html; then echo 'role picker left'; exit 1; fi
-          echo "v60.74 verified: settings cleaned, native-speaker professor present"
+          grep -q '.drawer-tools{display:none!important}' AURISI.html
+          grep -q '#themeBtn,#themePop{display:none!important}' AURISI.html
+          if grep -q 'Look & feel' AURISI.html; then echo 'theme section left'; exit 1; fi
+          echo "v60.75 verified"
