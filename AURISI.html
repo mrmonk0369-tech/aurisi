@@ -1220,6 +1220,54 @@ body.chat-focus .chat-back-btn{display:none!important}
 .firstrun-card input:focus{border-color:var(--accent)}
 .firstrun-card .btn.primary{margin-top:12px;width:100%}
 </style>
+
+<style id="profCss">
+/* ===== v60.72 Language Professor (English + Spanish) ===== */
+.prof-screen{position:fixed;inset:0;z-index:130;background:var(--bg);display:none;flex-direction:column}
+.prof-screen.open{display:flex}
+.prof-top{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);flex:none}
+.prof-tt b{display:block;font-size:16px}
+.prof-tt small{display:block;color:var(--muted);font-size:12px}
+.prof-top .btn{margin-left:auto}
+.prof-body{display:flex;flex:1;min-height:0}
+.prof-side{width:284px;flex:none;border-right:1px solid var(--line);padding:12px;overflow:auto}
+.prof-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.prof-pick{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--surface)}
+.prof-pick.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.prof-pick b{display:block;font-size:14px}
+.prof-pick small{color:var(--muted);font-size:12px}
+.prof-modes{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.prof-mode{cursor:pointer;border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 11px;color:inherit;font-size:12px}
+.prof-mode.on{background:var(--accent);color:var(--on-accent,#fff);border-color:var(--accent)}
+.prof-h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 0 6px}
+.prof-topic{display:block;width:100%;text-align:left;cursor:pointer;border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 10px;margin-bottom:6px;color:inherit}
+.prof-topic.on{border-color:var(--accent)}
+.prof-topic b{display:block;font-size:13px}
+.prof-topic small{color:var(--muted);font-size:11px}
+.prof-stat{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px dashed var(--line)}
+.prof-log{flex:1;overflow:auto;padding:16px}
+.prof-row{display:flex;gap:9px;margin-bottom:12px;max-width:760px}
+.prof-row.me{flex-direction:row-reverse;margin-left:auto}
+.prof-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--line);flex:none;font-size:15px}
+.prof-bubble{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 13px;line-height:1.5;font-size:14.5px}
+.prof-row.me .prof-bubble{background:var(--accent);color:var(--on-accent,#fff);border-color:var(--accent)}
+.prof-gloss{color:var(--muted);font-size:12.5px}
+.prof-row.me .prof-gloss{color:rgba(255,255,255,.85)}
+.prof-repeat{padding:0 16px 8px}
+.prof-card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface)}
+.prof-card-h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.prof-target{font-size:20px;font-weight:600;margin:4px 0}
+.prof-card-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.prof-score{margin-top:8px;font-size:13px;color:var(--muted)}
+.prof-inputrow{display:flex;gap:8px;align-items:center;padding:10px 16px 16px;flex:none}
+.prof-inputrow input{flex:1;min-width:0;padding:11px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:inherit;font-size:15px}
+.prof-status{font-size:12px;color:var(--muted);padding:0 16px 6px;min-height:16px}
+.prof-dots i{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.4;margin:0 1px;animation:profDot 1s infinite}
+.prof-dots i:nth-child(2){animation-delay:.15s}
+.prof-dots i:nth-child(3){animation-delay:.3s}
+@keyframes profDot{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:.9;transform:translateY(-2px)}}
+@media(max-width:720px){.prof-body{flex-direction:column}.prof-side{width:auto;border-right:none;border-bottom:1px solid var(--line);max-height:42%}}
+</style>
 </head>
 <body>
   <div id="updateSplash" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#18181b,#27272a);color:#f4f4f5;font-family:-apple-system,system-ui,'Segoe UI',sans-serif;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center;padding:24px">
@@ -1469,6 +1517,40 @@ body.chat-focus .chat-back-btn{display:none!important}
   <div class="cards-main" id="cardsHost"></div>
 </div>
 
+<div id="profScreen" class="prof-screen">
+  <div class="prof-top">
+    <div class="prof-tt"><b id="profTitle">&#128483;&#65039; Language Professor</b><small id="profSub">Learn by voice &middot; American English &amp; Spanish</small></div>
+    <button class="btn small" onclick="profClose()">&#10005; Exit</button>
+  </div>
+  <div class="prof-body">
+    <div class="prof-side">
+      <div class="prof-h">&#127757; Choose a language</div>
+      <div class="prof-langpick" id="profLangPick">
+        <div class="prof-pick" data-lang="en-US" onclick="profPickLang('en-US')"><b>&#127482;&#127480; American English</b><small>en-US &middot; speak, listen, converse</small></div>
+        <div class="prof-pick" data-lang="es-ES" onclick="profPickLang('es-ES')"><b>&#127466;&#127480; Spanish (Espa&ntilde;ol)</b><small>es-ES &middot; speak, listen, converse</small></div>
+      </div>
+      <div class="prof-modes" id="profModes">
+        <button class="prof-mode on" data-m="lesson" onclick="profSetMode('lesson')">&#128218; Lesson</button>
+        <button class="prof-mode" data-m="conversation" onclick="profSetMode('conversation')">&#128172; Conversation</button>
+        <button class="prof-mode" data-m="pronunciation" onclick="profSetMode('pronunciation')">&#128266; Repeat &amp; Pronounce</button>
+      </div>
+      <div class="prof-topics" id="profTopics"></div>
+      <div class="prof-stats" id="profStats"></div>
+    </div>
+    <div class="prof-main">
+      <div class="prof-log" id="profLog"></div>
+      <div class="prof-status" id="profStatus"></div>
+      <div class="prof-repeat" id="profRepeat" style="display:none"></div>
+      <div class="prof-inputrow">
+        <button class="in-btn mic" id="profMicBtn" onclick="profMic()" title="Speak (microphone)">&#127908;</button>
+        <input id="profInput" type="text" autocomplete="off" placeholder="Type or speak&hellip;" onkeydown="if(event.key==='Enter'){profSendInput()}">
+        <button class="in-btn" id="profSpeakBtn" onclick="profSpeakLast()" title="Speak / replay the professor">&#128266;</button>
+        <button class="in-btn" id="profSendBtn" onclick="profSendInput()" title="Send">&#10148;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="drawer-back" id="drawerBack" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-head">
@@ -1490,6 +1572,7 @@ body.chat-focus .chat-back-btn{display:none!important}
     <button class="drawer-list-btn" onclick="closeDrawer();openTestCenter()"><span class="dl-ico">📝</span><span>Mock Test Center</span></button>
     <button class="drawer-list-btn" onclick="switchView('chat');openMistakes()"><span class="dl-ico">📕</span><span data-i18n="mistakesBtn">My Mistakes</span></button>
     <button class="drawer-list-btn" onclick="closeDrawer();showFeatures()"><span class="dl-ico">✨</span><span>What's inside AURISI</span></button>
+    <button class="drawer-list-btn" onclick="closeDrawer();openProfessor()"><span class="dl-ico">🗣️</span><span>Language Professor</span></button>
   </div>
   <div class="drawer-foot">Aurisi</div>
 </div>
@@ -1847,7 +1930,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.71",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.72",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -2128,35 +2211,10 @@ function toggleTheme(){
 
 /* ===================== LANGUAGE + i18n ===================== */
 const UI_LANGS=[
-  {code:"auto",label:"🌐 Auto (match my typing)",speech:"en-IN"},
-  {code:"English",label:"English",speech:"en-US"},
-  {code:"Hindi",label:"हिंदी Hindi",speech:"hi-IN"},
-  {code:"Hinglish",label:"Hinglish (Hindi+English mix)",speech:"hi-IN"},
-  {code:"Bengali",label:"বাংলা Bengali",speech:"bn-IN"},
-  {code:"Tamil",label:"தமிழ் Tamil",speech:"ta-IN"},
-  {code:"Telugu",label:"తెలుగు Telugu",speech:"te-IN"},
-  {code:"Marathi",label:"मराठी Marathi",speech:"mr-IN"},
-  {code:"Gujarati",label:"ગુજરાતી Gujarati",speech:"gu-IN"},
-  {code:"Punjabi",label:"ਪੰਜਾਬੀ Punjabi",speech:"pa-IN"},
-  {code:"Urdu",label:"اردو Urdu",speech:"ur-IN"},
-  {code:"Kannada",label:"ಕನ್ನಡ Kannada",speech:"kn-IN"},
-  {code:"Malayalam",label:"മലയാളം Malayalam",speech:"ml-IN"},
-  {code:"Odia",label:"ଓଡ଼ିଆ Odia",speech:"or-IN"},
-  {code:"Korean",label:"한국어 Korean",speech:"ko-KR"},
-  {code:"Japanese",label:"日本語 Japanese",speech:"ja-JP"},
-  {code:"Mandarin Chinese",label:"中文 Chinese (Mandarin)",speech:"zh-CN"},
-  {code:"Spanish",label:"Español Spanish",speech:"es-ES"},
-  {code:"French",label:"Français French",speech:"fr-FR"},
-  {code:"German",label:"Deutsch German",speech:"de-DE"},
-  {code:"Portuguese",label:"Português Portuguese",speech:"pt-BR"},
-  {code:"Russian",label:"Русский Russian",speech:"ru-RU"},
-  {code:"Arabic",label:"العربية Arabic",speech:"ar-SA"},
-  {code:"Indonesian",label:"Bahasa Indonesian",speech:"id-ID"},
-  {code:"Vietnamese",label:"Tiếng Việt Vietnamese",speech:"vi-VN"},
-  {code:"Turkish",label:"Türkçe Turkish",speech:"tr-TR"},
-  {code:"Italian",label:"Italiano Italian",speech:"it-IT"}
+  {code:"English",label:"\ud83c\uddfa\ud83c\uddf8 American English (en-US)",speech:"en-US"},
+  {code:"Spanish",label:"\ud83c\uddea\ud83c\uddf8 Espa\u00f1ol Spanish (es-ES)",speech:"es-ES"}
 ];
-function getUiLang(){return localStorage.getItem(STORAGE+"uiLang")||"auto"}
+function getUiLang(){var _v=localStorage.getItem(STORAGE+"uiLang");return (_v==="English"||_v==="Spanish")?_v:"English"}
 function getCurriculum(){return localStorage.getItem(STORAGE+"curriculum")||"auto"}
 function getStepMode(){return localStorage.getItem(STORAGE+"stepMode")==="1"}
 function getExamMode(){return localStorage.getItem(STORAGE+"examMode")||"none"}
@@ -2169,7 +2227,7 @@ function populateLangSelect(){
   sel.dataset.filled="1";
 }
 const I18N={
-  en:{appTagline:"AI Assistant",welcomeTitle:"Hi, I'm Aurisi",welcomeSub:"Your all-in-one teacher. Ask me anything — any subject, taught the way a great teacher would.",starterExplain:"🔭 Explain a topic",starterQuiz:"❓ Quiz me",starterCards:"📇 Flashcards",starterHomework:"📝 Homework help",starterPlan:"🗓️ Study plan",placeholderMsg:"Message Aurisi…",makeNotesBtn:"✨ Make notes",ocrScanBtn:"🔍 Scan text",imgAttachedLbl:"🖼️ Image attached",footNote:"Aurisi can make mistakes. Chat is free forever — no key needed (Puter or Pollinations).",chatsTitle:"Chats",newChatBtn:"＋ New chat",settingsTitle:"Settings",settingsSub:"Everything is saved only in your browser.",langLabel:"🌍 Language (Aurisi replies & speaks in this)",langHint:"Pick any language — Hindi, Korean, Spanish, Tamil, whatever you like. If you type in a different language, Aurisi switches to match you automatically.",curriculumLabel:"🎓 Your country / curriculum",curAuto:"Auto-detect from how I write",curIndia:"🇮🇳 India — CBSE / ICSE / State Boards",curUsa:"🇺🇸 USA — Common Core / AP / SAT",curUk:"🇬🇧 UK — GCSE / A-Level / National Curriculum",curKorea:"🇰🇷 Korea — National Curriculum / CSAT (수능)",curOther:"🌍 Other / International",stepLabel:"🪜 Step-by-step mode — tiny steps, checks my understanding before moving on",stepTitle:"🪜 Step-by-step mode",handsTitle:"🎙️ Hands-free mode",wlibTitle:"🌍 World Library",searchTitle:"🔎 Web search on replies",keyLabel:"Gemini API key (optional)",keyHint:"No key? No problem — Aurisi runs free through the Puter fallback (a Puter sign-in window may appear on first use). You can also get a free key at aistudio.google.com.",searchLabel:"Google Search on replies (Web search)",saveBtn:"Save",closeBtn:"Close",deleteBtn:"Delete all data",statusThinking:"Thinking…",statusReady:"Your personal AI",noChats:"No saved chats yet.",starterCheck:"🧠 Check my understanding",cheatBtn:"⚡ Cheat sheet",pdfQuizBtn:"🎯 Quiz from PDF",examModeBtn:"Exam Mode",mistakesBtn:"My Mistakes",starterEmergency:"🆘 Exam in 3 days",testPaperBtn:"📋 Test paper",gradeHwBtn:"📝 Grade homework",starterPredict:"🔮 Predict my score"},
+  en:{appTagline:"AI Assistant",welcomeTitle:"Hi, I'm Aurisi",welcomeSub:"Your all-in-one teacher. Ask me anything — any subject, taught the way a great teacher would.",starterExplain:"🔭 Explain a topic",starterQuiz:"❓ Quiz me",starterCards:"📇 Flashcards",starterHomework:"📝 Homework help",starterPlan:"🗓️ Study plan",placeholderMsg:"Message Aurisi…",makeNotesBtn:"✨ Make notes",ocrScanBtn:"🔍 Scan text",imgAttachedLbl:"🖼️ Image attached",footNote:"Aurisi can make mistakes. Chat is free forever — no key needed (Puter or Pollinations).",chatsTitle:"Chats",newChatBtn:"＋ New chat",settingsTitle:"Settings",settingsSub:"Everything is saved only in your browser.",langLabel:"\ud83c\udf0d Language (American English or Spanish)",langHint:"Aurisi replies and speaks in the language you pick. Choose American English (en-US) or Spanish (es-ES). The Language Professor (Tools \u2192 Language Professor) teaches both by voice.",curriculumLabel:"🎓 Your country / curriculum",curAuto:"Auto-detect from how I write",curIndia:"🇮🇳 India — CBSE / ICSE / State Boards",curUsa:"🇺🇸 USA — Common Core / AP / SAT",curUk:"🇬🇧 UK — GCSE / A-Level / National Curriculum",curKorea:"🇰🇷 Korea — National Curriculum / CSAT (수능)",curOther:"🌍 Other / International",stepLabel:"🪜 Step-by-step mode — tiny steps, checks my understanding before moving on",stepTitle:"🪜 Step-by-step mode",handsTitle:"🎙️ Hands-free mode",wlibTitle:"🌍 World Library",searchTitle:"🔎 Web search on replies",keyLabel:"Gemini API key (optional)",keyHint:"No key? No problem — Aurisi runs free through the Puter fallback (a Puter sign-in window may appear on first use). You can also get a free key at aistudio.google.com.",searchLabel:"Google Search on replies (Web search)",saveBtn:"Save",closeBtn:"Close",deleteBtn:"Delete all data",statusThinking:"Thinking…",statusReady:"Your personal AI",noChats:"No saved chats yet.",starterCheck:"🧠 Check my understanding",cheatBtn:"⚡ Cheat sheet",pdfQuizBtn:"🎯 Quiz from PDF",examModeBtn:"Exam Mode",mistakesBtn:"My Mistakes",starterEmergency:"🆘 Exam in 3 days",testPaperBtn:"📋 Test paper",gradeHwBtn:"📝 Grade homework",starterPredict:"🔮 Predict my score"},
   Hindi:{appTagline:"एआई असिस्टेंट",welcomeTitle:"नमस्ते, मैं Aurisi हूँ",welcomeSub:"आपका ऑल-इन-वन शिक्षक। कुछ भी पूछें — कोई भी विषय, एक बेहतरीन शिक्षक के तरीके से।",starterExplain:"🔭 कोई टॉपिक समझाएं",starterQuiz:"❓ मुझसे क्विज़ लें",starterCards:"📇 फ्लैशकार्ड्स",starterHomework:"📝 होमवर्क में मदद",starterPlan:"🗓️ स्टडी प्लान",placeholderMsg:"Aurisi को मैसेज करें…",makeNotesBtn:"✨ नोट्स बनाएं",ocrScanBtn:"🔍 टेक्स्ट स्कैन",imgAttachedLbl:"🖼️ इमेज जुड़ी है",footNote:"Aurisi गलती कर सकता है। Settings में अपनी Gemini key डालें, या Puter fallback से मुफ्त इस्तेमाल करें।",chatsTitle:"चैट्स",newChatBtn:"＋ नई चैट",settingsTitle:"सेटिंग्स",settingsSub:"सब कुछ केवल आपके ब्राउज़र में सेव होता है।",langLabel:"🌍 भाषा (Aurisi इसी में जवाब देगा और बोलेगा)",langHint:"कोई भी भाषा चुनें — हिंदी, कोरियाई, स्पैनिश, तमिल, जो पसंद हो। अगर आप किसी और भाषा में टाइप करेंगे, तो Aurisi खुद बदल जाएगा।",curriculumLabel:"🎓 आपका देश / पाठ्यक्रम",curAuto:"मेरी लिखावट से खुद पता करें",curIndia:"🇮🇳 भारत — CBSE / ICSE / राज्य बोर्ड",curUsa:"🇺🇸 USA — Common Core / AP / SAT",curUk:"🇬🇧 UK — GCSE / A-Level / National Curriculum",curKorea:"🇰🇷 कोरिया — National Curriculum / CSAT (수능)",curOther:"🌍 अन्य / अंतरराष्ट्रीय",stepLabel:"🪜 स्टेप-बाय-स्टेप मोड — छोटे-छोटे कदम, आगे बढ़ने से पहले समझ जांचें",stepTitle:"🪜 स्टेप-बाय-स्टेप मोड",handsTitle:"🎙️ हैंड्स-फ्री मोड",wlibTitle:"🌍 वर्ल्ड लाइब्रेरी",searchTitle:"🔎 जवाबों में वेब सर्च",keyLabel:"Gemini API key (वैकल्पिक)",keyHint:"Key नहीं है? कोई बात नहीं — Aurisi Puter fallback से मुफ्त चलता है (पहली बार Puter साइन-इन विंडो आ सकती है)। aistudio.google.com से मुफ्त key भी मिल सकती है।",searchLabel:"जवाबों में Google Search (वेब सर्च)",saveBtn:"सेव करें",closeBtn:"बंद करें",deleteBtn:"सारा डेटा डिलीट करें",statusThinking:"सोच रहा हूँ…",statusReady:"आपका पर्सनल AI",noChats:"अभी कोई सेव्ड चैट नहीं है।",starterCheck:"🧠 मेरी समझ जांचें",cheatBtn:"⚡ चीट शीट",pdfQuizBtn:"🎯 PDF से क्विज़",examModeBtn:"एग्ज़ाम मोड",mistakesBtn:"मेरी गलतियाँ",starterEmergency:"🆘 3 दिन में एग्ज़ाम",testPaperBtn:"📋 टेस्ट पेपर",gradeHwBtn:"📝 होमवर्क जांचें",starterPredict:"🔮 मेरा स्कोर बताओ"},
   Korean:{appTagline:"AI 어시스턴트",welcomeTitle:"안녕하세요, 저는 Aurisi예요",welcomeSub:"당신의 올인원 선생님입니다. 무엇이든 물어보세요 — 어떤 과목이든, 훌륭한 선생님처럼 가르쳐 드려요.",starterExplain:"🔭 주제 설명해주기",starterQuiz:"❓ 퀴즈 내주기",starterCards:"📇 플래시카드",starterHomework:"📝 숙제 도움",starterPlan:"🗓️ 학습 계획",placeholderMsg:"Aurisi에게 메시지 보내기…",makeNotesBtn:"✨ 노트 만들기",ocrScanBtn:"🔍 텍스트 스캔",imgAttachedLbl:"🖼️ 이미지 첨부됨",footNote:"Aurisi는 실수를 할 수 있어요. 설정에서 Gemini 키를 추가하거나, Puter 대체 기능으로 무료로 사용하세요.",chatsTitle:"채팅",newChatBtn:"＋ 새 채팅",settingsTitle:"설정",settingsSub:"모든 것은 브라우저에만 저장됩니다.",langLabel:"🌍 언어 (Aurisi가 이 언어로 답하고 말해요)",langHint:"어떤 언어든 선택하세요 — 한국어, 스페인어, 힌디어 등. 다른 언어로 입력하면 Aurisi가 자동으로 맞춰줘요.",curriculumLabel:"🎓 국가 / 교육과정",curAuto:"글쓰기로 자동 감지",curIndia:"🇮🇳 인도 — CBSE / ICSE / 주 교육위원회",curUsa:"🇺🇸 미국 — Common Core / AP / SAT",curUk:"🇬🇧 영국 — GCSE / A-Level / 국가교육과정",curKorea:"🇰🇷 한국 — 국가교육과정 / 수능(CSAT)",curOther:"🌍 기타 / 국제",stepLabel:"🪜 단계별 모드 — 아주 작은 단계로, 이해했는지 확인 후 진행",stepTitle:"🪜 단계별 모드",handsTitle:"🎙️ 핸즈프리 모드",wlibTitle:"🌍 월드 라이브러리",searchTitle:"🔎 답변에 웹 검색",keyLabel:"Gemini API 키 (선택 사항)",keyHint:"키가 없나요? 괜찮아요 — Aurisi는 Puter 대체 기능으로 무료로 실행됩니다. aistudio.google.com에서 무료 키를 받을 수도 있어요.",searchLabel:"답변에 Google 검색 사용",saveBtn:"저장",closeBtn:"닫기",deleteBtn:"모든 데이터 삭제",statusThinking:"생각 중…",statusReady:"나만의 AI",noChats:"저장된 채팅이 아직 없어요.",starterCheck:"🧠 이해도 확인",cheatBtn:"⚡ 치트 시트",pdfQuizBtn:"🎯 PDF 퀴즈",examModeBtn:"시험 모드",mistakesBtn:"내 오답 노트",starterEmergency:"🆘 시험 3일 전",testPaperBtn:"📋 시험지",gradeHwBtn:"📝 숙제 채점",starterPredict:"🔮 점수 예측"},
   Spanish:{appTagline:"Asistente de IA",welcomeTitle:"Hola, soy Aurisi",welcomeSub:"Tu profesor todo en uno. Pregúntame lo que quieras — cualquier materia, enseñado como lo haría un gran profesor.",starterExplain:"🔭 Explicar un tema",starterQuiz:"❓ Hazme un examen",starterCards:"📇 Tarjetas de estudio",starterHomework:"📝 Ayuda con tareas",starterPlan:"🗓️ Plan de estudio",placeholderMsg:"Escribe a Aurisi…",makeNotesBtn:"✨ Crear apuntes",ocrScanBtn:"🔍 Escanear texto",imgAttachedLbl:"🖼️ Imagen adjunta",footNote:"Aurisi puede cometer errores. Agrega tu clave Gemini en Ajustes, o usa el modo gratuito con Puter.",chatsTitle:"Chats",newChatBtn:"＋ Nuevo chat",settingsTitle:"Ajustes",settingsSub:"Todo se guarda solo en tu navegador.",langLabel:"🌍 Idioma (Aurisi responde y habla en este idioma)",langHint:"Elige cualquier idioma — español, coreano, hindi, lo que prefieras. Si escribes en otro idioma, Aurisi se adapta automáticamente.",curriculumLabel:"🎓 Tu país / plan de estudios",curAuto:"Detectar automáticamente",curIndia:"🇮🇳 India — CBSE / ICSE / Juntas estatales",curUsa:"🇺🇸 EE. UU. — Common Core / AP / SAT",curUk:"🇬🇧 Reino Unido — GCSE / A-Level",curKorea:"🇰🇷 Corea — Currículo nacional / CSAT",curOther:"🌍 Otro / Internacional",stepLabel:"🪜 Modo paso a paso — pasos pequeños, comprobando que entiendes antes de avanzar",stepTitle:"🪜 Modo paso a paso",handsTitle:"🎙️ Modo manos libres",wlibTitle:"🌍 Biblioteca mundial",searchTitle:"🔎 Búsqueda web en respuestas",keyLabel:"Clave API de Gemini (opcional)",keyHint:"¿Sin clave? No hay problema — Aurisi funciona gratis con Puter. También puedes obtener una clave gratis en aistudio.google.com.",searchLabel:"Búsqueda de Google en las respuestas",saveBtn:"Guardar",closeBtn:"Cerrar",deleteBtn:"Borrar todos los datos",statusThinking:"Pensando…",statusReady:"Tu IA personal",noChats:"Aún no hay chats guardados.",starterCheck:"🧠 Comprueba mi comprensión",cheatBtn:"⚡ Chuleta",pdfQuizBtn:"🎯 Quiz del PDF",examModeBtn:"Modo de examen",mistakesBtn:"Mis errores",starterEmergency:"🆘 Examen en 3 días",testPaperBtn:"📋 Examen",gradeHwBtn:"📝 Corregir deberes",starterPredict:"🔮 Predecir mi nota"}
@@ -4265,6 +4323,7 @@ function send(){
   const el=$("prompt");
   const v=el.value.trim();
   if(/^stop[! ]*feynman$/i.test(v)){el.value="";stopFeynman();return}
+  if(v&&!EAR_SKIP&&profCommand(v)){el.value="";autoGrow(el);return}
   if(v&&!EAR_SKIP&&schoolEar(v)){el.value="";autoGrow(el);return}
   if(!v&&!state.currentImageBase64){toast("Type something or attach an image");return}
   const parts=[];
@@ -6580,7 +6639,7 @@ async function stuLoadProj(id){
   }catch(e){toast("Could not reach server")}
 }
 
-/* ===================== v60.71 — ChatGPT-style clean chat-first + saved chats + Settings visible ===================== */
+/* ===================== v60.72 — Language Professor (English + Spanish) with API voice + mic ===================== */
 function instCloseModals(){try{document.querySelectorAll(".modal-back.open").forEach(function(x){x.remove()})}catch(e){}}
 function instRenderBox(){
   var el=$("instBox");if(!el)return;
@@ -7577,6 +7636,272 @@ function initSnapCarousel(){
     },800);
   });
 })();
+
+/* ===================== v60.72 LANGUAGE PROFESSOR (American English + Spanish) ===================== */
+const AURALIS_EN_ES = {"langs":[{"id":"en","name":"American English","native":"English","speech":"en-US","tag":"EN","why":"The world's shared language of business, tech and science."},{"id":"es","name":"Spanish","native":"Español","speech":"es-ES","tag":"ES","why":"500M+ speakers across the Americas and growing in the US."}],"seeds":{"en":{"everyday":[{"t":"I'll take the short stack and a black coffee, thanks.","en":"Ordering breakfast."},{"t":"It's on the house — enjoy.","en":"The restaurant is paying for it."},{"t":"Could I get the check, please?","en":"Asking for the bill."},{"t":"No worries, take your time.","en":"Reassuring someone."}],"around":[{"t":"Excuse me, how do I get to the train station?","en":"Asking for directions."},{"t":"Head straight two blocks, then hang a left.","en":"Giving directions."},{"t":"It's right across from the post office.","en":"Locating something."},{"t":"You can't miss it.","en":"It's easy to find."}],"shopping":[{"t":"Do you have this in a medium?","en":"Asking about size."},{"t":"Is this on sale?","en":"Asking about a discount."},{"t":"Can I pay by card?","en":"Asking how to pay."},{"t":"I'll take it, thanks.","en":"Deciding to buy."}],"people":[{"t":"Hey, I'm Alex. Nice to meet you.","en":"Introducing yourself."},{"t":"Where are you from originally?","en":"Asking about someone's background."},{"t":"What have you been up to lately?","en":"Casual small talk."},{"t":"It was great catching up. Take care!","en":"Saying goodbye warmly."}],"help":[{"t":"Excuse me, can you help me?","en":"Asking a stranger for help."},{"t":"I think I'm lost.","en":"Admitting you're lost."},{"t":"Where's the nearest pharmacy?","en":"Finding a pharmacy."},{"t":"Could you call a taxi for me?","en":"Asking someone to call a cab."}],"vocab":[{"w":"on the house","m":"free, paid by the business"},{"w":"hang a left","m":"turn left"},{"w":"catch up","m":"talk again after time apart"},{"w":"on sale","m":"discounted"},{"w":"I'll take it","m":"I'll buy it"}]},"es":{"everyday":[{"t":"¿Me trae la cuenta, por favor?","en":"Could you bring me the bill, please?"},{"t":"¿Cuánto cuesta esto?","en":"How much is this?"},{"t":"¿Qué me recomienda?","en":"What do you recommend?"},{"t":"No pasa nada, tómese su tiempo.","en":"No worries, take your time."}],"around":[{"t":"Disculpe, ¿cómo llego a la estación?","en":"Excuse me, how do I get to the station?"},{"t":"Siga recto dos cuadras y gire a la izquierda.","en":"Go straight two blocks and turn left."},{"t":"Está justo enfrente del correo.","en":"It's right across from the post office."},{"t":"No tiene pérdida.","en":"You can't miss it."}],"shopping":[{"t":"¿Tiene esto en talla mediana?","en":"Do you have this in a medium?"},{"t":"¿Está en oferta?","en":"Is it on sale?"},{"t":"¿Puedo pagar con tarjeta?","en":"Can I pay by card?"},{"t":"Me lo llevo, gracias.","en":"I'll take it, thanks."}],"people":[{"t":"Hola, soy Alex. Mucho gusto.","en":"Hi, I'm Alex. Nice to meet you."},{"t":"¿De dónde eres?","en":"Where are you from?"},{"t":"¿Qué has hecho últimamente?","en":"What have you been up to lately?"},{"t":"Me alegro de verte. ¡Cuídate!","en":"Good to see you. Take care!"}],"help":[{"t":"Disculpe, ¿me puede ayudar?","en":"Excuse me, can you help me?"},{"t":"Creo que estoy perdido.","en":"I think I'm lost."},{"t":"¿Dónde está la farmacia más cercana?","en":"Where's the nearest pharmacy?"},{"t":"¿Me puede llamar un taxi?","en":"Could you call a taxi for me?"}],"vocab":[{"w":"la cuenta","m":"the bill / the check"},{"w":"enfrente de","m":"across from, opposite"},{"w":"cuídate","m":"take care"},{"w":"en oferta","m":"on sale"},{"w":"perdido","m":"lost"}]}},"categories":[{"id":"everyday","title":"Everyday","desc":"Food, money, requests"},{"id":"around","title":"Getting Around","desc":"Directions, transport, help"},{"id":"shopping","title":"Shopping & Money","desc":"Buying, paying, prices"},{"id":"people","title":"Meeting People","desc":"Greetings, small talk, goodbyes"},{"id":"help","title":"Help & Emergency","desc":"Lost, unwell, need a hand"}],"scenarios":[{"id":"free","title":"Free chat","persona":"Sia, a warm and curious AI language coach"},{"id":"cafe","title":"Coffee shop","persona":"a friendly barista at a busy cafe"},{"id":"interview","title":"Job interview","persona":"a friendly but professional hiring manager"},{"id":"phone","title":"Phone call","persona":"a polite customer-service agent on the phone"},{"id":"doctor","title":"Doctor's visit","persona":"a warm doctor at a clinic"},{"id":"party","title":"Party small talk","persona":"a chatty, easygoing person at a friend's party"},{"id":"landlord","title":"Renting a place","persona":"a landlord showing an apartment"},{"id":"standup","title":"Team standup","persona":"an engineering teammate in a daily standup"},{"id":"shop","title":"Returning an item","persona":"a store clerk at the returns desk"},{"id":"gym","title":"Meeting at the gym","persona":"a friendly person at the gym"},{"id":"airport","title":"Airport check-in","persona":"an airline check-in agent"},{"id":"debate","title":"Disagreeing with a friend","persona":"a reasonable friend who disagrees and pushes back"},{"id":"elevator","title":"Elevator small talk","persona":"a coworker making small talk in an elevator"}],"missions":["Order food or a drink out loud, start to finish","Describe your whole day out loud in 6 sentences","Leave a voicemail","Narrate your commute like a podcast host","Explain your job to an imaginary friend","Make small talk with a stranger for 30 seconds","Think in the language for one full task (no translating)","Read something aloud and summarise it","Ask for directions, even if you know the way","Give someone a genuine compliment"],"levels":["Zero","Basic","Confident","Advanced"],"levelGuide":{"Zero":"absolute beginner, first words","Basic":"knows some words, short sentences","Confident":"can hold a simple conversation","Advanced":"wants native-level nuance and idiom"}};
+var PROF_KEY = STORAGE+"prof";
+var PROF_DEFAULT = {lang:"en-US",mode:"lesson",topicIdx:0,level:"Zero",xp:0,streak:0,bestStreak:0,lastDay:"",repeatIdx:0};
+var PROF = Object.assign({},PROF_DEFAULT);
+PROF.history=[];PROF.busy=false;PROF.listening=false;PROF.rec=null;PROF.lastSaid="";PROF.repeatTarget="";PROF.repeatGloss="";
+function profLoad(){
+  try{var r=localStorage.getItem(PROF_KEY);if(r){var o=JSON.parse(r);PROF=Object.assign(PROF,PROF_DEFAULT,o||{});}}catch(e){}
+  PROF.history=[];PROF.busy=false;PROF.listening=false;
+  if(PROF.lang!=="en-US"&&PROF.lang!=="es-ES")PROF.lang="en-US";
+  if(["lesson","conversation","pronunciation"].indexOf(PROF.mode)<0)PROF.mode="lesson";
+}
+function profSave(){
+  try{localStorage.setItem(PROF_KEY,JSON.stringify({lang:PROF.lang,mode:PROF.mode,topicIdx:PROF.topicIdx,level:PROF.level,xp:PROF.xp,streak:PROF.streak,bestStreak:PROF.bestStreak,lastDay:PROF.lastDay,repeatIdx:PROF.repeatIdx}));}catch(e){}
+}
+function profLangMeta(){return AURALIS_EN_ES.langs.filter(function(l){return l.speech===PROF.lang})[0]||AURALIS_EN_ES.langs[0];}
+function profSeed(){return AURALIS_EN_ES.seeds[PROF.lang==="es-ES"?"es":"en"];}
+function profTopics(){var sd=profSeed(),cats=AURALIS_EN_ES.categories,out=[];for(var i=0;i<cats.length;i++){var c=cats[i];if(sd[c.id])out.push({id:c.id,title:c.title,desc:c.desc,phrases:sd[c.id],vocab:sd.vocab||[]});}return out;}
+function profPhrasePool(){var sd=profSeed(),pool=[];["everyday","around","shopping","people","help"].forEach(function(k){(sd[k]||[]).forEach(function(p){pool.push(p);});});return pool;}
+function profEsc(t){return (typeof escH==="function")?escH(String(t==null?"":t)):String(t==null?"":t);}
+function profFmt(t){try{if(typeof safeMarkdown==="function")return safeMarkdown(String(t||""));}catch(e){}return profEsc(t).replace(/\n/g,"<br>");}
+function profScroll(){var l=$("profLog");if(l)l.scrollTop=l.scrollHeight;}
+function profSetBusy(b){var btn=$("profSendBtn");if(btn){btn.disabled=!!b;btn.textContent=b?"\u2026":"\u27a4";}}
+function profSetMicUI(on){var m=$("profMicBtn");if(m)m.classList.toggle("rec",!!on);var st=$("profStatus");if(st)st.textContent=on?"\ud83c\udfa4 Listening\u2026 speak now":"";}
+function profStreak(){
+  var t=new Date().toISOString().slice(0,10);
+  if(PROF.lastDay===t)return;
+  var y=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  PROF.streak=(PROF.lastDay===y)?(PROF.streak||0)+1:1;
+  PROF.bestStreak=Math.max(PROF.bestStreak||0,PROF.streak);
+  PROF.lastDay=t;profSave();
+}
+function profRenderLang(){
+  var picks=document.querySelectorAll("#profLangPick .prof-pick");
+  for(var i=0;i<picks.length;i++)picks[i].classList.toggle("on",picks[i].getAttribute("data-lang")===PROF.lang);
+  var t=$("profTitle");if(t)t.innerHTML=(PROF.lang==="es-ES"?"\ud83c\uddea\ud83c\uddf8 Language Professor \u2014 Spanish":"\ud83c\uddfa\ud83c\uddf8 Language Professor \u2014 English");
+  var sub=$("profSub");if(sub)sub.textContent=(PROF.lang==="es-ES"?"Espa\u00f1ol \u00b7 es-ES \u00b7 speak, listen, converse":"American English \u00b7 en-US \u00b7 speak, listen, converse");
+  var inp=$("profInput");if(inp)inp.placeholder=(PROF.lang==="es-ES"?"Escribe o habla en espa\u00f1ol\u2026":"Type or speak in English\u2026");
+}
+function profRenderTopics(){
+  var el=$("profTopics");if(!el)return;
+  var topics=profTopics(),h="<div class='prof-h'>\ud83d\udcd8 Lesson topics</div>";
+  for(var i=0;i<topics.length;i++){h+="<button class='prof-topic"+(i===PROF.topicIdx?" on":"")+"' onclick='profStartLesson("+i+")'><b>"+profEsc(topics[i].title)+"</b><small>"+profEsc(topics[i].desc)+"</small></button>";}
+  el.innerHTML=h;
+  el.style.display=(PROF.mode==="lesson")?"":"none";
+}
+function profRenderStats(){
+  var el=$("profStats");if(!el)return;
+  var meta=profLangMeta();
+  el.innerHTML="<div class='prof-h'>\ud83d\udcca Progress</div>"+
+    "<div class='prof-stat'><span>"+(PROF.lang==="es-ES"?"\ud83c\uddea\ud83c\uddf8 Espa\u00f1ol":"\ud83c\uddfa\ud83c\uddf8 English")+"</span><b>"+profEsc(meta.native)+"</b></div>"+
+    "<div class='prof-stat'><span>Level</span><b>"+profEsc(PROF.level||"Zero")+"</b></div>"+
+    "<div class='prof-stat'><span>XP</span><b>"+(PROF.xp||0)+"</b></div>"+
+    "<div class='prof-stat'><span>\ud83d\udd25 Streak</span><b>"+(PROF.streak||0)+" day"+((PROF.streak||0)===1?"":"s")+"</b></div>";
+}
+function profSetModeUI(){
+  var bs=document.querySelectorAll("#profModes .prof-mode");
+  for(var i=0;i<bs.length;i++)bs[i].classList.toggle("on",bs[i].getAttribute("data-m")===PROF.mode);
+  var rp=$("profRepeat");if(rp)rp.style.display=(PROF.mode==="pronunciation")?"":"none";
+  var ti=$("profTopics");if(ti)ti.style.display=(PROF.mode==="lesson")?"":"none";
+}
+function profAppend(who,text,stream){
+  var log=$("profLog");if(!log)return null;
+  var row=document.createElement("div");row.className="prof-row "+(who==="me"?"me":"prof");
+  var av=document.createElement("div");av.className="prof-av";av.textContent=(who==="me"?"\ud83e\uddd1":"\ud83d\udc69\u200d\ud83c\udfeb");
+  var b=document.createElement("div");b.className="prof-bubble";
+  b.innerHTML=stream?"<span class='prof-dots'><i></i><i></i><i></i></span>":profFmt(text);
+  row.appendChild(av);row.appendChild(b);log.appendChild(row);profScroll();
+  return b;
+}
+function openProfessor(lang){
+  profLoad();
+  if(lang==="en-US"||lang==="es-ES")PROF.lang=lang;
+  var scr=$("profScreen");if(scr)scr.classList.add("open");
+  try{if(window.stopAiAudio)stopAiAudio();}catch(e){}
+  profRenderLang();profRenderTopics();profRenderStats();profSetModeUI();
+  profStreak();profSave();
+  var log=$("profLog");if(log)log.innerHTML="";
+  profBegin();
+}
+function profClose(){
+  var scr=$("profScreen");if(scr)scr.classList.remove("open");
+  try{if(PROF.rec)PROF.rec.stop();}catch(e){}
+  PROF.listening=false;
+  try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}
+  try{if(window.stopAiAudio)stopAiAudio();}catch(e){}
+}
+function profPickLang(lang){
+  PROF.lang=lang;PROF.topicIdx=0;PROF.repeatIdx=0;PROF.history=[];
+  profSave();profRenderLang();profRenderTopics();profRenderStats();
+  var log=$("profLog");if(log)log.innerHTML="";
+  profBegin();
+}
+function profBegin(){
+  var es=PROF.lang==="es-ES";
+  var g=es?"\u00a1Hola! Soy tu profesor de espa\u00f1ol.":"Hi! I'm your English professor.";
+  var gl=es?"(Hello! I'm your Spanish professor.)":"(\u00a1Hola! Soy tu profesor de ingl\u00e9s.)";
+  profAppend("prof","<b>"+profEsc(g)+"</b> <span class='prof-gloss'>"+profEsc(gl)+"</span>");
+  profSay(g);
+  if(PROF.mode==="lesson")profStartLesson(PROF.topicIdx||0);
+  else if(PROF.mode==="pronunciation")profNextRepeat(true);
+  else profStartConversation();
+}
+function profSetMode(m){
+  PROF.mode=m;profSave();profSetModeUI();
+  var log=$("profLog");if(log)log.innerHTML="";
+  if(m==="lesson")profStartLesson(PROF.topicIdx||0);
+  else if(m==="conversation")profStartConversation();
+  else profNextRepeat(true);
+}
+function profStartLesson(idx){
+  PROF.mode="lesson";profSave();profSetModeUI();
+  var topics=profTopics();if(!topics.length)return;
+  idx=Math.max(0,Math.min(topics.length-1,idx|0));PROF.topicIdx=idx;profSave();profRenderTopics();
+  var tp=topics[idx],meta=profLangMeta();
+  var phraseLines=tp.phrases.map(function(p){return "- "+p.t+"  ("+p.en+")";}).join("\n");
+  var vocabLines=(tp.vocab||[]).map(function(v){return "- "+v.w+" = "+v.m;}).join("\n");
+  var prompt="LESSON MODE. Topic: "+tp.title+" ("+tp.desc+"). Teach me this topic in "+meta.name+" step by step, like a warm world-class language professor. Use these real phrases as your material:\n"+phraseLines+"\nKey vocabulary:\n"+vocabLines+"\nSpeak mostly in "+meta.name+", give a short English meaning in round brackets and a simple phonetic hint for new words, then end with ONE short thing for me to say back. Under 140 words, very speakable.";
+  profAI(prompt);
+}
+function profStartConversation(){
+  PROF.mode="conversation";profSave();profSetModeUI();
+  var meta=profLangMeta();
+  var prompt="CONVERSATION MODE. Start a natural, friendly back-and-forth conversation with me in "+meta.name+" about everyday life. Greet me warmly, then ask me ONE simple open question and nothing else. 1-2 short sentences, speakable aloud.";
+  profAI(prompt);
+}
+function profNextRepeat(first){
+  PROF.mode="pronunciation";profSave();profSetModeUI();
+  var pool=profPhrasePool();if(!pool.length)return;
+  if(!first)PROF.repeatIdx=((PROF.repeatIdx||0)+1)%pool.length;
+  var p=pool[(PROF.repeatIdx||0)%pool.length];
+  PROF.repeatTarget=p.t;PROF.repeatGloss=p.en;profSave();profRenderRepeat();
+  profAppend("prof","\ud83d\udd0a <b>"+profEsc(p.t)+"</b> <span class='prof-gloss'>("+profEsc(p.en)+")</span>");
+  profSay(p.t);
+}
+function profRenderRepeat(){
+  var el=$("profRepeat");if(!el)return;
+  el.innerHTML="<div class='prof-card'><div class='prof-card-h'>\ud83c\udfaf Say this line out loud</div>"+
+    "<div class='prof-target'>"+profEsc(PROF.repeatTarget||"")+"</div>"+
+    "<div class='prof-gloss'>"+(PROF.repeatGloss?profEsc(PROF.repeatGloss):"")+"</div>"+
+    "<div class='prof-card-row'>"+
+    "<button class='btn small' onclick='profSay(PROF.repeatTarget)'>\u25b6 Hear it again</button>"+
+    "<button class='btn small' onclick='profMic()'>\ud83c\udfa4 Repeat</button>"+
+    "<button class='btn small' onclick='profNextRepeat()'>Next line \u2192</button>"+
+    "</div><div id='profScore' class='prof-score'></div></div>";
+}
+function profSendInput(){
+  var inp=$("profInput");if(!inp)return;
+  var t=(inp.value||"").trim();if(!t)return;
+  inp.value="";profHandleStudent(t);
+}
+function profHandleStudent(text){
+  profStreak();profSave();
+  profAppend("me",text);
+  if(PROF.mode==="pronunciation"){profScoreRepeat(text);return;}
+  profAI(text);
+}
+async function profAI(userText){
+  if(PROF.busy){toast("The professor is still talking \u2014 one moment.");return;}
+  PROF.busy=true;profSetBusy(true);
+  var bubble=profAppend("prof","",true);
+  PROF.history.push({role:"user",parts:[{text:userText}]});
+  var sys=profSys(),acc="";
+  var cb=function(delta,soFar){acc=soFar;if(bubble)bubble.innerHTML=profFmt(soFar);profScroll();};
+  try{
+    var out="";
+    if(typeof localReady==="function"&&localReady()){
+      out=(await localChat(userText,sys))||"";acc=out;if(bubble)bubble.innerHTML=profFmt(acc);
+    }else{
+      var key=(localStorage.getItem(STORAGE+"geminiKey")||"").trim();
+      var oKey=(localStorage.getItem(STORAGE+"openaiKey")||"").trim();
+      var cKey=(localStorage.getItem(STORAGE+"claudeKey")||"").trim();
+      if(key)out=await callGeminiStream(key,PROF.history,cb,null,sys)||"";
+      else if(oKey)out=await callOpenAIStream(PROF.history,cb,null,sys)||"";
+      else if(cKey)out=await callClaudeStream(PROF.history,cb,null,sys)||"";
+      else out=await callGeminiStream("",PROF.history,cb,null,sys)||"";
+      acc=out||acc;if(bubble)bubble.innerHTML=profFmt(acc);
+    }
+  }catch(e){acc="\u26a0\ufe0f "+((e&&e.message)||"Could not reach the AI");if(bubble)bubble.innerHTML=profFmt(acc);}
+  PROF.history.push({role:"model",parts:[{text:acc}]});
+  if(PROF.history.length>40)PROF.history=PROF.history.slice(-40);
+  PROF.busy=false;profSetBusy(false);profScroll();
+  profSay(acc);
+}
+function profSys(){
+  var meta=profLangMeta(),mode=PROF.mode;
+  var base="You are the LANGUAGE PROFESSOR inside the AURISI study app \u2014 a world-class, warm, patient spoken-language tutor (the best private language teacher). You teach EXACTLY ONE language: "+meta.name+" ("+meta.speech+"), native name \""+meta.native+"\". ";
+  base+="Always SPEAK mostly in "+meta.name+" and keep every reply short and natural for speaking aloud (2-5 short sentences; no long lists, no tables, no code). ";
+  base+="When you introduce a new word or phrase, add a short English meaning in round brackets and a simple phonetic hint, e.g. Gracias (GRAH-see-ahs) = thank you. ";
+  base+="Never reply with emoji only, and never lecture on grammar for more than one sentence at a time. ";
+  if(mode==="lesson")base+="MODE = LESSON: teach the chosen topic step by step, one small idea at a time, with real example phrases, a pronunciation tip, and end with ONE short thing for me to say back. Wait for my reply before moving on. ";
+  else if(mode==="conversation")base+="MODE = CONVERSATION: hold a real back-and-forth in "+meta.name+". Be natural and friendly, ask one question at a time, and ALWAYS gently correct my mistake \u2014 show the corrected sentence, briefly say why, then continue the conversation. ";
+  else base+="MODE = PRONUNCIATION: help me repeat a line correctly. Praise what was right, fix what was wrong with one clear mouth tip, and keep it short. ";
+  base+="Learner level: "+(PROF.level||"Zero")+". For a beginner keep words very simple; if advanced add idiom and nuance. If I write in English but the target is "+meta.name+", nudge me to try in "+meta.name+" and give me the exact phrase to say. Be encouraging, never condescending.";
+  return base;
+}
+function profSay(text){
+  var lang=PROF.lang;
+  var clean=(typeof cleanForSpeech==="function")?cleanForSpeech(text):String(text||"");
+  if(!clean)return;
+  PROF.lastSaid=clean;
+  try{if(window.stopAiAudio)stopAiAudio();}catch(e){}
+  var gk=(localStorage.getItem(STORAGE+"geminiKey")||"").trim();
+  if(gk.length>10&&typeof aiSpeak==="function"){
+    aiSpeak(clean,(typeof getAiVoice==="function"?getAiVoice():"Kore"),function(ok){if(!ok)profBrowserSpeak(clean,lang);},true);
+    return;
+  }
+  if(lang==="en-US"&&typeof sarvamKeySet==="function"&&sarvamKeySet()){
+    sarvamSpeak(clean,(typeof getSarvamVoice==="function"?getSarvamVoice():"shubh"),function(ok){if(!ok)profBrowserSpeak(clean,lang);},true);
+    return;
+  }
+  profBrowserSpeak(clean,lang);
+}
+function profBrowserSpeak(text,lang){
+  if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){toast("Speech is not supported in this browser \u2014 you can still type.");return;}
+  try{
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(String(text).slice(0,1000));
+    u.lang=lang||PROF.lang;u.rate=0.95;
+    var bv=(typeof bestVoice==="function")?bestVoice(u.lang):null;if(bv)u.voice=bv;
+    try{if(typeof applyTts==="function")applyTts(u);}catch(e){}
+    window.speechSynthesis.speak(u);
+  }catch(e){toast("Could not speak aloud");}
+}
+function profSpeakLast(){if(PROF.lastSaid)profSay(PROF.lastSaid);else toast("Nothing to replay yet \u2014 the professor will speak as it replies.");}
+function profMic(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast("Microphone isn't supported in this browser \u2014 use Chrome, Edge or Safari, or type instead.");return;}
+  if(PROF.listening){try{PROF.rec&&PROF.rec.stop();}catch(e){}return;}
+  var rec=new SR();PROF.rec=rec;
+  rec.lang=PROF.lang;rec.interimResults=true;rec.maxAlternatives=1;rec.continuous=false;
+  rec.onstart=function(){PROF.listening=true;profSetMicUI(true);};
+  rec.onresult=function(ev){var t="";for(var i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;var inp=$("profInput");if(inp)inp.value=t;};
+  rec.onerror=function(e){PROF.listening=false;profSetMicUI(false);if(e&&e.error==="not-allowed")toast("Microphone permission denied \u2014 allow mic access, or type instead.");else toast("Mic error \u2014 you can type instead.");};
+  rec.onend=function(){PROF.listening=false;profSetMicUI(false);var inp=$("profInput");var t=inp?inp.value.trim():"";if(t)profHandleStudent(t);};
+  try{rec.start();}catch(e){toast("Could not start the mic");}
+}
+function profNorm(s){
+  s=String(s||"").toLowerCase();
+  try{s=s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");}catch(e){}
+  return s.replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim();
+}
+function profScoreRepeat(heard){
+  var target=String(PROF.repeatTarget||"");
+  var a=profNorm(target).split(" ").filter(Boolean),b=profNorm(heard).split(" ").filter(Boolean);
+  var pool=b.slice(),hit=0;
+  for(var i=0;i<a.length;i++){var k=pool.indexOf(a[i]);if(k>=0){hit++;pool.splice(k,1);}}
+  var score=a.length?Math.round(100*hit/a.length):0,es=PROF.lang==="es-ES";
+  var msg;
+  if(score>=85)msg=(es?"\u00a1Excelente! Muy buena pronunciaci\u00f3n.":"Excellent! Great pronunciation.")+" ("+score+"%)";
+  else if(score>=55)msg=(es?"Bien, casi. Escucha otra vez y repite. ":"Good, almost there. Listen again and repeat. ")+"("+score+"%)";
+  else msg=(es?"Vamos otra vez, despacio. ":"Let's try again, slowly. ")+"("+score+"%)";
+  var sc=$("profScore");if(sc)sc.innerHTML="<b>"+score+"%</b> "+profEsc(msg);
+  profAppend("prof","\ud83c\udfa7 <span class='prof-gloss'>You said:</span> "+profEsc(heard)+"<br>"+profEsc(msg));
+  profSay(msg);
+  PROF.xp=(PROF.xp||0)+(score>=85?10:(score>=55?5:2));profSave();profRenderStats();
+}
+function profCommand(v){
+  var t=String(v||"").trim().toLowerCase();
+  var m=/^(learn|practice|start learning|start|open|study|speak|talk|converse in|teach me)\s+(american\s+)?(english|spanish|espa[n\u00f1]ol)\b/.exec(t);
+  if(m){openProfessor(/spanish|espa[n\u00f1]ol/.test(m[3])?"es-ES":"en-US");return true;}
+  if(/^(language\s*professor|professor)\b/.test(t)){openProfessor();return true;}
+  return false;
+}
+
 /* v60.19: carousel removed */updateTopTitle();welcomeGreet();applyAccentBoot();pomRender();seedStudyPacks();bootSplash();initScrollBtn();
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);
 else init();
