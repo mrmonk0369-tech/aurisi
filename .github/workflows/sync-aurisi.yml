@@ -1,4 +1,4 @@
-name: Sync AURISI (verify v60.69)
+name: Sync AURISI (verify v60.70)
 on: [push, workflow_dispatch]
 permissions:
   contents: read
@@ -7,13 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify v60.69 (professor + surgery)
+      - name: Verify v60.70 (seal + hub + onboarding)
         run: |
           set -e
-          test "$(wc -c < AURISI.html)" -eq 1746558
-          grep -q 'APP_VERSION="60.69"' AURISI.html
+          test "$(wc -c < AURISI.html)" -eq 1753765
+          grep -q 'APP_VERSION="60.70"' AURISI.html
           grep -q 'PROFESSOR STANDARD' AURISI.html
-          for s in TALK_SCENARIOS SANS_ON makePodcast openVideoStudio dailyBrief lockerQuiz LOCKER_CTX openTalk renderSanskritChip; do
+          grep -q 'var SEALED=true' AURISI.html
+          grep -q 'sealed-hide' AURISI.html
+          grep -q 'aurisiHubHTML' AURISI.html
+          grep -q 'onboardModalBack' AURISI.html
+          for s in TALK_SCENARIOS SANS_ON makePodcast openVideoStudio dailyBrief lockerQuiz LOCKER_CTX; do
             if grep -q "$s" AURISI.html; then echo "REMNANT: $s"; exit 1; fi
           done
-          echo "v60.69 verified: 1746558 bytes, professor standard present, 6 features removed"
+          echo "v60.70 verified: seal + library hub + onboarding present, removed features still gone"
