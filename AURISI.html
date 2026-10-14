@@ -1913,7 +1913,7 @@ const AURISI_LOGO_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAA
 const AURISI_MARK_URL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNDQ4Ij48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImF1IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkJFMjlCIi8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNGMkI0NEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDOTc0MUYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyQTFEMTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNDBEMDciLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0iaGwiIGN4PSIuNSIgY3k9Ii4yOCIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjE0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz48cmVjdCB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9IjExMiIgZmlsbD0idXJsKCNobCkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYXUpIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNzIgMjU4IGgxMDQiIHN0cm9rZS13aWR0aD0iMzAiLz48cGF0aCBkPSJNMTM2IDMzOCBMMjI0IDExOCBMMzEyIDMzOCIgc3Ryb2tlLXdpZHRoPSIzNCIvPjwvZz48cGF0aCBkPSJNMjk4IDg4IGw4IDIwIDIwIDggLTIwIDggLTggMjAgLTggLTIwIC0yMCAtOCAyMCAtOCB6IiBmaWxsPSIjRkZGNEQ5Ii8+PC9zdmc+";
 const STORAGE="aurisi_v1_";
 /* ===================== v20.1 ALWAYS-LATEST GUARD ===================== */
-var APP_VERSION="60.64",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
+var APP_VERSION="60.65",LIVE_URL="https://mrmonk0369-tech.github.io/aurisi/";
 function aurisiExportData(){try{var o={},n=0;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(STORAGE)===0){o[k]=localStorage.getItem(k)||"";n+=k.length+o[k].length}}return n>120000?"":JSON.stringify(o)}catch(e){return ""}}
 function aurisiImportData(s){try{var o=JSON.parse(s||"");for(var k in o){if(!localStorage.getItem(k))localStorage.setItem(k,o[k])}}catch(e){}}
 (function(){
@@ -2313,6 +2313,9 @@ function SYS_PROMPT(){
   "CONCEPT CHECK: when the learner asks you to check their understanding (Feynman style), ask ONE challenging application-style question about the topic — never a definition — and wait for their answer. Then grade honestly: separate what shows real understanding from what is memorised, list their weak points explicitly, and teach exactly those weak points. "+
   "CHEAT SHEET: when the learner asks for a cheat sheet (from a PDF or a topic), output compact markdown tables by category — formulas, dates, articles, keywords, definitions — one table per category, exam-ready and ruthlessly short. "+
   "PDF EXAM: when a quiz is generated from an attached PDF, use ONLY the PDF's own content — its dates, facts, numbers and concepts — never outside information; the app speaks questions aloud in voice mode and records spoken answers automatically. "+
+  "LEVEL & FIELD: teach ANY subject at ANY level \u2014 school, board, competitive, university/MIT-level engineering, medicine, law, finance, coding, design. Read the learner\u2019s level from their words and the app profile, then teach at THAT level: never water it down unless asked, and never jump above their level without saying so. "+
+  "STEP-BY-STEP ALWAYS: number every step, one idea per step, never skip algebra or a reasoning jump. For any problem show GIVEN \u2192 FIND \u2192 FORMULA \u2192 SUBSTITUTION (line by line) \u2192 ANSWER with units \u2192 one-line CHECK. Add one fully worked example when the idea is new. "+
+  "VISUALS ARE MANDATORY FOR STEM: for any physics, maths, engineering, chemistry or biology idea that has shape, force, angle, circuit, ray, vector or graph, you MUST include a [[DOODLE|short title|<svg>...]] figure with every angle, force, label and value written ON the figure, plus a [[GRAPH|expr|minX|maxX]] whenever a function or relation is involved, and a [[CHART|bar|title|labels|values]] for any data. Place the figure at the exact step where it is needed. Engineering: free-body diagrams, circuits, tolerances, stress-strain, CAD-style views. Maths: triangles with marked angles, unit circle, labelled axes. "+
   "DOODLE: whenever a picture would teach better than words \u2014 geometry, trigonometry, graphs, physics diagrams, circuits, forces, optics rays; BIOLOGY (cell structure, heart, DNA double helix, nephron, neuron, plant parts, human organs, photosynthesis flow, food chains); CHEMISTRY (atomic structure, bonding, reaction schemes, electron flow, apparatus); geography maps, timelines, flowcharts and ANY process or cycle \u2014 do it AUTOMATICALLY, without waiting to be asked, and always when the learner is stuck on a question. For complex realistic structures, draw a simple labeled schematic (boxes, arrows, circles) instead of detailed art. Output as many tokens as the explanation needs, one per figure: [[DOODLE|short title|<svg viewBox='0 0 400 300'>...</svg>]] containing a SIMPLE hand-drawn-style chalk diagram: strokes only (stroke='#fff' or '#ffd54a', fill='none', stroke-width='2', stroke-linecap='round'), basic shapes (line, circle, rect, path, polyline) and <text> labels with fill='#fff' font-size='14'. Maximum 15 elements. Place the DOODLE token at the EXACT point in your explanation where the drawing is needed \u2014 right between the steps that talk about it, never dumped at the start or end. Then continue the explanation referring to the labels. Never use the | character inside the svg. If the learner says your drawing is wrong or unclear, redraw it improved. "+
   "CONVERSATION MIRROR: match how the student talks. A short casual message gets a short, natural, human reply \u2014 like texting a smart friend: no headings, no bullet walls, no doodle or image tokens. Bring out full teaching structure (slides, diagrams, tokens, examples) only when a topic is being learnt or the learner asks for material. Never over-format a simple question. "+
   "HUMAN WARMTH: you are a real teacher sitting beside a real student, never an AI reading a script. React the way a person does \u2014 when the learner gets something right, let your pleasure show in a few words; when they struggle, reassure them first, then correct gently. Vary your sentence length; mix long explanations with very short ones. NEVER open with \u2018Sure!\u2019, \u2018Certainly!\u2019, \u2018Great question!\u2019, \u2018As an AI\u2019, \u2018I\u2019d be happy to\u2019 or any canned AI phrase, and never describe yourself as an AI, model or assistant unless directly asked who you are. Your reply is often read ALOUD: write speech-friendly \u2014 natural commas as breathing pauses, small numbers as words, no symbol walls. "+
@@ -6852,7 +6855,7 @@ async function stuLoadProj(id){
   }catch(e){toast("Could not reach server")}
 }
 
-/* ===================== v60.64 — LANGUAGE CONTENT REMOVED FROM LIBRARY ===================== */
+/* ===================== v60.65 — ADVANCED VISUAL TUTOR (any field, step-by-step diagrams, WebGPU-ready) ===================== */
 function instCloseModals(){try{document.querySelectorAll(".modal-back.open").forEach(function(x){x.remove()})}catch(e){}}
 function instRenderBox(){
   var el=$("instBox");if(!el)return;
@@ -8030,6 +8033,19 @@ function initSnapCarousel(){
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);
 else init();
 if(typeof navigator!=="undefined"&&navigator.serviceWorker){window.addEventListener("load",function(){try{navigator.serviceWorker.register("sw.js").catch(function(e){})}catch(e){}})}
+/* ===== v60.65 capabilities: WebGPU + offline (honest detect, automatic fallback) ===== */
+var AURISI_CAPS={webgpu:false,gpuAdapter:null,offline:false,sw:false,canvas2d:true};
+try{AURISI_CAPS.offline=(typeof navigator!=="undefined"&&("onLine" in navigator))?!navigator.onLine:false}catch(e){}
+try{AURISI_CAPS.sw=!!(typeof navigator!=="undefined"&&navigator.serviceWorker)}catch(e){}
+try{
+  if(typeof navigator!=="undefined"&&navigator.gpu&&navigator.gpu.requestAdapter){
+    navigator.gpu.requestAdapter().then(function(ad){ if(ad){AURISI_CAPS.webgpu=true;AURISI_CAPS.gpuAdapter=ad;} }).catch(function(){});
+  }
+}catch(e){}
+window.addEventListener("online",function(){AURISI_CAPS.offline=false});
+window.addEventListener("offline",function(){AURISI_CAPS.offline=true});
+function aurisiCaps(){return AURISI_CAPS}
+
 var AURISI_INSTALL=null;
 window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();AURISI_INSTALL=e;try{$("installBtn").style.display=""}catch(x){}});
 try{
