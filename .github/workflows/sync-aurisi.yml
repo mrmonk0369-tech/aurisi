@@ -1,4 +1,4 @@
-name: Sync AURISI (verify v60.80)
+name: Sync AURISI (verify v60.81)
 on: [push, workflow_dispatch]
 permissions:
   contents: read
@@ -7,11 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify v60.80
+      - name: Verify v60.81
         run: |
           set -e
-          test "$(wc -c < AURISI.html)" -eq 1781356
-          grep -q 'APP_VERSION="60.80"' AURISI.html
-          if grep -q 'Install the app' AURISI.html; then echo 'install row left'; exit 1; fi
-          grep -q 'rel="manifest"' AURISI.html
-          echo "v60.80 verified: install row removed; PWA still intact"
+          test "$(wc -c < AURISI.html)" -eq 1782410
+          grep -q 'APP_VERSION="60.81"' AURISI.html
+          grep -q 'PROFESSOR STANDARD' AURISI.html
+          grep -q 'Learn American English' AURISI.html
+          grep -q 'openProfessor' AURISI.html
+          echo "v60.81 verified: American English teacher ready"
