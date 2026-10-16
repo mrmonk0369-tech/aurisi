@@ -1,4 +1,4 @@
-name: Sync AURISI (verify v60.82)
+name: Sync AURISI (verify v60.83)
 on: [push, workflow_dispatch]
 permissions:
   contents: read
@@ -7,12 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify v60.82
+      - name: Verify v60.83
         run: |
           set -e
-          test "$(wc -c < AURISI.html)" -eq 1782193
-          grep -q 'APP_VERSION="60.82"' AURISI.html
-          grep -q 'STRICT SINGLE LANGUAGE' AURISI.html
+          test "$(wc -c < AURISI.html)" -eq 1782567
+          grep -q 'APP_VERSION="60.83"' AURISI.html
+          grep -q '.prof-screen.started .prof-side{display:none!important}' AURISI.html
+          grep -q 'profToggleSide' AURISI.html
           grep -q 'PROFESSOR STANDARD' AURISI.html
-          if grep -q 'profEsc(gl)' AURISI.html; then echo 'gloss left'; exit 1; fi
-          echo "v60.82 verified: strict single-language professor"
+          echo "v60.83 verified: full-screen language professor"
